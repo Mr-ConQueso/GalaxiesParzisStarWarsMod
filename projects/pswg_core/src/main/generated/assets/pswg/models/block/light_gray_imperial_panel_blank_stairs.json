@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "pswg:block/light_gray_imperial_panel_blank",
-    "side": "pswg:block/light_gray_imperial_panel_blank",
-    "top": "pswg:block/light_gray_imperial_panel_blank"
-  }
-}

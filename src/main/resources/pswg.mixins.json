@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.mrconqueso.pswg.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "pswg.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "attributes.PlayerEntityMixin",
+    "leftuse.LivingEntityMixin",
+    "recoil.LivingEntityMixin"
+  ],
+  "client": [
+    "client.attributes.AbstractClientPlayerEntityMixin",
+    "client.attributes.MouseMixin",
+    "client.leftuse.MinecraftClientMixin",
+    "client.recoil.ClientPlayerEntityMixin",
+    "client.recoil.HeldItemRendererMixin"
+  ],
+  "server": [
+  ]
+}

@@ -1,0 +1,85 @@
+{
+	"stats": {
+		"damage": 8,
+		"range": 48,
+		"automaticRepeatDelay": 4,
+		"fireSound": "pswg:blaster.fire.e11",
+		"heat": {
+			"capacity": 100,
+			"perRound": 20,
+			"drainSpeed": 5.0,
+			"overheatPenalty": 60,
+			"overheatDrainSpeed": 1,
+			"passiveCooldownDelay": 20,
+			"overchargeBonus": 40
+		},
+		"cooling": {
+			"primaryBypassTime": 0.7,
+			"primaryBypassTolerance": 0.1,
+			"secondaryBypassTime": 0.25,
+			"secondaryBypassTolerance": 0.05
+		}
+	},
+	"attachments": {
+		"hud": "pswg:default",
+		"defaults": {
+			"pswg:barrel_slot": "pswg:e11/bipod"
+		},
+		"options": {
+			"pswg:e11/scope_d": {
+				"translationKey": "attachment.pswg.e11.scope_d",
+				"slots": [
+					"pswg:scope_slot"
+				],
+				"function": "pswg:zoom_multiplier",
+				"category": "pswg:scope",
+				"value": 1.5
+			},
+			"pswg:e11/scope_x": {
+				"translationKey": "attachment.pswg.e11.scope_x",
+				"slots": [
+					"pswg:scope_slot"
+				],
+				"function": "pswg:zoom_multiplier",
+				"category": "pswg:scope",
+				"value": 2.5
+			},
+			"pswg:e11/bipod": {
+				"translationKey": "attachment.pswg.e11.bipod",
+				"slots": [
+					"pswg:barrel_slot"
+				],
+				"function": "pswg:recoil_multiplier",
+				"category": "pswg:barrel",
+				"value": 0.8
+			},
+			"pswg:e11/barrel_d": {
+				"translationKey": "attachment.pswg.e11.barrel_d",
+				"slots": [
+					"pswg:barrel_slot"
+				],
+				"function": "pswg:spread_multiplier",
+				"category": "pswg:barrel",
+				"value": 0.8
+			},
+			"pswg:e11/cooling": {
+				"translationKey": "attachment.pswg.e11.cooling",
+				"slots": [
+					"pswg:internal_slot"
+				],
+				"function": "pswg:cooling_multiplier",
+				"category": "pswg:internal_cooling",
+				"value": 1.3
+			},
+			"pswg:e11/rapidfire": {
+				"translationKey": "attachment.pswg.e11.rapidfire",
+				"slots": [
+					"pswg:internal_slot"
+				],
+				"function": "pswg:fire_rate_multiplier",
+				"category": "pswg:internal_ordnance_config",
+				"value": 1.5
+			}
+		}
+	}
+}

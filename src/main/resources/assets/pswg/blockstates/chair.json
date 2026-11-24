@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pswg:block/chair"
+    },
+    "facing=south": {
+      "model": "pswg:block/chair",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "pswg:block/chair",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/chair",
+      "y": 270
+    }
+  }
+}

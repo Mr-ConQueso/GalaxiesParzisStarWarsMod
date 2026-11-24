@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "pswg:block/purple_pourstone",
-    "side": "pswg:block/purple_pourstone"
-  }
-}

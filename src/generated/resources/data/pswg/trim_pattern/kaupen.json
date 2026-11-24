@@ -1,0 +1,8 @@
+{
+  "asset_id": "pswg:kaupen",
+  "decal": false,
+  "description": {
+    "translate": "trim_pattern.pswg.kaupen"
+  },
+  "template_item": "pswg:kaupen_armor_trim_smithing_template"
+}

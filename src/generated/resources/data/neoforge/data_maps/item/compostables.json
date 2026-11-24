@@ -1,0 +1,10 @@
+{
+  "values": {
+    "pswg:radish": {
+      "chance": 0.45
+    },
+    "pswg:radish_seeds": {
+      "chance": 0.25
+    }
+  }
+}

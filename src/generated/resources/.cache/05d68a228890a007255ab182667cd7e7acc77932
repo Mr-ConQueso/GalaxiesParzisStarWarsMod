@@ -1,0 +1,10 @@
+// 1.21.1	2026-05-12T17:36:47.652352354	Tags for minecraft:block mod id pswg
+79fd92ff1261a47fcfb769a9a238426000197c24 data/minecraft/tags/block/fence_gates.json
+15ffa168465c304d05fea3b133a51c13940fa6cb data/minecraft/tags/block/fences.json
+c6fc42afa2d8e4c1be818099239a8edbbc5c49da data/minecraft/tags/block/logs_that_burn.json
+2bcf994612067f9e7cdac7b3f0a3cb2d7cd53ed4 data/minecraft/tags/block/mineable/pickaxe.json
+601f136a0a46ee931d2957a40a626a6d78bb8d55 data/minecraft/tags/block/needs_diamond_tool.json
+17f126241600ecdc2f02c6e1643df727eb6a234c data/minecraft/tags/block/needs_iron_tool.json
+bbf3347667a0828e7c7ae45326b37bc2599d7ef9 data/minecraft/tags/block/walls.json
+7fa190b9aa7e04701e777d0a684cc7f8939623c0 data/pswg/tags/block/incorrect_for_bismuth_tool.json
+1906afa19e63361b7f120a05e0b0b9c6a8e301f4 data/pswg/tags/block/needs_bismuth_tool.json

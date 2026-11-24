@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "pswg:block/white_imperial_panel_blank",
-    "side": "pswg:block/white_imperial_panel_blank",
-    "top": "pswg:block/white_imperial_panel_blank"
-  }
-}

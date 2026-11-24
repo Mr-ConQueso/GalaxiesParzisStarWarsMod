@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "pswg:block/bismuth_block",
+    "side": "pswg:block/bismuth_block",
+    "top": "pswg:block/bismuth_block"
+  }
+}

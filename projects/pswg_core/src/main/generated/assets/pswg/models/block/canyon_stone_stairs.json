@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "pswg:block/canyon_stone",
-    "side": "pswg:block/canyon_stone",
-    "top": "pswg:block/canyon_stone"
-  }
-}
