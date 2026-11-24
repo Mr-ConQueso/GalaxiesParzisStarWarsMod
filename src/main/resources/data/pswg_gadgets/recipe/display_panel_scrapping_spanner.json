@@ -1,0 +1,17 @@
+{
+  "type": "pswg_gadgets:scrapping",
+  "ingredient": {
+    "item": "pswg:display_panel"
+  },
+  "primary_result": {
+    "id": "pswg:chromium_ingot"
+  },
+  "secondary_chance": 0.35,
+  "secondary_result": {
+    "count": 3,
+    "id": "pswg:chromium_nugget"
+  },
+  "tool": {
+    "item": "pswg_gadgets:spanner"
+  }
+}

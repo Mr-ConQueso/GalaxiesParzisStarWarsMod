@@ -1,0 +1,7 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/blaster_workbench",
+  "textures": {
+    "particle": "pswg:block/blaster_workbench"
+  }
+}

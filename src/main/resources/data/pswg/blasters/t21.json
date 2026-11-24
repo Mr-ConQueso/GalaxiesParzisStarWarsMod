@@ -1,0 +1,100 @@
+{
+  "stats": {
+    "damage": 10,
+    "range": 188,
+    "automaticRepeatDelay": 7,
+    "fireSound": "pswg:blaster.fire.t21",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 95,
+      "drainSpeed": 24,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 80
+    },
+    "cooling": {
+      "primaryBypassTime": 0.5,
+      "primaryBypassTolerance": 0.05,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.03
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {
+      "pswg:slot_1": "pswg:t21/long_barrel"
+    },
+    "options": {
+      "pswg:t21/long_barrel": {
+        "translationKey": "blaster.pswg.t21.attachment.long_barrel",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:spread_multiplier",
+        "category": "pswg:barrel",
+        "value": 0.4,
+        "part": "long_barrel"
+      },
+      "pswg:t21/short_barrel": {
+        "translationKey": "blaster.pswg.t21.attachment.short_barrel",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:damage_multiplier",
+        "category": "pswg:barrel",
+        "value": 1.5,
+        "part": "short_barrel"
+      },
+      "pswg:t21/scope": {
+        "translationKey": "blaster.pswg.t21.attachment.scope",
+        "slots": [
+          "pswg:slot_2"
+        ],
+        "function": "pswg_blasters:default_scope",
+        "category": "pswg:scope",
+        "part": "scope"
+      },
+      "pswg:t21/repeater": {
+        "translationKey": "blaster.pswg.t21.attachment.repeater",
+        "slots": [
+          "pswg:slot_3"
+        ],
+        "function": "pswg_blasters:allow_auto",
+        "category": "pswg:internal_ordnance_config"
+      }
+    }
+  },
+  "legacy": {
+    "archetype": "heavy",
+    "modes": [
+      "automatic",
+      "burst",
+      "stun"
+    ],
+    "requiredSlots": [
+      "pswg:slot_1"
+    ],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 300,
+      "burstInterval": 2,
+      "burstSize": 3,
+      "burstGap": 2,
+      "recoilX": 1.5,
+      "recoilY": 3.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "none"
+    },
+    "beam": {
+      "color": 16711711,
+      "length": 1.0,
+      "radius": 1.0,
+      "falloff": 2,
+      "pyrotechnics": false
+    }
+  }
+}

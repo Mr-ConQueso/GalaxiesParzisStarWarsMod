@@ -43,5 +43,14 @@
   "tag.item.pswg_gadgets.mixable_food": "Mixer food component",
   "subtitle.pswg_gadgets.thermaldetonator.beep": "Thermal detonator beeps",
   "subtitle.pswg_gadgets.fragmentationgrenade.beep": "Fragmentation grenade beeps",
-  "subtitle.pswg_gadgets.fragmentationgrenade.explode": "Fragmentation grenade blasts"
+  "subtitle.pswg_gadgets.fragmentationgrenade.explode": "Fragmentation grenade blasts",
+  "part.pswg_gadgets.base_extractor": "Base Extractor",
+  "part.pswg_gadgets.laser_extractor": "Laser Extractor",
+  "part.pswg_gadgets.plasteel_extractor": "Plasteel Extractor",
+  "part.pswg_gadgets.base_drill": "Base Drill",
+  "part.pswg_gadgets.titanium_drill": "Titanium Drill",
+  "part.pswg_gadgets.plasteel_drill": "Plasteel Drill",
+  "part.pswg_gadgets.base_capsule": "Base Capsule",
+  "part.pswg_gadgets.transparisteel_capsule": "Transparisteel Capsule",
+  "part.pswg_gadgets.reinforced_capsule": "Reinforced Capsule"
 }

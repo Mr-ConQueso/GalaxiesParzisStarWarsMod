@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "half=lower,facing=east": {
+      "model": "pswg:block/sliding_door"
+    },
+    "half=lower,facing=north": {
+      "model": "pswg:block/sliding_door",
+      "y": 270
+    },
+    "half=lower,facing=south": {
+      "model": "pswg:block/sliding_door",
+      "y": 90
+    },
+    "half=lower,facing=west": {
+      "model": "pswg:block/sliding_door",
+      "y": 180
+    },
+    "half=upper": {
+      "model": "pswg:block/sliding_door_upper"
+    }
+  }
+}

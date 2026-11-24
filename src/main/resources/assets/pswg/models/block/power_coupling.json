@@ -1,0 +1,11 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/power_coupling",
+  "scale": 0.625,
+  "rotation_y": 0,
+  "hidden_parts": [],
+  "textures": {
+    "texture": "pswg:block/model/power_coupling",
+    "particle": "pswg:block/model/power_coupling_particle"
+  }
+}

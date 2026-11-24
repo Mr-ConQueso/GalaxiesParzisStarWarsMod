@@ -1,0 +1,44 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "pswg:item/wizard"
+  },
+  "base": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "pswg:item/wizard"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "head": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "fixed": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    },
+    "none": {
+      "parent": "pswg_gadgets:item/inferno_grenade_in_hand"
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pswg_gadgets:primed": 1
+      },
+      "model": "pswg_gadgets:item/inferno_grenade_primed"
+    }
+  ]
+}

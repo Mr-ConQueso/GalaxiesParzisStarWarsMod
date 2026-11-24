@@ -11,9 +11,12 @@ import net.minecraft.world.level.Level;
 
 final class PressureMineItem extends Item
 {
-	PressureMineItem(Properties properties)
+	private final Demolitions.Variant variant;
+
+	PressureMineItem(Demolitions.Variant variant, Properties properties)
 	{
 		super(properties);
+		this.variant = variant;
 	}
 
 	@Override
@@ -22,7 +25,7 @@ final class PressureMineItem extends Item
 		var stack = player.getItemInHand(hand);
 		if (level instanceof ServerLevel server)
 		{
-			var mine = GadgetCharge.create(Demolitions.Variant.PRESSURE, server, player.position().add(0, 1.5, 0), player);
+			var mine = GadgetCharge.create(variant, server, player.position().add(0, 1.5, 0), player);
 			mine.setDeltaMovement(player.getForward().multiply(0.6, 0.4, 0.6));
 			if (!server.addFreshEntity(mine))
 				return InteractionResultHolder.fail(stack);

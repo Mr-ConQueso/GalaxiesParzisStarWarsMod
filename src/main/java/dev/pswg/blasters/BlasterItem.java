@@ -1,6 +1,8 @@
 package dev.pswg.blasters;
 
 import dev.pswg.blasters.BlasterState.Mode;
+import dev.pswg.blasters.LegacyBlaster.FiringMode;
+import dev.pswg.Galaxies;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class BlasterItem extends Item
 {
@@ -40,10 +43,12 @@ public final class BlasterItem extends Item
 
 	public static ItemStack createStack(ResourceLocation id, BlasterDefinition definition)
 	{
-		var stack = new ItemStack(Blasters.ITEM.get());
+		var preset = Blasters.PRESETS.get(id);
+		var stack = new ItemStack(preset == null ? Blasters.ITEM.get() : preset.get());
 		stack.set(Blasters.ID.get(), id);
 		stack.set(Blasters.ATTACHMENTS.get(), new Blasters.EquippedAttachments(definition.attachments().hud(), definition.attachments().defaults()));
-		stack.set(DataComponents.ITEM_NAME, Component.translatable(id.toLanguageKey()));
+		if (preset == null)
+			stack.set(DataComponents.ITEM_NAME, Component.translatable(id.toLanguageKey()));
 		return stack;
 	}
 
@@ -69,17 +74,90 @@ public final class BlasterItem extends Item
 		return new Blasters.EquippedAttachments(Blasters.DEFAULT_HUD, java.util.Map.of());
 	}
 
+	public static boolean isBlaster(ItemStack stack)
+	{
+		return stack.getItem() instanceof BlasterItem;
+	}
+
+	public static Stream<BlasterDefinition.Attachment> equippedOptions(ItemStack stack, BlasterDefinition definition)
+	{
+		return attachments(stack, definition).applied().entrySet().stream().flatMap(entry -> {
+			var option = definition.attachments().options().get(entry.getValue());
+			return option != null && option.slots().contains(entry.getKey()) ? Stream.of(option) : Stream.empty();
+		});
+	}
+
+	public static boolean hasFunction(ItemStack stack, BlasterDefinition definition, String function)
+	{
+		var functionId = Blasters.id(function);
+		return equippedOptions(stack, definition).anyMatch(option -> option.function().equals(functionId));
+	}
+
+	public static FiringMode firingMode(ItemStack stack, BlasterDefinition definition)
+	{
+		var legacy = definition.legacy().orElse(null);
+		if (legacy == null)
+			return FiringMode.AUTOMATIC;
+		var modes = legacy.availableModes(stack, definition);
+		var mode = stack.get(Blasters.FIRING_MODE.get());
+		return modes.contains(mode) ? mode : modes.getFirst();
+	}
+
+	public static boolean dualWield(Player player)
+	{
+		var main = definition(player.level(), player.getMainHandItem());
+		var offhand = definition(player.level(), player.getOffhandItem());
+		return isBlaster(player.getMainHandItem()) && isBlaster(player.getOffhandItem()) && main != null && offhand != null
+				&& main.legacy().map(LegacyBlaster::oneHanded).orElse(false)
+				&& offhand.legacy().map(LegacyBlaster::oneHanded).orElse(false);
+	}
+
+	static void cycleMode(ServerLevel level, Player player, ItemStack stack)
+	{
+		var definition = definition(level, stack);
+		if (definition == null || definition.legacy().isEmpty())
+			return;
+		var modes = definition.legacy().get().availableModes(stack, definition);
+		var mode = modes.get((modes.indexOf(firingMode(stack, definition)) + 1) % modes.size());
+		stack.set(Blasters.FIRING_MODE.get(), mode);
+		stack.set(Blasters.STATE.get(), state(stack).withoutBurst());
+		player.displayClientMessage(Component.translatable("msg.pswg.blaster_mode_changed", Component.translatable(mode.translation())), true);
+	}
+
+	static void togglePatrol(Player player, ItemStack stack)
+	{
+		var definition = definition(player.level(), stack);
+		if (definition == null || definition.legacy().isEmpty())
+			return;
+		boolean enabled = !player.getData(Blasters.PATROL);
+		BlasterNetwork.patrol(player, enabled);
+		if (enabled)
+			for (var hand : InteractionHand.values())
+			{
+				var held = player.getItemInHand(hand);
+				if (isBlaster(held) && state(held).isAiming())
+					setAiming(held, false, definition(player.level(), held));
+			}
+	}
+
+	public static float zoom(ItemStack stack, BlasterDefinition definition)
+	{
+		float base = definition.legacy().map(legacy -> legacy.mechanics().zoom()).orElse(3F);
+		float scope = 1F;
+		for (int magnification : new int[] { 2, 3, 5, 8 })
+			if (hasFunction(stack, definition, "increase_zoom_" + magnification + "x"))
+				scope = magnification;
+		return base * scope * multiplier(stack, definition, "zoom_multiplier");
+	}
+
 	public static float multiplier(ItemStack stack, BlasterDefinition definition, String function)
 	{
-		float combined = 1F;
 		var functionId = Blasters.id(function);
-		for (var entry : attachments(stack, definition).applied().entrySet())
-		{
-			var option = definition.attachments().options().get(entry.getValue());
-			if (option != null && option.slots().contains(entry.getKey()) && option.function().equals(functionId)
-					&& Float.isFinite(option.value()) && option.value() > 0F)
-				combined *= option.value();
-		}
+		float combined = equippedOptions(stack, definition)
+				.filter(option -> option.function().equals(functionId))
+				.map(BlasterDefinition.Attachment::value)
+				.filter(value -> Float.isFinite(value) && value > 0)
+				.reduce(1F, (left, right) -> left * right);
 		return Mth.clamp(combined, 0.01F, 100F);
 	}
 
@@ -103,69 +181,156 @@ public final class BlasterItem extends Item
 
 	static boolean fire(ServerLevel level, Player player, ItemStack stack, boolean repeated)
 	{
-		var definition = definition(level, stack);
-		if (definition == null)
-			return false;
+		return fire(level, player, stack, repeated, stack == player.getOffhandItem() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+	}
 
+	private static boolean fire(ServerLevel level, Player player, ItemStack stack, boolean repeated, InteractionHand hand)
+	{
+		var definition = definition(level, stack);
+		if (definition == null || player.getVehicle() instanceof dev.pswg.vehicles.Ship)
+			return false;
+		var legacy = definition.legacy().orElse(null);
 		var state = state(stack);
 		long now = level.getGameTime();
-		if (state.fireCooldown() > now)
+		if (state.fireCooldown() > now || stack.getOrDefault(Blasters.READY.get(), 0L) > now)
 			return false;
 
 		float heat = heat(stack, definition, now, 0);
+		var stats = definition.stats();
 		if (state.mode() != Mode.PASSIVE && heat > 0)
 		{
 			if (state.mode() != Mode.OVERHEAT || repeated)
 				return false;
-
-			var cooling = definition.stats().cooling();
-			float cursor = heat / state.lastVentingHeat();
-			if (Math.abs(cursor - cooling.primaryBypassTime()) <= cooling.primaryBypassTolerance())
-			{
-				stack.set(Blasters.STATE.get(), state.bypass(now, false));
-				play(level, player, "bypass.primary");
-			}
-			else if (Math.abs(cursor - cooling.secondaryBypassTime()) <= cooling.secondaryBypassTolerance())
-			{
-				stack.set(Blasters.STATE.get(), state.bypass(now, true));
-				play(level, player, "bypass.secondary");
-			}
-			else
-			{
-				stack.set(Blasters.STATE.get(), state.withCooling(Mode.FAILED_OVERCHARGE, now, heat));
-				play(level, player, "bypass.failed");
-			}
+			tryBypass(level, player, stack, definition, state, heat, now);
 			return false;
 		}
 
-		var stats = definition.stats();
-		var bolt = new BlasterBolt(Blasters.BOLT.get(), level);
-		bolt.launch(player, stats.damage(), stats.range());
-		if (!level.addFreshEntity(bolt))
+		var mode = firingMode(stack, definition);
+		if (repeated && mode != FiringMode.AUTOMATIC && (mode != FiringMode.BURST || state.burstBoltsRemaining() == 0))
 			return false;
 
-		int interval = Math.max(1, Math.round(stats.automaticRepeatDelay() / multiplier(stack, definition, "fire_rate_multiplier")));
-		if (overcharge(state, definition, now, 0) == 0F)
-			heat += stats.heat().perRound();
-		state = new BlasterState(state.isAiming(), now, now + interval, now + stats.heat().passiveCooldownDelay(),
-				heat, 0, Mode.PASSIVE, 0, state.overchargeStart());
+		float fireRate = multiplier(stack, definition, "fire_rate_multiplier");
+		float baseDelay = stats.automaticRepeatDelay() / fireRate;
+		int interval = Math.max(1, legacy == null ? Math.round(baseDelay) : Mth.ceil(baseDelay));
+		int burstRemaining = 0;
+		int ammo = stack.getOrDefault(Blasters.AMMO.get(), 0);
+		if (legacy != null)
+		{
+			var mechanics = legacy.mechanics();
+			if (mode == FiringMode.BURST)
+			{
+				burstRemaining = state.burstBoltsRemaining() > 0 ? state.burstBoltsRemaining() - 1 : mechanics.burstSize() - 1;
+				int delay = mechanics.burstInterval() * (burstRemaining == 0 ? mechanics.burstGap() : 1);
+				interval = Math.max(1, (int) Math.ceil(delay / fireRate));
+			}
+			boolean canFireUnderwater = mechanics.water().equals("can_fire_underwater") || hasFunction(stack, definition, "waterproof_firing");
+			if (player.isUnderWater() && !canFireUnderwater)
+				return dryFire(level, player, stack, state, now + interval);
 
-		level.playSound(null, player.blockPosition(), Blasters.sound(stats.fireSound()), SoundSource.NEUTRAL, 1F, pitch(level));
+			if (!player.hasInfiniteMaterials() && ammo == 0)
+			{
+				ammo = reload(level, player, stack, definition, legacy);
+				if (ammo == 0)
+					return dryFire(level, player, stack, state, now + interval);
+			}
+			if (mode == FiringMode.ION && hasFunction(stack, definition, "ion_to_gas_conversion"))
+				mode = FiringMode.SEMI_AUTOMATIC;
+			else if (mode == FiringMode.ION && hasFunction(stack, definition, "ion_to_repulsor_conversion"))
+				mode = FiringMode.STUN;
+		}
+
+		var bolt = new BlasterBolt(Blasters.BOLT.get(), level);
+		float damage = stats.damage() * multiplier(stack, definition, "damage_multiplier");
+		int range = Math.max(1, Math.round(stats.range() * multiplier(stack, definition, "range_multiplier")));
+		if (legacy == null)
+			bolt.launch(player, hand, damage, range);
+		else
+			bolt.launchLegacy(player, hand, stack, definition, legacy, mode, damage, range);
+		if (!level.addFreshEntity(bolt))
+			return false;
+		if (mode == FiringMode.STUN)
+			bolt.stunCone(player);
+
+		if (legacy != null && !player.hasInfiniteMaterials())
+			stack.set(Blasters.AMMO.get(), ammo - 1);
+		if (overcharge(state, definition, now, 0) == 0F)
+		{
+			float gain = stats.heat().perRound() * multiplier(stack, definition, "heat_multiplier");
+			heat += legacy == null ? gain : (int) gain;
+		}
+		if (legacy != null)
+			BlasterNetwork.patrol(player, false);
+		state = new BlasterState(state.isAiming(), now, now + interval, now + stats.heat().passiveCooldownDelay(),
+				heat, 0, Mode.PASSIVE, burstRemaining, state.overchargeStart());
+
+		var sound = mode == FiringMode.STUN ? Galaxies.id("blaster.stun") : stats.fireSound();
+		level.playSound(null, player.blockPosition(), Blasters.sound(sound), SoundSource.PLAYERS, 1F, pitch(level));
 		if (heat > stats.heat().capacity())
 		{
-			state = state.withCooling(Mode.OVERHEAT, now, heat + stats.heat().overheatPenalty());
+			float startHeat = (legacy == null ? heat : stats.heat().capacity()) + stats.heat().overheatPenalty();
+			state = state.withCooling(Mode.OVERHEAT, now, startHeat);
 			play(level, player, "overheat");
 		}
 		stack.set(Blasters.STATE.get(), state);
 
-		if (player instanceof ServerPlayer serverPlayer)
+		if (player instanceof ServerPlayer serverPlayer && mode != FiringMode.STUN)
 		{
 			float recoil = multiplier(stack, definition, "recoil_multiplier");
-			float vertical = -(3.6F + (float) level.random.nextGaussian() * 0.2F) * recoil;
-			float horizontal = (0.2F + (float) level.random.nextGaussian() * 0.2F) * recoil;
-			BlasterNetwork.sendRecoil(serverPlayer, vertical, horizontal);
+			float vertical = -(3.6F + (float) level.random.nextGaussian() * 0.2F);
+			float horizontal = 0.2F + (float) level.random.nextGaussian() * 0.2F;
+			if (legacy != null)
+			{
+				double noise = level.random.nextGaussian();
+				horizontal = legacy.mechanics().recoilX() * (float) (0.3 * noise + 0.7 * Math.signum(noise));
+				vertical = -legacy.mechanics().recoilY() * (float) (0.7 + 0.15 * (level.random.nextGaussian() + 1));
+			}
+			BlasterNetwork.sendRecoil(serverPlayer, vertical * recoil, horizontal * recoil);
 		}
 		return true;
+	}
+
+	private static void tryBypass(ServerLevel level, Player player, ItemStack stack, BlasterDefinition definition,
+	                              BlasterState state, float heat, long now)
+	{
+		var cooling = definition.stats().cooling();
+		float basis = definition.legacy().isPresent() ? definition.stats().heat().capacity() : state.lastVentingHeat();
+		float cursor = heat / Math.max(1F, basis);
+		if (cooling.primaryBypassTolerance() > 0 && Math.abs(cursor - cooling.primaryBypassTime()) <= cooling.primaryBypassTolerance())
+		{
+			stack.set(Blasters.STATE.get(), state.bypass(now, false));
+			play(level, player, "bypass.primary");
+		}
+		else if (cooling.secondaryBypassTolerance() > 0 && Math.abs(cursor - cooling.secondaryBypassTime()) <= cooling.secondaryBypassTolerance())
+		{
+			stack.set(Blasters.STATE.get(), state.bypass(now, true));
+			play(level, player, "bypass.secondary");
+		}
+		else
+		{
+			stack.set(Blasters.STATE.get(), state.withCooling(Mode.FAILED_OVERCHARGE, now, heat));
+			play(level, player, "bypass.failed");
+		}
+	}
+
+	private static boolean dryFire(ServerLevel level, Player player, ItemStack stack, BlasterState state, long ready)
+	{
+		stack.set(Blasters.STATE.get(), state.withFireCooldown(ready).withoutBurst());
+		play(level, player, "dryfire");
+		return false;
+	}
+
+	private static int reload(ServerLevel level, Player player, ItemStack stack, BlasterDefinition definition, LegacyBlaster legacy)
+	{
+		var inventory = player.getInventory();
+		for (int slot = 0; slot < inventory.getContainerSize(); slot++)
+			if (inventory.getItem(slot).is(Blasters.SMALL_POWER_PACK.get()))
+			{
+				inventory.removeItem(slot, 1);
+				play(level, player, "reload");
+				return Math.min(75, Math.max(1, Math.round(legacy.mechanics().magazine()
+						* multiplier(stack, definition, "magazine_multiplier"))));
+			}
+		return 0;
 	}
 
 	static void vent(ServerLevel level, Player player, ItemStack stack)
@@ -195,24 +360,71 @@ public final class BlasterItem extends Item
 	@Override
 	public void inventoryTick(ItemStack stack, Level level, Entity owner, int slot, boolean selected)
 	{
-		if (level.isClientSide)
+		if (!(level instanceof ServerLevel server))
 			return;
 		if (!stack.has(Blasters.SERIAL.get()))
 			stack.set(Blasters.SERIAL.get(), level.random.nextLong());
-		if (state(stack).isAiming() && owner instanceof LivingEntity living
-				&& stack != living.getMainHandItem() && stack != living.getOffhandItem())
-			setAiming(stack, false);
+		if (!(owner instanceof LivingEntity living))
+			return;
+		boolean inHand = selected || stack == living.getOffhandItem();
+		var definition = definition(level, stack);
+		var state = state(stack);
+		if (state.isAiming() && (!inHand || living.isSprinting()))
+			setAiming(stack, false, definition);
+
+		if (definition == null || definition.legacy().isEmpty())
+			return;
+		if (!inHand)
+		{
+			stack.remove(Blasters.READY.get());
+			if (state.burstBoltsRemaining() > 0)
+				stack.set(Blasters.STATE.get(), state(stack).withoutBurst());
+			return;
+		}
+		long now = level.getGameTime();
+		if (!stack.has(Blasters.READY.get()))
+			stack.set(Blasters.READY.get(), now + definition.legacy().get().mechanics().readyTime());
+		if (living instanceof Player player && state.overchargeStart() >= 0 && overcharge(state, definition, now, 0F) == 0F)
+		{
+			play(server, player, "bypass.secondary_end");
+			stack.set(Blasters.STATE.get(), new BlasterState(state.isAiming(), state.lastFired(), state.fireCooldown(),
+					state.cooldownStart(), state.lastTotalHeat(), state.lastVentingHeat(), state.mode(), state.burstBoltsRemaining(), -1));
+		}
+		if (state.burstBoltsRemaining() > 0 && living instanceof Player player && player.isAlive() && !player.isSpectator()
+				&& player.containerMenu == player.inventoryMenu)
+			fire(server, player, stack, true);
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
 		var stack = player.getItemInHand(hand);
-		if (definition(level, stack) == null)
+		var definition = definition(level, stack);
+		if (definition == null || player.getVehicle() instanceof dev.pswg.vehicles.Ship)
 			return InteractionResultHolder.fail(stack);
-		setAiming(stack, !state(stack).isAiming());
-		player.startUsingItem(hand);
+		if (dualWield(player))
+		{
+			if (level instanceof ServerLevel server)
+				fire(server, player, player.getOffhandItem(), false);
+			player.startUsingItem(InteractionHand.OFF_HAND);
+			return InteractionResultHolder.consume(player.getItemInHand(hand));
+		}
+
+		boolean aiming = !player.isSprinting() && !state(stack).isAiming();
+		if (aiming && definition.legacy().isPresent())
+			BlasterNetwork.patrol(player, false);
+		setAiming(stack, aiming, definition);
+		if (!player.isSprinting())
+			player.startUsingItem(hand);
 		return InteractionResultHolder.consume(stack);
+	}
+
+	@Override
+	public void onUseTick(Level level, LivingEntity user, ItemStack stack, int remaining)
+	{
+		if (level instanceof ServerLevel server && user instanceof Player player && dualWield(player)
+				&& player.getUsedItemHand() == InteractionHand.OFF_HAND)
+			fire(server, player, stack, true);
 	}
 
 	@Override
@@ -225,18 +437,29 @@ public final class BlasterItem extends Item
 	public void releaseUsing(ItemStack stack, Level level, LivingEntity user, int remaining)
 	{
 		if (state(stack).isAiming() && getUseDuration(stack, user) - remaining > 3)
-			setAiming(stack, false);
+			setAiming(stack, false, definition(level, stack));
 	}
 
-	private static void setAiming(ItemStack stack, boolean aiming)
+	private static void setAiming(ItemStack stack, boolean aiming, @Nullable BlasterDefinition definition)
 	{
 		stack.set(Blasters.STATE.get(), state(stack).withAim(aiming));
 		var attributes = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+		var modifier = definition != null && definition.legacy().isPresent()
+				? new AttributeModifier(AIMING_SPEED.id(), definition.legacy().get().mechanics().aimSpeed(), AIMING_SPEED.operation())
+				: AIMING_SPEED;
 		var updated = aiming
-				? attributes.withModifierAdded(Attributes.MOVEMENT_SPEED, AIMING_SPEED, EquipmentSlotGroup.HAND)
+				? attributes.withModifierAdded(Attributes.MOVEMENT_SPEED, modifier, EquipmentSlotGroup.HAND)
 				: new ItemAttributeModifiers(attributes.modifiers().stream()
 						.filter(entry -> !entry.modifier().is(AIMING_SPEED.id())).toList(), attributes.showInTooltip());
 		stack.set(DataComponents.ATTRIBUTE_MODIFIERS, updated);
+	}
+
+	@Override
+	public Component getName(ItemStack stack)
+	{
+		var id = stack.get(Blasters.ID.get());
+		return id != null && Blasters.PRESETS.containsKey(id)
+				? Component.translatable("blaster." + id.toLanguageKey()) : super.getName(stack);
 	}
 
 	@Override
@@ -255,15 +478,19 @@ public final class BlasterItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag)
 	{
-		tooltip.add(Component.translatable("text.pswg_blasters.vent_blaster")
+		if (Blasters.PRESETS.containsKey(stack.get(Blasters.ID.get())))
+			tooltip.add(Component.translatable("tooltip.pswg.blaster.controls", Component.keybind("key.pswg.blaster_mode"),
+					Component.keybind("key.pswg.primary_action")));
+		else
+			tooltip.add(Component.translatable("text.pswg_blasters.vent_blaster")
 				.append(" · ").append(Component.keybind("key.pswg.primary_action")));
 	}
 
 	public static InteractionHand firingHand(Player player)
 	{
-		if (player.getOffhandItem().is(Blasters.ITEM.get())
+		if (isBlaster(player.getOffhandItem()) && !dualWield(player)
 				&& (player.getUsedItemHand() == InteractionHand.OFF_HAND && player.isUsingItem()
-						|| player.getMainHandItem().isEmpty()))
+						|| state(player.getOffhandItem()).isAiming() || player.getMainHandItem().isEmpty()))
 			return InteractionHand.OFF_HAND;
 		return InteractionHand.MAIN_HAND;
 	}

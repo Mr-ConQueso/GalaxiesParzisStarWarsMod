@@ -1,0 +1,17 @@
+{
+  "type": "pswg_gadgets:scrapping",
+  "ingredient": {
+    "item": "pswg:electric_motor"
+  },
+  "primary_result": {
+    "id": "pswg:desh_coil"
+  },
+  "secondary_chance": 0.25,
+  "secondary_result": {
+    "count": 3,
+    "id": "pswg:desh_wire"
+  },
+  "tool": {
+    "item": "pswg_gadgets:calibrator"
+  }
+}

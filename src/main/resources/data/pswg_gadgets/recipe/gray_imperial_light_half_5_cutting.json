@@ -1,0 +1,14 @@
+{
+  "type": "pswg_gadgets:laser_cutting",
+  "ingredient": {
+    "item": "pswg:gray_imperial_light_half_5"
+  },
+  "primary_result": {
+    "id": "pswg:durasteel_ingot"
+  },
+  "secondary_chance": 0.35,
+  "secondary_result": {
+    "count": 3,
+    "id": "pswg:durasteel_nugget"
+  }
+}

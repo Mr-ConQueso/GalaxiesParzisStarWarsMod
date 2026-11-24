@@ -1,10 +1,16 @@
 package dev.pswg.gadgets;
 
 import dev.pswg.Galaxies;
+import dev.pswg.particle.GalaxiesParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,6 +36,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -39,8 +46,13 @@ import org.jetbrains.annotations.Nullable;
 
 public final class GadgetCharge extends Projectile
 {
+	private static final byte FRAGMENTATION_BURST = 61;
+	private static final float BEAM_START = 1 / 16F;
+	private static final float BEAM_RANGE = 3F;
 	private static final EntityDataAccessor<Integer> FUSE = SynchedEntityData.defineId(GadgetCharge.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> FACE = SynchedEntityData.defineId(GadgetCharge.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> SETTLED = SynchedEntityData.defineId(GadgetCharge.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> BEAM_LENGTH = SynchedEntityData.defineId(GadgetCharge.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> DETONATING = SynchedEntityData.defineId(GadgetCharge.class, EntityDataSerializers.BOOLEAN);
 	private static final TagKey<net.minecraft.world.level.block.Block> BOUNCY = TagKey.create(Registries.BLOCK, Galaxies.id("bouncy"));
 	private static final TagKey<net.minecraft.world.level.block.Block> SOFT = TagKey.create(Registries.BLOCK, Galaxies.id("soft"));
@@ -60,7 +72,13 @@ public final class GadgetCharge extends Projectile
 	private int age;
 	private int settledTicks;
 	private int detonationTicks;
+	private Inferno inferno;
 	private int chainDelay = -1;
+	private BlockPos support;
+	private Vec3 lerpTarget = Vec3.ZERO;
+	private int lerpSteps;
+	private float targetYaw;
+	private float targetPitch;
 
 	GadgetCharge(EntityType<GadgetCharge> type, Level level, Demolitions.Variant variant)
 	{
@@ -107,64 +125,74 @@ public final class GadgetCharge extends Projectile
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
-		builder.define(FUSE, -1).define(SETTLED, false).define(DETONATING, false);
+		builder.define(FUSE, -1).define(SETTLED, false).define(DETONATING, false).define(FACE, -1).define(BEAM_LENGTH, 0F);
 	}
 
 	@Override
 	public void tick()
 	{
 		super.tick();
-		if (level() instanceof ServerLevel server)
+		if (!(level() instanceof ServerLevel server))
 		{
-			age++;
-			if (isDetonating())
+			tickClient();
+			return;
+		}
+
+		age++;
+		if (isDetonating())
+		{
+			tickDetonation(server);
+			return;
+		}
+		if (isInLava() || level().getBlockState(blockPosition()).is(Demolitions.DETONATES_GRENADE)
+				|| chainDelay >= 0 && chainDelay-- == 0)
+		{
+			beginDetonation(server);
+			return;
+		}
+		if (variant.isMine())
+		{
+			if (age >= variant.delay && !isPrimed())
 			{
-				tickDetonation(server);
-				return;
+				arm(0);
+				playSound(Demolitions.sound("shared.arm"), 1F, 1F);
 			}
-			if (isInLava() || level().getBlockState(blockPosition()).is(Demolitions.DETONATES_GRENADE)
-					|| chainDelay >= 0 && chainDelay-- == 0)
+			if (isPrimed() && (variant == Demolitions.Variant.TRIPWIRE ? crossesBeam(server)
+					: !server.getEntities(this, getBoundingBox().inflate(0.08),
+							entity -> entity.isAlive() && !entity.isSpectator()).isEmpty()))
 			{
 				beginDetonation(server);
 				return;
 			}
-			if (variant == Demolitions.Variant.PRESSURE)
+		}
+		else if (isPrimed())
+		{
+			int fuse = entityData.get(FUSE);
+			if (fuse == 0)
 			{
-				if (age >= variant.delay && !isPrimed())
-				{
-					arm(0);
-					playSound(Demolitions.sound("shared.arm"), 1F, 1F);
-				}
-				if (isPrimed() && !server.getEntities(this, getBoundingBox().inflate(0.08),
-						entity -> entity.isAlive() && !entity.isSpectator()).isEmpty())
-				{
-					beginDetonation(server);
-					return;
-				}
+				beginDetonation(server);
+				return;
 			}
-			else if (isPrimed())
-			{
-				int fuse = entityData.get(FUSE);
-				if (fuse == 0)
-				{
-					beginDetonation(server);
-					return;
-				}
-				entityData.set(FUSE, fuse - 1);
-			}
-
-			if (variant.canCluster() && !isPrimed() && entityData.get(SETTLED) && ++settledTicks >= 300)
-			{
-				if (variant.cluster().acceptCharge(server, blockPosition(), this))
-					return;
-				settledTicks = 0;
-			}
+			entityData.set(FUSE, fuse - 1);
 		}
 
-		if (isDetonating())
-			return;
+		if (variant.canCluster() && !isPrimed() && entityData.get(SETTLED) && ++settledTicks >= 300)
+		{
+			if (variant.cluster().acceptCharge(server, blockPosition(), this))
+				return;
+			settledTicks = 0;
+		}
+
 		if (entityData.get(SETTLED))
 		{
+			if (variant == Demolitions.Variant.TRIPWIRE && mountedFace() != null)
+			{
+				if (support != null && !level().getBlockState(support).isAir())
+					return;
+				entityData.set(FACE, -1);
+				entityData.set(BEAM_LENGTH, 0F);
+				support = null;
+			}
 			if (!level().noCollision(this, getBoundingBox().move(0, -0.025, 0)))
 				return;
 			entityData.set(SETTLED, false);
@@ -173,9 +201,50 @@ public final class GadgetCharge extends Projectile
 		moveCharge();
 	}
 
+	@Override
+	public void lerpTo(double x, double y, double z, float yaw, float pitch, int steps)
+	{
+		lerpTarget = new Vec3(x, y, z);
+		lerpSteps = 2;
+		targetYaw = yaw;
+		targetPitch = pitch;
+	}
+
+	private void tickClient()
+	{
+		var start = position();
+		if (lerpSteps > 0)
+		{
+			float step = 1F / lerpSteps--;
+			setPos(start.lerp(lerpTarget, step));
+			setRot(Mth.rotLerp(step, getYRot(), targetYaw), Mth.rotLerp(step, getXRot(), targetPitch));
+		}
+
+		var face = mountedFace();
+		if (face != null && isPrimed() && !isDetonating() && tickCount % 2 == 0)
+		{
+			var direction = Vec3.atLowerCornerOf(face.getNormal());
+			for (double distance = BEAM_START; distance < beamLength(); distance += 0.015)
+			{
+				var point = position().add(direction.scale(distance));
+				level().addParticle(Demolitions.WIRE_LASER.get(), point.x, point.y, point.z,
+						direction.x * 0.001, direction.y * 0.001, direction.z * 0.001);
+			}
+		}
+		else if (isInWater() && !entityData.get(SETTLED) && !isDetonating())
+		{
+			var motion = position().subtract(start);
+			for (int i = 0; i < 4 && motion.lengthSqr() > 0.0001; i++)
+			{
+				var point = position().subtract(motion.scale(0.25 * i));
+				level().addParticle(ParticleTypes.BUBBLE, point.x, point.y, point.z, motion.x, motion.y, motion.z);
+			}
+		}
+	}
+
 	private void moveCharge()
 	{
-		var velocity = getDeltaMovement().add(0, variant == Demolitions.Variant.PRESSURE ? -0.075 : -0.03, 0);
+		var velocity = getDeltaMovement().add(0, variant.isMine() ? -0.075 : -0.03, 0);
 		setDeltaMovement(velocity);
 		var hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
 		if (hit.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hit))
@@ -202,6 +271,14 @@ public final class GadgetCharge extends Projectile
 	{
 		var normal = Vec3.atLowerCornerOf(hit.getDirection().getNormal());
 		setPos(hit.getLocation().add(normal.scale(0.01)));
+		if (variant == Demolitions.Variant.TRIPWIRE)
+		{
+			entityData.set(FACE, hit.getDirection().get3DDataValue());
+			support = hit.getBlockPos().immutable();
+			entityData.set(SETTLED, true);
+			setDeltaMovement(Vec3.ZERO);
+			return;
+		}
 		if (hit.getDirection() == Direction.UP && (variant == Demolitions.Variant.PRESSURE || velocity.lengthSqr() < 0.01))
 		{
 			entityData.set(SETTLED, true);
@@ -213,23 +290,53 @@ public final class GadgetCharge extends Projectile
 		double elasticity = Mth.clamp(0.4 - 0.25 / hardness, 0.1, 1);
 		double multiplier = block.is(BOUNCY) ? 2.5 : block.is(SOFT) ? 0.75 : 1;
 		setDeltaMovement(velocity.subtract(normal.scale(2 * velocity.dot(normal))).scale(elasticity * multiplier));
-		if (!level().isClientSide && velocity.lengthSqr() > 0.05 * 0.05)
+		if (velocity.lengthSqr() > 0.05 * 0.05)
 			playSound(block.getSoundType().getHitSound(), 0.6F, 1F);
 	}
 
 	@Override
 	protected boolean canHitEntity(Entity entity)
 	{
-		return entity != getOwner() && variant != Demolitions.Variant.PRESSURE && super.canHitEntity(entity);
+		return entity != getOwner() && !variant.isMine() && super.canHitEntity(entity);
+	}
+
+	public Direction mountedFace()
+	{
+		int face = entityData.get(FACE);
+		return face < 0 ? null : Direction.from3DDataValue(face);
+	}
+
+	public float beamLength()
+	{
+		return entityData.get(BEAM_LENGTH);
+	}
+
+	private boolean crossesBeam(ServerLevel level)
+	{
+		var face = mountedFace();
+		if (face == null || support == null || level.getBlockState(support).isAir())
+		{
+			entityData.set(BEAM_LENGTH, 0F);
+			return false;
+		}
+		var direction = Vec3.atLowerCornerOf(face.getNormal());
+		var start = position().add(direction.scale(BEAM_START));
+		var hit = level.clip(new ClipContext(start, position().add(direction.scale(BEAM_RANGE)),
+				ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
+		var end = hit.getLocation();
+		entityData.set(BEAM_LENGTH, (float) position().distanceTo(end));
+		var bounds = new AABB(start, end).inflate(0.08);
+		return !level.getEntities(this, bounds, entity -> entity.isAlive() && !entity.isSpectator()
+				&& (entity.getBoundingBox().contains(start) || entity.getBoundingBox().inflate(0.05).clip(start, end).isPresent())).isEmpty();
 	}
 
 	private void beginDetonation(ServerLevel level)
 	{
 		entityData.set(DETONATING, true);
 		setDeltaMovement(Vec3.ZERO);
-		if (variant == Demolitions.Variant.SMOKE)
+		if (variant == Demolitions.Variant.SMOKE || variant == Demolitions.Variant.NERVE)
 		{
-			var cloud = Demolitions.SMOKE_CLOUD.get().create(level);
+			var cloud = (variant == Demolitions.Variant.SMOKE ? Demolitions.SMOKE_CLOUD : Demolitions.NERVE_CLOUD).get().create(level);
 			if (cloud != null)
 			{
 				cloud.setPos(position());
@@ -239,18 +346,26 @@ public final class GadgetCharge extends Projectile
 		else if (variant == Demolitions.Variant.FRAGMENTATION)
 		{
 			playSound(Demolitions.sound("fragmentationgrenade.explode" + (random.nextInt(4) + 1)), 4F, 1F);
-			level.sendParticles(ParticleTypes.FLASH, getX(), getY() + 0.05, getZ(), 1, 0, 0, 0, 0);
+			level.sendParticles(Demolitions.FRAGMENTATION_WAVE.get(), getX(), getY() + 0.05, getZ(), 1, 0, 0, 0, 0);
 		}
+		else if (variant == Demolitions.Variant.INFERNO)
+			playSound(SoundEvents.FIRECHARGE_USE, 3, 0.8F);
 		else
-		{
 			explode(level);
-		}
 	}
 
 	private void tickDetonation(ServerLevel level)
 	{
 		detonationTicks++;
-		if (variant == Demolitions.Variant.SMOKE)
+		if (variant == Demolitions.Variant.INFERNO)
+		{
+			if (inferno == null) inferno = new Inferno();
+			inferno.tick(level, this, detonationTicks);
+			if (detonationTicks >= 20)
+				discard();
+			return;
+		}
+		if (variant == Demolitions.Variant.SMOKE || variant == Demolitions.Variant.NERVE)
 		{
 			if (detonationTicks >= 30)
 				discard();
@@ -263,20 +378,59 @@ public final class GadgetCharge extends Projectile
 				target.push((getX() - target.getX()) / radius, 0, (getZ() - target.getZ()) / radius);
 		}
 		if (detonationTicks == 7)
-			level.sendParticles(ParticleTypes.CRIT, getX(), getY(), getZ(), 85, 0.2, 0.1, 0.2, 0.4);
+			level.broadcastEntityEvent(this, FRAGMENTATION_BURST);
 		if (detonationTicks >= 15)
 			explode(level);
 	}
 
+	@Override
+	public void handleEntityEvent(byte event)
+	{
+		if (event != FRAGMENTATION_BURST)
+		{
+			super.handleEntityEvent(event);
+			return;
+		}
+		boolean onSurface = !level().noCollision(this, getBoundingBox().move(0, -0.08, 0));
+		int count = random.nextIntBetweenInclusive(70, 100);
+		for (int i = 0; i < count; i++)
+		{
+			double rise = onSurface ? Math.abs(random.nextGaussian() * 0.8) : random.nextGaussian() * 0.4;
+			level().addParticle(Demolitions.FRAGMENTATION_SPARK.get(), getX(), getY() + 0.05, getZ(),
+					random.nextGaussian() * 0.5, rise, random.nextGaussian() * 0.5);
+		}
+	}
+
 	private void explode(ServerLevel level)
 	{
-		var explosionSound = variant == Demolitions.Variant.THERMAL
-				? Holder.direct(Demolitions.sound("thermaldetonator.explode")) : SoundEvents.GENERIC_EXPLODE;
+		var smallFlash = ColorParticleOption.create(GalaxiesParticles.SMALL_FLASH.get(), -1);
+		ParticleOptions visual = switch (variant)
+		{
+			case THERMAL -> ParticleTypes.FLASH;
+			case IMPACT -> power > 2 ? ParticleTypes.FLASH : smallFlash;
+			// Fragmentation already played its wave and spark burst. The explosion packet still carries knockback.
+			case FRAGMENTATION -> new BlockParticleOption(ParticleTypes.BLOCK, Blocks.AIR.defaultBlockState());
+			default -> smallFlash;
+		};
+		var sound = switch (variant)
+		{
+			case THERMAL -> Holder.direct(Demolitions.sound("thermaldetonator.explode"));
+			case FRAGMENTATION -> Holder.direct(SoundEvents.EMPTY);
+			default -> SoundEvents.GENERIC_EXPLODE;
+		};
 		level.explode(this, damageSources().explosion(this, getOwner()),
 				variant == Demolitions.Variant.FRAGMENTATION ? FRAG_BLOCKS : null,
-				getX(), getY() + 0.05, getZ(), power, false, Level.ExplosionInteraction.TNT,
-				ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, explosionSound);
-		level.sendParticles(ParticleTypes.FLASH, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
+				getX(), getY() + 0.05, getZ(), power, false, Level.ExplosionInteraction.TNT, visual, visual, sound);
+		if (variant == Demolitions.Variant.THERMAL || variant == Demolitions.Variant.IMPACT)
+		{
+			int bursts = (int) power * 2;
+			double spread = power / 4;
+			int flameSpread = (int) spread;
+			level.sendParticles(Demolitions.EXPLOSION_SMOKE.get(), getX(), getY(), getZ(), bursts * 10, spread, spread, spread, 0);
+			level.sendParticles(ParticleTypes.FLAME, getX(), getY(), getZ(), bursts * 4, flameSpread, flameSpread, flameSpread, 0);
+			level.sendParticles(ParticleTypes.SMALL_FLAME, getX(), getY(), getZ(), bursts * 5,
+					flameSpread * 1.5, flameSpread * 1.5, flameSpread * 1.5, 0);
+		}
 		discard();
 	}
 
@@ -303,7 +457,7 @@ public final class GadgetCharge extends Projectile
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand)
 	{
-		if (variant == Demolitions.Variant.PRESSURE || isPrimed() || age < 40 || !player.getItemInHand(hand).isEmpty())
+		if (variant.isMine() || isPrimed() || age < 40 || !player.getItemInHand(hand).isEmpty())
 			return InteractionResult.PASS;
 		if (!level().isClientSide && player.addItem(new ItemStack(variant.item())))
 			discard();
@@ -321,7 +475,11 @@ public final class GadgetCharge extends Projectile
 		tag.putInt("Age", age);
 		tag.putInt("SettledTime", settledTicks);
 		tag.putInt("DetonationTime", detonationTicks);
+		if (inferno != null) tag.putLongArray("BurnedBlocks", inferno.save());
 		tag.putInt("ChainDelay", chainDelay);
+		tag.putInt("Face", entityData.get(FACE));
+		if (support != null)
+			tag.putLong("Support", support.asLong());
 	}
 
 	@Override
@@ -335,6 +493,13 @@ public final class GadgetCharge extends Projectile
 		age = tag.getInt("Age");
 		settledTicks = tag.getInt("SettledTime");
 		detonationTicks = tag.getInt("DetonationTime");
+		if (variant == Demolitions.Variant.INFERNO && isDetonating())
+		{
+			inferno = new Inferno();
+			inferno.load(tag.getLongArray("BurnedBlocks"), blockPosition());
+		}
 		chainDelay = tag.contains("ChainDelay") ? tag.getInt("ChainDelay") : -1;
+		entityData.set(FACE, tag.contains("Face") ? tag.getInt("Face") : -1);
+		support = tag.contains("Support") ? BlockPos.of(tag.getLong("Support")) : null;
 	}
 }

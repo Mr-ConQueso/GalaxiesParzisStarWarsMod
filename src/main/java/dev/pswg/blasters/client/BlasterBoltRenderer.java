@@ -2,55 +2,68 @@ package dev.pswg.blasters.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterBolt;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
+import dev.pswg.blasters.BlasterItem;
+import dev.pswg.blasters.LegacyBlaster.FiringMode;
+import dev.pswg.legacy.client.EnergyRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 final class BlasterBoltRenderer extends EntityRenderer<BlasterBolt>
 {
-	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/projectiles/arrow.png");
-	private final ModelPart model;
-
 	BlasterBoltRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
-		var layers = new MeshDefinition();
-		var root = layers.getRoot();
-		root.addOrReplaceChild("back", CubeListBuilder.create().texOffs(0, 0).addBox(0, -2.5F, -2.5F, 0, 5, 5),
-				PartPose.offsetAndRotation(-11, 0, 0, 0.7853982F, 0, 0));
-		var blade = CubeListBuilder.create().texOffs(0, 0).addBox(-12, -2, 0, 16, 4, 0);
-		root.addOrReplaceChild("cross_1", blade, PartPose.rotation(0.7853982F, 0, 0));
-		root.addOrReplaceChild("cross_2", blade, PartPose.rotation(2.3561945F, 0, 0));
-		model = LayerDefinition.create(layers, 32, 32).bakeRoot();
 	}
 
 	@Override
 	public void render(BlasterBolt bolt, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light)
 	{
+		var direction = bolt.getDeltaMovement().normalize();
+		if (direction.lengthSqr() == 0)
+			return;
 		pose.pushPose();
-		pose.translate(0, 0.2F, 0);
-		pose.mulPose(Axis.YP.rotationDegrees(-(Mth.rotLerp(partial, bolt.yRotO, bolt.getYRot()) + 90F)));
-		pose.mulPose(Axis.ZP.rotationDegrees(-Mth.lerp(partial, bolt.xRotO, bolt.getXRot())));
-		pose.translate(0.2F, 0, 0);
-		pose.scale(0.9F, 0.9F, 0.9F);
-		model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, OverlayTexture.NO_OVERLAY);
+		pose.translate(0, bolt.getBbHeight() * 0.5F, 0);
+		float angle = (float) Math.atan2(direction.x, direction.z);
+		float pitch = (float) Math.asin(direction.y);
+		if (bolt.mode() == FiringMode.STUN)
+		{
+			pose.mulPose(Axis.YP.rotation(angle));
+			pose.mulPose(Axis.XP.rotation(-pitch));
+			EnergyRenderer.stun(pose, buffers, (float) Math.pow(Math.max(3 / 16F, (bolt.tickCount + partial) / 10F), 0.75));
+		}
+		else
+		{
+			var client = Minecraft.getInstance();
+			boolean local = bolt.getOwner() == client.player && client.options.getCameraType().isFirstPerson() && client.player != null;
+			if (local)
+			{
+				float distance = (float) bolt.position().distanceTo(client.player.getEyePosition(partial));
+				float scale = Mth.clamp(distance / 1.5F, 0.01F, 1F);
+				pose.scale(scale, scale, scale);
+			}
+			pose.mulPose(Axis.YP.rotation(angle - Mth.HALF_PI));
+			pose.mulPose(Axis.ZP.rotation(pitch - Mth.HALF_PI));
+			if (local && !BlasterItem.state(client.player.getItemInHand(BlasterItem.firingHand(client.player))).isAiming())
+			{
+				double d = Mth.clamp(1 - bolt.position().distanceTo(client.player.getEyePosition(partial)) / 15, 0, 1);
+				pose.translate(0.2 * d * d * d, 0, (bolt.arm() == HumanoidArm.LEFT ? -0.5 : 0.5) * d * d * d);
+			}
+			if (bolt.mode() != FiringMode.SLUGTHROWER)
+				EnergyRenderer.beam(pose, buffers, 1.5F * bolt.length(), bolt.radius(), bolt.color(), false, false);
+		}
 		pose.popPose();
-		super.render(bolt, yaw, partial, pose, buffers, light);
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(BlasterBolt bolt)
 	{
-		return TEXTURE;
+		return Galaxies.id("textures/effect/white.png");
 	}
 }

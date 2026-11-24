@@ -1,0 +1,3355 @@
+{
+  "aqualish": {
+    "model": "species/aqualish",
+    "options": {
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "body": [
+        "beige",
+        "green"
+      ],
+      "eyes": [
+        "two",
+        "four"
+      ]
+    },
+    "layers": [
+      {
+        "path": "aqualish/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "aqualish/eyes/{value}",
+        "option": "eyes"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "bith": {
+    "model": "species/bith",
+    "options": {
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "body": [
+        "white",
+        "green",
+        "pink"
+      ]
+    },
+    "layers": [
+      {
+        "path": "bith/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "chagrian": {
+    "model": "species/chagrian",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "blue",
+        "black",
+        "cyan",
+        "gray",
+        "light_blue"
+      ],
+      "eyebrows": [
+        "black"
+      ]
+    },
+    "layers": [
+      {
+        "path": "chagrian/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "chiss": {
+    "model": "species/human",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_eyebrows": [
+        "black",
+        "white"
+      ],
+      "humanoid_hair": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "hair_color": [
+        "1f1f1f",
+        "f8e7c6",
+        "edf2f1",
+        "b8bcbc"
+      ],
+      "body": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    "layers": [
+      {
+        "path": "chiss/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "chiss/eyes"
+      },
+      {
+        "path": "humanoid/{gender}/humanoid_eyebrows/{value}",
+        "option": "humanoid_eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_hair/{value}",
+        "option": "humanoid_hair",
+        "tint": "hair_color"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "human": {
+    "model": "species/human",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_eyebrows": [
+        "black",
+        "blonde",
+        "brown",
+        "white",
+        "none"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_hair": [
+        "none",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "humanoid_hair_color": [
+        "37281e",
+        "1f1f1f",
+        "c6a26e",
+        "f2ce85",
+        "f8e7c6",
+        "edf2f1",
+        "b8bcbc",
+        "d34e3f",
+        "e48652"
+      ],
+      "skin_tone": [
+        "almond",
+        "chocolate",
+        "ivory",
+        "limestone",
+        "sand"
+      ]
+    },
+    "layers": [
+      {
+        "path": "human/{gender}/skin_tone/{value}",
+        "option": "skin_tone"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "humanoid/{gender}/humanoid_eyebrows/{value}",
+        "option": "humanoid_eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      },
+      {
+        "path": "humanoid/humanoid_hair/{value}",
+        "option": "humanoid_hair",
+        "tint": "humanoid_hair_color"
+      }
+    ]
+  },
+  "jawa": {
+    "model": "species/jawa",
+    "options": {
+      "body": [
+        "brown"
+      ]
+    },
+    "layers": [
+      {
+        "path": "jawa/{gender}/body/{value}",
+        "option": "body"
+      }
+    ]
+  },
+  "pantoran": {
+    "model": "species/human",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_eyebrows": [
+        "black",
+        "blonde",
+        "brown",
+        "white",
+        "none"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_hair": [
+        "none",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "tattoos": [
+        "none",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
+      "hair_color": [
+        "bc519c",
+        "efbbff",
+        "fad6ff",
+        "915590",
+        "37477e"
+      ]
+    },
+    "layers": [
+      {
+        "path": "pantoran/{gender}/skin"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "pantoran/tattoos/{value}",
+        "option": "tattoos"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "humanoid/{gender}/humanoid_eyebrows/{value}",
+        "option": "humanoid_eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      },
+      {
+        "path": "humanoid/humanoid_hair/{value}",
+        "option": "humanoid_hair",
+        "tint": "hair_color"
+      }
+    ]
+  },
+  "togruta": {
+    "model": "species/togruta_{gender}",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "orange",
+        "blue",
+        "gray",
+        "green",
+        "light_blue",
+        "light_gray",
+        "lilac",
+        "pink",
+        "red",
+        "teal",
+        "yellow",
+        "light_yellow"
+      ],
+      "face": [
+        "none",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22"
+      ],
+      "eyebrows": [
+        "default"
+      ],
+      "lower_montral": [
+        "cream",
+        "beige",
+        "white"
+      ],
+      "upper_montral": [
+        "blue",
+        "none",
+        "brown",
+        "dark_blue",
+        "green",
+        "light_green",
+        "pink",
+        "purple",
+        "red",
+        "turquoise"
+      ]
+    },
+    "layers": [
+      {
+        "path": "togruta/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "togruta/{gender}/lower_montral/{value}",
+        "option": "lower_montral"
+      },
+      {
+        "path": "togruta/{gender}/upper_montral/{value}",
+        "option": "upper_montral"
+      },
+      {
+        "path": "togruta/face/{value}",
+        "option": "face"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "togruta/{gender}/eyebrows/{value}",
+        "option": "eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "twilek": {
+    "model": "species/twilek",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_eyebrows": [
+        "black",
+        "blonde",
+        "brown",
+        "white",
+        "none"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "green",
+        "blue",
+        "cyan",
+        "flesh",
+        "lime",
+        "magenta",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "white",
+        "yellow"
+      ]
+    },
+    "layers": [
+      {
+        "path": "twilek/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "humanoid/{gender}/humanoid_eyebrows/{value}",
+        "option": "humanoid_eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "wookiee": {
+    "model": "species/wookiee",
+    "options": {
+      "body": [
+        "chestnut",
+        "black",
+        "brown",
+        "gray"
+      ]
+    },
+    "layers": [
+      {
+        "path": "wookiee/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "wookiee/eyes"
+      }
+    ]
+  },
+  "devaronian": {
+    "model": "species/devaronian",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_eyebrows": [
+        "black",
+        "blonde",
+        "brown",
+        "white",
+        "none"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "humanoid_hair": [
+        "none",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "humanoid_hair_color": [
+        "37281e",
+        "1f1f1f",
+        "c6a26e",
+        "f2ce85",
+        "f8e7c6",
+        "edf2f1",
+        "b8bcbc",
+        "d34e3f",
+        "e48652"
+      ],
+      "body": [
+        "red",
+        "chartreuse",
+        "darkred",
+        "flesh",
+        "green",
+        "mustard",
+        "orange",
+        "pink"
+      ],
+      "horns": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    "layers": [
+      {
+        "path": "devaronian/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "global/eyes_whites"
+      },
+      {
+        "path": "global/eyes",
+        "tint": "humanoid_eye_color"
+      },
+      {
+        "path": "humanoid/{gender}/humanoid_eyebrows/{value}",
+        "option": "humanoid_eyebrows"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      },
+      {
+        "path": "humanoid/humanoid_hair/{value}",
+        "option": "humanoid_hair",
+        "tint": "humanoid_hair_color"
+      }
+    ]
+  },
+  "rodian": {
+    "model": "species/rodian",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "green",
+        "blue",
+        "brown",
+        "cyan",
+        "dark_green",
+        "flesh",
+        "orange",
+        "purple",
+        "red",
+        "violet"
+      ],
+      "eyes": [
+        "violet",
+        "black",
+        "blue",
+        "green",
+        "purple"
+      ]
+    },
+    "layers": [
+      {
+        "path": "rodian/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "rodian/eyes/{value}",
+        "option": "eyes"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "duros": {
+    "model": "species/duros",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "light_blue",
+        "blue",
+        "cyan",
+        "green",
+        "gunmetal",
+        "purple",
+        "turquoise"
+      ],
+      "eyes": [
+        "small",
+        "large"
+      ]
+    },
+    "layers": [
+      {
+        "path": "duros/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "duros/eyes/{value}",
+        "option": "eyes"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "gotal": {
+    "model": "species/gotal",
+    "options": {
+      "humanoid_eye_color": [
+        "226622"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "fur": [
+        "cedar",
+        "blonde",
+        "brown",
+        "chocolate",
+        "maroon",
+        "peanut",
+        "red",
+        "white"
+      ],
+      "skin": [
+        "gray",
+        "ash",
+        "cream",
+        "olive",
+        "peach",
+        "pink",
+        "slate",
+        "tan"
+      ],
+      "horns": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "beard": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "eye_color": [
+        "f3c150"
+      ]
+    },
+    "layers": [
+      {
+        "path": "gotal/{gender}/fur/{value}",
+        "option": "fur"
+      },
+      {
+        "path": "gotal/skin/{value}",
+        "option": "skin"
+      },
+      {
+        "path": "gotal/eyes_whites",
+        "tint": "eye_color"
+      },
+      {
+        "path": "gotal/eyes"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "gran": {
+    "model": "species/gran",
+    "options": {
+      "humanoid_scars": [
+        "none",
+        "scar_head_1",
+        "scar_head_2",
+        "scar_head_3",
+        "scar_head_4"
+      ],
+      "humanoid_tattoos": [
+        "none",
+        "tattoo_head_1",
+        "tattoo_head_2",
+        "tattoo_head_3",
+        "tattoo_head_4",
+        "tattoo_head_5",
+        "tattoo_head_6",
+        "tattoo_head_7",
+        "tattoo_head_8",
+        "tattoo_leftarm_1",
+        "tattoo_leftarm_2",
+        "tattoo_leftarm_3",
+        "tattoo_rightarm_1",
+        "tattoo_rightarm_2",
+        "tattoo_rightarm_3"
+      ],
+      "humanoid_tattoo_color": [
+        "665544"
+      ],
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "orange",
+        "banana",
+        "bronze",
+        "coral",
+        "cream",
+        "tangerine",
+        "yellow"
+      ]
+    },
+    "layers": [
+      {
+        "path": "gran/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "humanoid/humanoid_scars/{value}",
+        "option": "humanoid_scars"
+      },
+      {
+        "path": "humanoid/humanoid_tattoos/{value}",
+        "option": "humanoid_tattoos",
+        "tint": "humanoid_tattoo_color"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  },
+  "ongree": {
+    "model": "species/ongree",
+    "options": {
+      "humanoid_clothes_underlayer": [
+        "none",
+        "body_glove",
+        "jumpsuit",
+        "radar_technician",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_top": [
+        "tatooine_civ1",
+        "the_gunslinger",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "kakashi_black",
+        "kakashi_dark_blue",
+        "kakashi_sleeveless_black",
+        "kakashi_sleeveless_dark_blue",
+        "kakashi_tan",
+        "shirt_black",
+        "shirt_brown",
+        "vest"
+      ],
+      "humanoid_clothes_bottom": [
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_director",
+        "imperial_officer_gray",
+        "imperial_officer_khaki",
+        "cargo_brown",
+        "cargo_green"
+      ],
+      "humanoid_clothes_belt": [
+        "none",
+        "default",
+        "tatooine_civ1",
+        "jedi1",
+        "jedi2",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_pilot"
+      ],
+      "humanoid_clothes_boots": [
+        "none",
+        "default",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer",
+        "imperial_scout_trooper"
+      ],
+      "humanoid_clothes_gloves": [
+        "none",
+        "imperial_pilot1",
+        "imperial_pilot2",
+        "rebel_pilot",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "the_knight",
+        "the_gunslinger",
+        "the_marshall",
+        "imperial_officer"
+      ],
+      "humanoid_clothes_accessories": [
+        "none",
+        "the_marshall",
+        "goggles_black",
+        "goggles_green",
+        "goggles_orange",
+        "mouthcover_black",
+        "mouthcover_blue",
+        "mouthcover_red",
+        "scarf_blue",
+        "scarf_brown",
+        "scarf_green",
+        "scarf_tan",
+        "yes"
+      ],
+      "humanoid_clothes_outerwear": [
+        "none",
+        "tatooine_civ1",
+        "jedi1",
+        "smuggler1",
+        "smuggler2",
+        "smuggler3",
+        "the_knight",
+        "the_gunslinger",
+        "ballistic",
+        "light1",
+        "radar_technician",
+        "senatorial_vest",
+        "heavy_blue",
+        "heavy_green",
+        "jedi_robe_brown",
+        "jedi_robe_tan",
+        "shroud_black",
+        "shroud_brown",
+        "shroud_tan",
+        "sleeveless",
+        "vest1",
+        "vest2"
+      ],
+      "body": [
+        "orange",
+        "brass",
+        "brown",
+        "gold",
+        "green",
+        "silver",
+        "tangerine",
+        "yellow"
+      ],
+      "eyes": [
+        "yellow",
+        "orange",
+        "pink",
+        "white"
+      ],
+      "mouth": [
+        "gray",
+        "pink",
+        "white"
+      ]
+    },
+    "layers": [
+      {
+        "path": "ongree/{gender}/body/{value}",
+        "option": "body"
+      },
+      {
+        "path": "ongree/eyes/{value}",
+        "option": "eyes"
+      },
+      {
+        "path": "ongree/mouth/{value}",
+        "option": "mouth"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_underlayer/{value}",
+        "option": "humanoid_clothes_underlayer"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_top/{value}",
+        "option": "humanoid_clothes_top"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_bottom/{value}",
+        "option": "humanoid_clothes_bottom"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_belt/{value}",
+        "option": "humanoid_clothes_belt"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_boots/{value}",
+        "option": "humanoid_clothes_boots"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_gloves/{value}",
+        "option": "humanoid_clothes_gloves"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_accessories/{value}",
+        "option": "humanoid_clothes_accessories"
+      },
+      {
+        "path": "humanoid/humanoid_clothes_outerwear/{value}",
+        "option": "humanoid_clothes_outerwear"
+      }
+    ]
+  }
+}

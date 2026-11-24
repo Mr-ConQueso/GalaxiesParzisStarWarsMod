@@ -9,6 +9,7 @@ import dev.pswg.block.plant.HkakBushBlock;
 import dev.pswg.block.plant.MoloShrubBlock;
 import dev.pswg.block.plant.VaporatorMushroomBlock;
 import dev.pswg.container.GalaxiesBlocks;
+import dev.pswg.utilities.LegacyUtilities;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
@@ -71,6 +72,11 @@ public final class TerrainData
 						GalaxiesBlocks.POLISHED_CANYON.get(), GalaxiesBlocks.SMOOTH_DESERT_SANDSTONE.get(),
 						GalaxiesBlocks.POLISHED_DESERT_SANDSTONE.get(), GalaxiesBlocks.CHISELED_DESERT.get(),
 						GalaxiesBlocks.DESERT_LOAM.get(), GalaxiesBlocks.TALL_LAMP.get());
+
+				var pickaxe = tag(BlockTags.MINEABLE_WITH_PICKAXE);
+				pickaxe.add(LegacyUtilities.VAPORATOR.get(), LegacyUtilities.COUPLING.get(), LegacyUtilities.SLIDING_DOOR.get(),
+						LegacyUtilities.CAGE.get(), LegacyUtilities.TERRARIUM.get());
+				LegacyUtilities.DYED_TERRARIA.forEach(terrarium -> pickaxe.add(terrarium.get()));
 
 				tag(GalaxiesBlocks.ARID_PLANT_PLACEABLE).add(GalaxiesBlocks.CAKED_SALT.get(), GalaxiesBlocks.DESERT_LOAM.get(),
 						Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.PODZOL, Blocks.COARSE_DIRT)

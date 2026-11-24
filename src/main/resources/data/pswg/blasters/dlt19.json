@@ -1,0 +1,116 @@
+{
+  "stats": {
+    "damage": 10,
+    "range": 188,
+    "automaticRepeatDelay": 2,
+    "fireSound": "pswg:blaster.fire.dlt19",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 30,
+      "drainSpeed": 18,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 80
+    },
+    "cooling": {
+      "primaryBypassTime": 0.8,
+      "primaryBypassTolerance": 0.06,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.03
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {
+      "pswg:slot_2": "pswg:dlt19/bipod"
+    },
+    "options": {
+      "pswg:dlt19/scope_d": {
+        "translationKey": "blaster.pswg.dlt19.attachment.scope_d",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:default_scope",
+        "category": "pswg:scope",
+        "part": "scope_d"
+      },
+      "pswg:dlt19/scope_x": {
+        "translationKey": "blaster.pswg.dlt19.attachment.scope_x",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:sniper_scope",
+        "category": "pswg:scope",
+        "part": "scope_x"
+      },
+      "pswg:dlt19/bipod": {
+        "translationKey": "blaster.pswg.dlt19.attachment.bipod",
+        "slots": [
+          "pswg:slot_2"
+        ],
+        "function": "pswg_blasters:recoil_multiplier",
+        "category": "pswg:barrel",
+        "value": 0.7,
+        "part": "bipod"
+      },
+      "pswg:dlt19/barrel_d": {
+        "translationKey": "blaster.pswg.dlt19.attachment.barrel_d",
+        "slots": [
+          "pswg:slot_2"
+        ],
+        "function": "pswg_blasters:spread_multiplier",
+        "category": "pswg:barrel",
+        "value": 0.4,
+        "part": "barrel_d"
+      },
+      "pswg:dlt19/cooling": {
+        "translationKey": "blaster.pswg.dlt19.attachment.cooling",
+        "slots": [
+          "pswg:slot_3"
+        ],
+        "function": "pswg_blasters:cooling_multiplier",
+        "category": "pswg:internal_cooling",
+        "value": 1.5
+      },
+      "pswg:dlt19/rapidfire": {
+        "translationKey": "blaster.pswg.dlt19.attachment.rapidfire",
+        "slots": [
+          "pswg:slot_4"
+        ],
+        "function": "pswg_blasters:fire_rate_multiplier",
+        "category": "pswg:internal_ordnance_config",
+        "value": 1.6666666666666667
+      }
+    }
+  },
+  "legacy": {
+    "archetype": "heavy",
+    "modes": [
+      "automatic",
+      "stun"
+    ],
+    "requiredSlots": [],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 300,
+      "burstInterval": 2,
+      "burstSize": 3,
+      "burstGap": 2,
+      "recoilX": 1.5,
+      "recoilY": 3.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "none"
+    },
+    "beam": {
+      "color": 16711711,
+      "length": 1.0,
+      "radius": 1.0,
+      "falloff": 2,
+      "pyrotechnics": false
+    }
+  }
+}

@@ -256,6 +256,27 @@
     "pswg:polished_desert_sandstone",
     "pswg:chiseled_desert_sandstone",
     "pswg:desert_loam",
-    "pswg:tall_lamp"
+    "pswg:tall_lamp",
+    "pswg:gx8_moisture_vaporator",
+    "pswg:power_coupling",
+    "pswg:sliding_door",
+    "pswg:creature_cage",
+    "pswg:creature_terrarium",
+    "pswg:white_stained_creature_terrarium",
+    "pswg:orange_stained_creature_terrarium",
+    "pswg:magenta_stained_creature_terrarium",
+    "pswg:light_blue_stained_creature_terrarium",
+    "pswg:yellow_stained_creature_terrarium",
+    "pswg:lime_stained_creature_terrarium",
+    "pswg:pink_stained_creature_terrarium",
+    "pswg:gray_stained_creature_terrarium",
+    "pswg:light_gray_stained_creature_terrarium",
+    "pswg:cyan_stained_creature_terrarium",
+    "pswg:purple_stained_creature_terrarium",
+    "pswg:blue_stained_creature_terrarium",
+    "pswg:brown_stained_creature_terrarium",
+    "pswg:green_stained_creature_terrarium",
+    "pswg:red_stained_creature_terrarium",
+    "pswg:black_stained_creature_terrarium"
   ]
 }

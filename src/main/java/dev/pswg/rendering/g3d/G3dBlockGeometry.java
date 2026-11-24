@@ -18,6 +18,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.client.model.CompositeModel;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
@@ -57,6 +58,7 @@ public record G3dBlockGeometry(G3dModel model) implements IUnbakedGeometry<G3dBl
 	{
 		var output = CompositeModel.Baked.builder(context, sprites.apply(context.getMaterial("particle")), overrides, context.getTransforms());
 		var pose = new G3dPose(model.rig());
+		var resources = Minecraft.getInstance().getResourceManager();
 		var base = state.getRotation().compose(context.getRootTransform()).blockCenterToCorner();
 		for (var mesh : model.meshes())
 		{
@@ -66,7 +68,7 @@ public record G3dBlockGeometry(G3dModel model) implements IUnbakedGeometry<G3dBl
 			var material = model.materials().get(mesh.material());
 			var texture = material.texture();
 			var sprite = sprites.apply(texture.isSlot() ? context.getMaterial(texture.slot()) :
-					new Material(TextureAtlas.LOCATION_BLOCKS, resolveSprite(texture.resource())));
+					new Material(TextureAtlas.LOCATION_BLOCKS, resolveSprite(resources, texture.resource())));
 			var transform = base.getMatrix().mul(pose.nodeMatrix(mesh.node()), new Matrix4f());
 			var normal = transform.normal(new Matrix3f());
 			var quads = new ArrayList<BakedQuad>();
@@ -89,9 +91,8 @@ public record G3dBlockGeometry(G3dModel model) implements IUnbakedGeometry<G3dBl
 		return output.build();
 	}
 
-	private static ResourceLocation resolveSprite(ResourceLocation texture)
+	static ResourceLocation resolveSprite(ResourceManager resources, ResourceLocation texture)
 	{
-		var resources = Minecraft.getInstance().getResourceManager();
 		if (resources.getResource(PtexSpriteSource.definitionFile(texture)).isPresent())
 			return PtexSpriteSource.spriteId(texture);
 

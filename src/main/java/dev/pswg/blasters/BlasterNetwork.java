@@ -2,14 +2,22 @@ package dev.pswg.blasters;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -28,6 +36,19 @@ public final class BlasterNetwork
 		});
 		registrar.playToClient(Definitions.TYPE, Definitions.STREAM, (payload, context) ->
 				BlasterDefinitions.updateClient(payload.definitions()));
+		registrar.playToClient(BoltMotion.TYPE, BoltMotion.STREAM, (payload, context) -> {
+			if (context.player().level().getEntity(payload.id()) instanceof BlasterBolt bolt)
+			{
+				bolt.setPos(payload.position());
+				bolt.setDeltaMovement(payload.velocity());
+			}
+		});
+		registrar.playToClient(BoltImpact.TYPE, BoltImpact.STREAM, (payload, context) ->
+				BlasterEffects.impact(context.player().level(), payload.position(), payload.incident(), payload.block(), payload.face()));
+		registrar.playToClient(Patrol.TYPE, Patrol.STREAM, (payload, context) -> {
+			if (context.player().level().getEntity(payload.entity()) instanceof Player player)
+				player.setData(Blasters.PATROL, payload.active());
+		});
 		registrar.playToClient(Recoil.TYPE, Recoil.STREAM, (payload, context) -> {
 			var player = context.player();
 			player.setXRot(Mth.clamp(player.getXRot() + payload.vertical(), -90F, 90F));
@@ -37,12 +58,12 @@ public final class BlasterNetwork
 
 	public static void handleAction(ServerPlayer player, Action payload)
 	{
-		if (!player.isAlive() || player.isSpectator() || player.isSleeping() || player.containerMenu != player.inventoryMenu
+		if (!player.isAlive() || player.isSpectator() || player.isSleeping() || player.getVehicle() instanceof dev.pswg.vehicles.Ship || player.containerMenu != player.inventoryMenu
 				|| BlasterItem.firingHand(player) != payload.hand())
 			return;
 
 		var stack = player.getItemInHand(payload.hand());
-		if (!stack.is(Blasters.ITEM.get()) || !Objects.equals(stack.get(Blasters.SERIAL.get()), payload.serial()))
+		if (!BlasterItem.isBlaster(stack) || !Objects.equals(stack.get(Blasters.SERIAL.get()), payload.serial()))
 			return;
 
 		switch (payload.kind())
@@ -50,7 +71,32 @@ public final class BlasterNetwork
 			case PRESS -> BlasterItem.fire(player.serverLevel(), player, stack, false);
 			case REPEAT -> BlasterItem.fire(player.serverLevel(), player, stack, true);
 			case VENT -> BlasterItem.vent(player.serverLevel(), player, stack);
+			case MODE -> BlasterItem.cycleMode(player.serverLevel(), player, stack);
+			case PATROL -> BlasterItem.togglePatrol(player, stack);
 		}
+	}
+
+	static void syncPatrol(PlayerEvent.StartTracking event)
+	{
+		if (event.getEntity() instanceof ServerPlayer receiver && event.getTarget() instanceof ServerPlayer player && player.getData(Blasters.PATROL))
+			PacketDistributor.sendToPlayer(receiver, new Patrol(player.getId(), true));
+	}
+
+	static void patrol(Player player, boolean enabled)
+	{
+		if (player.getData(Blasters.PATROL) == enabled)
+			return;
+		player.setData(Blasters.PATROL, enabled);
+		if (player instanceof ServerPlayer server && server.connection != null)
+			PacketDistributor.sendToPlayersTrackingEntityAndSelf(server, new Patrol(server.getId(), enabled));
+	}
+
+	private record Patrol(int entity, boolean active) implements CustomPacketPayload
+	{
+		private static final Type<Patrol> TYPE = new Type<>(Blasters.id("patrol"));
+		private static final StreamCodec<ByteBuf, Patrol> STREAM = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, Patrol::entity, ByteBufCodecs.BOOL, Patrol::active, Patrol::new);
+		@Override public Type<Patrol> type() { return TYPE; }
 	}
 
 	static void syncDefinitions(OnDatapackSyncEvent event)
@@ -65,9 +111,52 @@ public final class BlasterNetwork
 			PacketDistributor.sendToPlayer(player, new Recoil(vertical, horizontal));
 	}
 
+	static void sendBoltMotion(BlasterBolt bolt, Vec3 position, Vec3 velocity)
+	{
+		PacketDistributor.sendToPlayersTrackingEntity(bolt, new BoltMotion(bolt.getId(), position, velocity));
+	}
+
+	static void sendBoltImpact(ServerLevel level, BlockHitResult hit, Vec3 incident)
+	{
+		PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(hit.getBlockPos()),
+				new BoltImpact(hit.getLocation(), incident, hit.getBlockPos(), hit.getDirection()));
+	}
+
+	private record BoltImpact(Vec3 position, Vec3 incident, BlockPos block, Direction face) implements CustomPacketPayload
+	{
+		private static final Type<BoltImpact> TYPE = new Type<>(Blasters.id("bolt_impact"));
+		private static final StreamCodec<FriendlyByteBuf, BoltImpact> STREAM = StreamCodec.of(
+				(buffer, payload) -> {
+					buffer.writeVec3(payload.position());
+					buffer.writeVec3(payload.incident());
+					buffer.writeBlockPos(payload.block());
+					buffer.writeEnum(payload.face());
+				}, buffer -> new BoltImpact(buffer.readVec3(), buffer.readVec3(), buffer.readBlockPos(), buffer.readEnum(Direction.class)));
+
+		@Override public Type<BoltImpact> type() { return TYPE; }
+	}
+
+	private record BoltMotion(int id, Vec3 position, Vec3 velocity) implements CustomPacketPayload
+	{
+		private static final Type<BoltMotion> TYPE = new Type<>(Blasters.id("bolt_motion"));
+		private static final StreamCodec<FriendlyByteBuf, BoltMotion> STREAM = StreamCodec.of(
+				(buffer, payload) -> {
+					buffer.writeVarInt(payload.id());
+					buffer.writeVec3(payload.position());
+					buffer.writeVec3(payload.velocity());
+				},
+				buffer -> new BoltMotion(buffer.readVarInt(), buffer.readVec3(), buffer.readVec3()));
+
+		@Override
+		public Type<BoltMotion> type()
+		{
+			return TYPE;
+		}
+	}
+
 	public enum Input
 	{
-		PRESS, REPEAT, VENT
+		PRESS, REPEAT, VENT, MODE, PATROL
 	}
 
 	public record Action(InteractionHand hand, Input kind, long serial) implements CustomPacketPayload

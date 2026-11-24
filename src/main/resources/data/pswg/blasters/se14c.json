@@ -1,0 +1,78 @@
+{
+  "stats": {
+    "damage": 10,
+    "range": 188,
+    "automaticRepeatDelay": 1,
+    "fireSound": "pswg:blaster.fire.se14c",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 85,
+      "drainSpeed": 40,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 80
+    },
+    "cooling": {
+      "primaryBypassTime": 0.7,
+      "primaryBypassTolerance": 0.1,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.03
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {},
+    "options": {
+      "pswg:se14c/barrel_extension": {
+        "translationKey": "blaster.pswg.se14c.attachment.barrel_extension",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:spread_multiplier",
+        "category": "pswg:barrel",
+        "value": 0.4,
+        "part": "barrel_extension"
+      },
+      "pswg:se14c/cooling": {
+        "translationKey": "blaster.pswg.se14c.attachment.cooling",
+        "slots": [
+          "pswg:slot_2"
+        ],
+        "function": "pswg_blasters:cooling_multiplier",
+        "category": "pswg:internal_cooling",
+        "value": 1.5
+      }
+    }
+  },
+  "legacy": {
+    "archetype": "pistol",
+    "modes": [
+      "semi_automatic",
+      "burst",
+      "stun"
+    ],
+    "requiredSlots": [],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 500,
+      "burstInterval": 2,
+      "burstSize": 5,
+      "burstGap": 2,
+      "recoilX": 1.5,
+      "recoilY": 3.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "none"
+    },
+    "beam": {
+      "color": 16711711,
+      "length": 1.0,
+      "radius": 1.0,
+      "falloff": 1,
+      "pyrotechnics": false
+    }
+  }
+}

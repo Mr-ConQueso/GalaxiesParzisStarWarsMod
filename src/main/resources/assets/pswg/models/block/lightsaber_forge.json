@@ -1,0 +1,7 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/lightsaber_forge",
+  "textures": {
+    "particle": "pswg:block/lightsaber_forge"
+  }
+}

@@ -3,15 +3,18 @@ package dev.pswg.blasters;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public record BlasterDefinition(Stats stats, Attachments attachments)
+public record BlasterDefinition(Stats stats, Attachments attachments, Optional<LegacyBlaster> legacy)
 {
 	public static final Codec<BlasterDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Stats.CODEC.fieldOf("stats").forGetter(BlasterDefinition::stats),
-			Attachments.CODEC.fieldOf("attachments").forGetter(BlasterDefinition::attachments)
+			Attachments.CODEC.fieldOf("attachments").forGetter(BlasterDefinition::attachments),
+			LegacyBlaster.CODEC.optionalFieldOf("legacy").forGetter(BlasterDefinition::legacy)
 	).apply(instance, BlasterDefinition::new));
 
 	public record Stats(float damage, int range, int automaticRepeatDelay, ResourceLocation fireSound, Heat heat, Cooling cooling)
@@ -68,14 +71,18 @@ public record BlasterDefinition(Stats stats, Attachments attachments)
 	}
 
 	public record Attachment(String translationKey, List<ResourceLocation> slots, ResourceLocation function,
-	                         ResourceLocation category, float value)
+	                         ResourceLocation category, float value, Optional<String> part, Optional<ResourceLocation> texture,
+	                         Optional<Scope> scope)
 	{
 		public static final Codec<Attachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("translationKey").forGetter(Attachment::translationKey),
 				ResourceLocation.CODEC.listOf().fieldOf("slots").forGetter(Attachment::slots),
 				ResourceLocation.CODEC.fieldOf("function").forGetter(Attachment::function),
 				ResourceLocation.CODEC.fieldOf("category").forGetter(Attachment::category),
-				Codec.FLOAT.optionalFieldOf("value", 0.0F).forGetter(Attachment::value)
+				Codec.FLOAT.optionalFieldOf("value", 0.0F).forGetter(Attachment::value),
+				Codec.STRING.optionalFieldOf("part").forGetter(Attachment::part),
+				ResourceLocation.CODEC.optionalFieldOf("texture").forGetter(Attachment::texture),
+				StringRepresentable.fromEnum(Scope::values).optionalFieldOf("scope").forGetter(Attachment::scope)
 		).apply(instance, Attachment::new));
 
 		public Attachment
@@ -83,4 +90,15 @@ public record BlasterDefinition(Stats stats, Attachments attachments)
 			slots = List.copyOf(slots);
 		}
 	}
+	public enum Scope implements StringRepresentable
+	{
+		STANDARD("standard"), SNIPER("sniper");
+
+		private final String id;
+
+		Scope(String id) { this.id = id; }
+
+		@Override public String getSerializedName() { return id; }
+	}
+
 }

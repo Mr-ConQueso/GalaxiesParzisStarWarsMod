@@ -33,7 +33,8 @@
 				],
 				"function": "pswg_blasters:zoom_multiplier",
 				"category": "pswg_blasters:scope",
-				"value": 1.5
+				"value": 1.5,
+				"scope": "standard"
 			},
 			"pswg_blasters:e11/scope_x": {
 				"translationKey": "attachment.pswg_blasters.e11.scope_x",
@@ -42,7 +43,8 @@
 				],
 				"function": "pswg_blasters:zoom_multiplier",
 				"category": "pswg_blasters:scope",
-				"value": 2.5
+				"value": 2.5,
+				"scope": "sniper"
 			},
 			"pswg_blasters:e11/bipod": {
 				"translationKey": "attachment.pswg_blasters.e11.bipod",
@@ -78,7 +80,8 @@
 				],
 				"function": "pswg_blasters:fire_rate_multiplier",
 				"category": "pswg_blasters:internal_ordnance_config",
-				"value": 1.5
+				"value": 1.5,
+				"scope": "standard"
 			}
 		}
 	}

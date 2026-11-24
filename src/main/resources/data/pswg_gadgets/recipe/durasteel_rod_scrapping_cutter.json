@@ -1,0 +1,18 @@
+{
+  "type": "pswg_gadgets:scrapping",
+  "ingredient": {
+    "item": "pswg:durasteel_rod"
+  },
+  "primary_result": {
+    "count": 6,
+    "id": "pswg:durasteel_nugget"
+  },
+  "secondary_chance": 0.35,
+  "secondary_result": {
+    "count": 3,
+    "id": "pswg:durasteel_nugget"
+  },
+  "tool": {
+    "item": "pswg_gadgets:cutter"
+  }
+}

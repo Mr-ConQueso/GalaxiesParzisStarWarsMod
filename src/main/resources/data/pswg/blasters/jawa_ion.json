@@ -1,0 +1,56 @@
+{
+  "stats": {
+    "damage": 10,
+    "range": 20,
+    "automaticRepeatDelay": 1,
+    "fireSound": "pswg:blaster.fire.ion",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 42,
+      "drainSpeed": 16,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 80
+    },
+    "cooling": {
+      "primaryBypassTime": 0.7,
+      "primaryBypassTolerance": 0.05,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.01
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {},
+    "options": {}
+  },
+  "legacy": {
+    "archetype": "ion",
+    "modes": [
+      "ion"
+    ],
+    "requiredSlots": [],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 100,
+      "burstInterval": 2,
+      "burstSize": 3,
+      "burstGap": 2,
+      "recoilX": 1.5,
+      "recoilY": 3.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "none"
+    },
+    "beam": {
+      "color": 18431,
+      "length": 0.5,
+      "radius": 1.0,
+      "falloff": 0,
+      "pyrotechnics": true
+    }
+  }
+}

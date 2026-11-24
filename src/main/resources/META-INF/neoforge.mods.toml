@@ -26,3 +26,5 @@ side = "BOTH"
 
 [[mixins]]
 config = "pswg.client.mixins.json"
+[[mixins]]
+config = "pswg.mixins.json"

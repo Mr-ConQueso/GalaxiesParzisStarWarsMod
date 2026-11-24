@@ -459,6 +459,10 @@ public final class PortGameTests
 		var bipod = ResourceLocation.fromNamespaceAndPath("pswg_blasters", "e11/bipod");
 		test.assertValueEqual(definition.attachments().defaults().get(barrel), bipod, "The original bipod mounts by default");
 		test.assertTrue(definition.attachments().options().get(bipod).slots().contains(barrel), "The bipod fits the barrel slot");
+		test.assertValueEqual(definition.attachments().options().get(Blasters.id("e11/scope_d")).scope().orElseThrow(),
+				BlasterDefinition.Scope.STANDARD, "The 1.5x optic uses the standard scope");
+		test.assertValueEqual(definition.attachments().options().get(Blasters.id("e11/scope_x")).scope().orElseThrow(),
+				BlasterDefinition.Scope.SNIPER, "The 2.5x optic uses the sniper scope");
 		var json = BlasterDefinition.CODEC.encodeStart(JsonOps.INSTANCE, definition).getOrThrow();
 		test.assertValueEqual(BlasterDefinition.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(), definition, "Datapack definition codec round-trips");
 

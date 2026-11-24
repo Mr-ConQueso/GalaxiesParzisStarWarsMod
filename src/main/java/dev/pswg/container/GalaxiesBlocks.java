@@ -13,6 +13,7 @@ import dev.pswg.block.TallLampBlock;
 import dev.pswg.block.VerticalSlabBlock;
 import dev.pswg.block.WaterloggableRotatingBlock;
 import dev.pswg.block.WetPourstone;
+import dev.pswg.block.plant.SequoiaLeavesBlock;
 import dev.pswg.block.plant.AridPlant;
 import dev.pswg.block.plant.BushLeavesBlock;
 import dev.pswg.block.plant.ChasukaCrop;
@@ -103,7 +104,7 @@ public final class GalaxiesBlocks
 			new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build()));
 
 	public static final DeferredBlock<LeavesBlock> SEQUOIA_LEAVES = registerWithItem("sequoia_leaves",
-			() -> new LeavesBlock(BlockBehaviour.Properties.of().strength(0.2F).sound(SoundType.GRASS).noOcclusion()
+			() -> new SequoiaLeavesBlock(BlockBehaviour.Properties.of().strength(0.2F).sound(SoundType.GRASS).noOcclusion()
 					.isSuffocating((state, level, pos) -> false).isViewBlocking((state, level, pos) -> false)));
 	public static final DeferredBlock<BushLeavesBlock> JAPOR_LEAVES = registerWithItem("japor_leaves",
 			() -> new BushLeavesBlock(BlockBehaviour.Properties.of().strength(0.2F).sound(SoundType.GRASS)

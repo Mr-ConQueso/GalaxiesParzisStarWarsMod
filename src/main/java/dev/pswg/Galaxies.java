@@ -3,11 +3,13 @@ package dev.pswg;
 import com.mojang.logging.LogUtils;
 import dev.pswg.blasters.BlasterDefinitions;
 import dev.pswg.blasters.Blasters;
+import dev.pswg.blasters.BlasterWorkbench;
 import dev.pswg.command.DimensionCommand;
 import dev.pswg.container.ArmorContent;
 import dev.pswg.container.CoreComponents;
 import dev.pswg.container.CoreSounds;
 import dev.pswg.container.Crates;
+import dev.pswg.particle.GalaxiesParticles;
 import dev.pswg.container.DrinkItems;
 import dev.pswg.container.GalaxiesBlocks;
 import dev.pswg.container.GalaxiesItems;
@@ -15,8 +17,17 @@ import dev.pswg.container.Tatooine;
 import dev.pswg.datagen.G3dData;
 import dev.pswg.datagen.TerrainData;
 import dev.pswg.gadgets.Demolitions;
+import dev.pswg.gadgets.Workstations;
 import dev.pswg.model.g3d.G3dResources;
+import dev.pswg.rendering.p3d.P3dResources;
 import dev.pswg.structure.DerelictContainer;
+import dev.pswg.sabers.Sabers;
+import dev.pswg.vehicles.Vehicles;
+import dev.pswg.jetpacks.Jetpacks;
+import dev.pswg.species.Species;
+import dev.pswg.species.SpeciesItems;
+import dev.pswg.mobs.Creatures;
+import dev.pswg.utilities.LegacyUtilities;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -37,10 +48,20 @@ public final class Galaxies
 		GalaxiesBlocks.register(modBus);
 		CoreComponents.register(modBus);
 		CoreSounds.register(modBus);
+		GalaxiesParticles.register(modBus);
 		GalaxiesItems.register(modBus);
 		ArmorContent.register(modBus);
 		Blasters.register(modBus);
+		BlasterWorkbench.register(modBus);
+		Sabers.register(modBus);
+		Vehicles.register(modBus);
+		Jetpacks.register(modBus);
+		Species.register(modBus);
+		SpeciesItems.register(modBus);
+		Creatures.register(modBus);
+		LegacyUtilities.register(modBus);
 		Demolitions.register(modBus);
+		Workstations.register(modBus);
 		DerelictContainer.register(modBus);
 		Crates.register(modBus);
 		DrinkItems.register(modBus);
@@ -57,6 +78,7 @@ public final class Galaxies
 	private static void registerReloadListeners(AddReloadListenerEvent event)
 	{
 		event.addListener(G3dResources.SERVER);
+		event.addListener(P3dResources.RIGS);
 		event.addListener(BlasterDefinitions.SERVER);
 	}
 }

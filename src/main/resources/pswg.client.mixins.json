@@ -5,7 +5,13 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "HumanoidArmorLayerMixin",
-    "PlayerArmorOverlayMixin"
+    "PlayerArmorOverlayMixin",
+    "LaserCutterMouseMixin",
+    "BlasterMouseMixin",
+    "VehicleCameraMixin",
+    "VehicleMouseMixin",
+    "SpeciesPlayerRendererMixin",
+    "SpeciesPlayerSkinMixin"
   ],
   "injectors": {
     "defaultRequire": 1

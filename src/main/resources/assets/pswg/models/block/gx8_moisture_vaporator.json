@@ -1,0 +1,11 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/gx8",
+  "scale": 0.19,
+  "rotation_y": -90,
+  "hidden_parts": [],
+  "textures": {
+    "texture": "pswg:block/model/gx8",
+    "particle": "pswg:block/model/gx8_particle"
+  }
+}

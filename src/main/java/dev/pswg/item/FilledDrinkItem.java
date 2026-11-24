@@ -54,6 +54,9 @@ public final class FilledDrinkItem extends Item
 
 		if (!level.isClientSide)
 		{
+			var food = stack.get(DataComponents.FOOD);
+			if (food != null && user instanceof Player player)
+				player.getFoodData().eat(food);
 			stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).forEachEffect(instance -> {
 				var effect = instance.getEffect().value();
 				if (effect.isInstantenous())

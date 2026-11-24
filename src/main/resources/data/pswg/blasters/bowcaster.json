@@ -1,0 +1,65 @@
+{
+  "stats": {
+    "damage": 20,
+    "range": 188,
+    "automaticRepeatDelay": 1,
+    "fireSound": "pswg:blaster.fire.bowcaster",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 100,
+      "drainSpeed": 24,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 80
+    },
+    "cooling": {
+      "primaryBypassTime": 0.5,
+      "primaryBypassTolerance": 0.05,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.06
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {},
+    "options": {
+      "pswg:bowcaster/repeater": {
+        "translationKey": "blaster.pswg.bowcaster.attachment.repeater",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:allow_burst",
+        "category": "pswg:internal_ordnance_config"
+      }
+    }
+  },
+  "legacy": {
+    "archetype": "heavy",
+    "modes": [
+      "semi_automatic"
+    ],
+    "requiredSlots": [],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 300,
+      "burstInterval": 2,
+      "burstSize": 3,
+      "burstGap": 2,
+      "recoilX": 2.0,
+      "recoilY": 5.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "bolts_pass_through_water"
+    },
+    "beam": {
+      "color": 16711711,
+      "length": 1.25,
+      "radius": 1.0,
+      "falloff": 2,
+      "pyrotechnics": false
+    }
+  }
+}

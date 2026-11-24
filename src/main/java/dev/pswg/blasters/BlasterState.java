@@ -33,6 +33,18 @@ public record BlasterState(boolean isAiming, long lastFired, long fireCooldown, 
 		return new BlasterState(isAiming, lastFired, fireCooldown, start, 0, heat, newMode, 0, overchargeStart);
 	}
 
+	public BlasterState withFireCooldown(long end)
+	{
+		return new BlasterState(isAiming, lastFired, end, cooldownStart, lastTotalHeat, lastVentingHeat, mode,
+				burstBoltsRemaining, overchargeStart);
+	}
+
+	public BlasterState withoutBurst()
+	{
+		return new BlasterState(isAiming, lastFired, fireCooldown, cooldownStart, lastTotalHeat, lastVentingHeat, mode,
+				0, overchargeStart);
+	}
+
 	public BlasterState bypass(long now, boolean overcharge)
 	{
 		return new BlasterState(isAiming, lastFired, now, now, 0, 0, Mode.PASSIVE, 0, overcharge ? now : -1);

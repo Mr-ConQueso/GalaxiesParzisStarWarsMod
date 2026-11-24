@@ -1,0 +1,17 @@
+{
+  "type": "pswg_gadgets:scrapping",
+  "ingredient": {
+    "item": "pswg:broken_small_power_pack"
+  },
+  "primary_result": {
+    "id": "pswg:ionite_ingot"
+  },
+  "secondary_chance": 0.35,
+  "secondary_result": {
+    "count": 3,
+    "id": "pswg:ionite_nugget"
+  },
+  "tool": {
+    "item": "pswg_gadgets:calibrator"
+  }
+}

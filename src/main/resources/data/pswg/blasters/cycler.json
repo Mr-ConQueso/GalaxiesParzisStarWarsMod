@@ -1,0 +1,76 @@
+{
+  "stats": {
+    "damage": 16,
+    "range": 188,
+    "automaticRepeatDelay": 1,
+    "fireSound": "pswg:blaster.fire.cycler",
+    "heat": {
+      "capacity": 1008,
+      "perRound": 338,
+      "drainSpeed": 200,
+      "overheatPenalty": 20,
+      "overheatDrainSpeed": 14,
+      "passiveCooldownDelay": 20,
+      "overchargeBonus": 40
+    },
+    "cooling": {
+      "primaryBypassTime": 0.7,
+      "primaryBypassTolerance": 0.08,
+      "secondaryBypassTime": 0.3,
+      "secondaryBypassTolerance": 0.03
+    }
+  },
+  "attachments": {
+    "hud": "pswg:legacy",
+    "defaults": {},
+    "options": {
+      "pswg:cycler/barrel": {
+        "translationKey": "blaster.pswg.cycler.attachment.barrel",
+        "slots": [
+          "pswg:slot_1"
+        ],
+        "function": "pswg_blasters:recoil_multiplier",
+        "category": "pswg:barrel",
+        "value": 0.7,
+        "part": "barrel_extension"
+      },
+      "pswg:cycler/scope": {
+        "translationKey": "blaster.pswg.cycler.attachment.scope",
+        "slots": [
+          "pswg:slot_2"
+        ],
+        "function": "pswg_blasters:sniper_scope",
+        "category": "pswg:scope",
+        "part": "scope_extension"
+      }
+    }
+  },
+  "legacy": {
+    "archetype": "slugthrower",
+    "modes": [
+      "slugthrower"
+    ],
+    "requiredSlots": [],
+    "mechanics": {
+      "zoom": 5,
+      "aimSpeed": -0.5,
+      "readyTime": 10,
+      "magazine": 100,
+      "burstInterval": 2,
+      "burstSize": 3,
+      "burstGap": 2,
+      "recoilX": 3.0,
+      "recoilY": 8.0,
+      "spreadX": 0.0,
+      "spreadY": 0.0,
+      "water": "can_fire_underwater"
+    },
+    "beam": {
+      "color": 16711711,
+      "length": 1.0,
+      "radius": 0.75,
+      "falloff": 10,
+      "pyrotechnics": false
+    }
+  }
+}
