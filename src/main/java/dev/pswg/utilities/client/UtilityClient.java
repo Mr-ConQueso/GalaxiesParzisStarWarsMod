@@ -31,7 +31,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 @EventBusSubscriber(modid = Galaxies.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -92,13 +91,17 @@ public final class UtilityClient
 				case WEST -> 180;
 				default -> 0;
 			}));
-			pose.translate(0, 0, 1.352F * 0.625F * door.openness(partial));
+			float travel = SlidingDoor.SLIDE_DISTANCE * door.openness(partial);
 			pose.mulPose(Axis.YN.rotationDegrees(90));
 			pose.scale(0.625F, 0.625F, 0.625F);
-			P3dRenderer.render(model, pose, buffers, part -> texture, part -> part.equals("frame") ? null : new Matrix4f(), light, overlay);
+			pose.translate(travel, 0, 0);
+			// The leaf retracts into the jamb at the edge of the opening.
+			for (var part : model.roots())
+				if (part.name().equals("door"))
+					P3dRenderer.renderClipped(part, pose, buffers, texture, 0.7F - travel, light, overlay);
 			pose.popPose();
 		}
-		@Override public AABB getRenderBoundingBox(SlidingDoor.Animation door) { return new AABB(door.getBlockPos()).inflate(1, 1, 1); }
+		@Override public AABB getRenderBoundingBox(SlidingDoor.Animation door) { return new AABB(door.getBlockPos()).expandTowards(0, 1, 0); }
 	}
 
 	private static final class CableRenderer implements BlockEntityRenderer<PowerCoupling.Links>

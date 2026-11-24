@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
       "model": "pswg:block/blaster_workbench"
+    },
+    "facing=south": {
+      "model": "pswg:block/blaster_workbench",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/blaster_workbench",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/blaster_workbench",
+      "y": 270
     }
   }
 }

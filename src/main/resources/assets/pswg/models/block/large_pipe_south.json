@@ -1,0 +1,18 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/pipe_thick",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "hidden_parts": [
+    "NODE_CENTER",
+    "NODE_NX",
+    "NODE_NY",
+    "NODE_NZ",
+    "NODE_PY",
+    "NODE_PZ"
+  ],
+  "textures": {
+    "texture": "pswg:block/model/pipe_thick",
+    "particle": "minecraft:block/stone"
+  }
+}

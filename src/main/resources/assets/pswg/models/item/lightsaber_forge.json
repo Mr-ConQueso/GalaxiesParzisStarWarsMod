@@ -1,17 +1,24 @@
 {
-  "parent": "pswg:block/lightsaber_forge",
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/lightsaber_forge",
+  "parent": "minecraft:block/block",
+  "fit_item": true,
   "display": {
     "gui": {
       "rotation": [
         30,
-        45,
+        225,
         0
       ],
       "scale": [
-        0.65,
-        0.65,
-        0.65
+        0.94,
+        0.94,
+        0.94
       ]
     }
+  },
+  "textures": {
+    "texture": "pswg:block/model/lightsaber_forge",
+    "particle": "pswg:block/model/workbench_particle"
   }
 }

@@ -1,7 +1,12 @@
 {
   "loader": "pswg:p3d",
   "p3d": "pswg:block/lightsaber_forge",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "multipart_block": "pswg:lightsaber_forge",
+  "clip_axes": "z",
   "textures": {
-    "particle": "pswg:block/lightsaber_forge"
+    "texture": "pswg:block/model/lightsaber_forge",
+    "particle": "pswg:block/model/workbench_particle"
   }
 }

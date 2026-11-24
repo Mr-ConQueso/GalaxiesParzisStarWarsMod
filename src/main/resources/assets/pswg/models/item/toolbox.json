@@ -1,0 +1,24 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/stool",
+  "parent": "minecraft:block/block",
+  "fit_item": true,
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.94,
+        0.94,
+        0.94
+      ]
+    }
+  },
+  "textures": {
+    "texture": "pswg:block/model/stool",
+    "particle": "pswg:block/model/stool_particle"
+  }
+}

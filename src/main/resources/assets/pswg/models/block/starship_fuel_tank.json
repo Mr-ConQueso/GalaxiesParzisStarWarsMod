@@ -1,0 +1,12 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/starship_fuel_tank",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "multipart_block": "pswg:starship_fuel_tank",
+  "clip_axes": "z",
+  "textures": {
+    "texture": "pswg:block/model/starship_fuel_tank",
+    "particle": "pswg:block/model/starship_fuel_tank_particle"
+  }
+}

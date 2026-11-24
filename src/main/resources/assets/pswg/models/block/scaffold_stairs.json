@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/scaffold_stairs",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "textures": {
+    "texture": "pswg:block/model/scaffold_stairs",
+    "particle": "pswg:block/model/scaffold_particle"
+  }
+}

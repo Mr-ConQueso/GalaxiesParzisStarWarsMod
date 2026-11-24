@@ -1,13 +1,24 @@
 {
   "loader": "pswg:p3d",
   "p3d": "pswg:block/power_coupling",
-  "scale": 1.3,
-  "rotation_y": 0,
-  "hidden_parts": [],
+  "parent": "minecraft:block/block",
+  "fit_item": true,
+  "display": {
+    "gui": {
+      "rotation": [
+        20,
+        152,
+        0
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ]
+    }
+  },
   "textures": {
     "texture": "pswg:block/model/power_coupling",
     "particle": "pswg:block/model/power_coupling_particle"
-  },
-  "parent": "minecraft:block/block",
-  "y": -0.54
+  }
 }

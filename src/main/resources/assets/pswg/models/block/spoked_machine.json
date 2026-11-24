@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/spoked_machine",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "textures": {
+    "texture": "pswg:block/model/spoked_machine",
+    "particle": "minecraft:block/stone"
+  }
+}

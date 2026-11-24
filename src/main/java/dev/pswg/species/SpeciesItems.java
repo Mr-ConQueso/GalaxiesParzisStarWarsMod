@@ -1,6 +1,7 @@
 package dev.pswg.species;
 
 import dev.pswg.Galaxies;
+import dev.pswg.container.GalaxiesBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -70,11 +71,10 @@ public final class SpeciesItems
 		ENTITIES.register(bus);
 		bus.addListener((EntityAttributeCreationEvent event) -> event.put(TYPE.get(), ArmorStand.createLivingAttributes().build()));
 		bus.addListener((BuildCreativeModeTabContentsEvent event) -> {
-			if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS))
-			{
+			if (event.getTabKey().equals(GalaxiesBlocks.CONSTRUCTION_TAB))
 				event.accept(MANNEQUIN.get());
+			if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES))
 				event.accept(WIZARD.get());
-			}
 		});
 	}
 }

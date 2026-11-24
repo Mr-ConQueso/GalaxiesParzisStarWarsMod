@@ -23,6 +23,7 @@ import dev.pswg.block.plant.VaporatorMushroomBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.food.FoodProperties;
@@ -68,9 +69,13 @@ public final class GalaxiesBlocks
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Galaxies.MODID);
 	private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Galaxies.MODID);
 
+	public static final ResourceKey<CreativeModeTab> CONSTRUCTION_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Galaxies.id("construction_blocks"));
+
 	private static final List<DeferredBlock<?>> CONSTRUCTION = new ArrayList<>();
 
 	public static final StoneProducts CANYON = stoneProducts("canyon_stone", () -> BlockBehaviour.Properties.of().strength(0.5F));
+	public static final DeferredBlock<Block> RUSTED_PANEL;
+
 	public static final DeferredBlock<Block> CANYON_BRICKS = simpleStone("canyon_stone_bricks");
 	public static final DeferredBlock<Block> POLISHED_CANYON = simpleStone("polished_canyon_stone");
 	public static final DeferredBlock<Block> CHISELED_CANYON = simpleStone("chiseled_canyon_stone");
@@ -327,7 +332,7 @@ public final class GalaxiesBlocks
 		registerWithItem("light_gray_imperial_panel_pattern_3", () -> new Block(panel(MapColor.COLOR_LIGHT_GRAY)), CONSTRUCTION);
 		registerWithItem("light_gray_imperial_panel_pattern_4", () -> new Block(panel(MapColor.COLOR_LIGHT_GRAY)), CONSTRUCTION);
 		registerWithItem("light_gray_imperial_panel_pattern_5", () -> new Block(panel(MapColor.COLOR_LIGHT_GRAY)), CONSTRUCTION);
-		registerWithItem("rusted_gray_imperial_panel_pattern_3", () -> new Block(panel(MapColor.COLOR_GRAY)), CONSTRUCTION);
+		RUSTED_PANEL = registerWithItem("rusted_gray_imperial_panel_pattern_3", () -> new Block(panel(MapColor.COLOR_GRAY)), CONSTRUCTION);
 		registerWithItem("mossy_gray_imperial_panel_pattern_3", () -> new Block(panel(MapColor.COLOR_GRAY)), CONSTRUCTION);
 		registerWithItem("gray_imperial_panel_pattern_4", () -> new Block(panel(MapColor.COLOR_GRAY)), CONSTRUCTION);
 		registerWithItem("rusted_gray_imperial_panel_pattern_4", () -> new Block(panel(MapColor.COLOR_GRAY)), CONSTRUCTION);
@@ -388,7 +393,7 @@ public final class GalaxiesBlocks
 							output.accept(block.get());
 				})
 				.build());
-		TABS.register("construction_blocks", () -> CreativeModeTab.builder()
+		TABS.register(CONSTRUCTION_TAB.location().getPath(), () -> CreativeModeTab.builder()
 				.title(Component.translatable("pswg.construction_block_group"))
 				.icon(TALL_LAMP::toStack)
 				.displayItems((parameters, output) -> {

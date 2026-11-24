@@ -6,6 +6,12 @@
   "hidden_parts": [
     "door"
   ],
+  "clip_axes": "y",
+  "slice": [
+    0,
+    0,
+    0
+  ],
   "textures": {
     "texture": "pswg:block/model/door/sliding_1x2/frame",
     "particle": "minecraft:block/stone"

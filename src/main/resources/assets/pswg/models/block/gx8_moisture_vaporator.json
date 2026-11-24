@@ -1,9 +1,10 @@
 {
   "loader": "pswg:p3d",
   "p3d": "pswg:block/gx8",
-  "scale": 0.19,
+  "scale": 0.625,
   "rotation_y": -90,
-  "hidden_parts": [],
+  "multipart_block": "pswg:gx8_moisture_vaporator",
+  "clip_axes": "xyz",
   "textures": {
     "texture": "pswg:block/model/gx8",
     "particle": "pswg:block/model/gx8_particle"

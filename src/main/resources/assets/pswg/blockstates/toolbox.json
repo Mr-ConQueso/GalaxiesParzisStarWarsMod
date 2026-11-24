@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/toolbox"
+    },
+    "facing=south": {
+      "model": "pswg:block/toolbox",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/toolbox",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/toolbox",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "pswg:block/toolbox"
+    },
+    "facing=down": {
+      "model": "pswg:block/toolbox",
+      "x": 180
+    }
+  }
+}

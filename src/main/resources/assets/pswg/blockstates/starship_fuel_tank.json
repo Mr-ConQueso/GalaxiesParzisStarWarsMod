@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/starship_fuel_tank"
+    },
+    "facing=south": {
+      "model": "pswg:block/starship_fuel_tank",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/starship_fuel_tank",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/starship_fuel_tank",
+      "y": 270
+    }
+  }
+}

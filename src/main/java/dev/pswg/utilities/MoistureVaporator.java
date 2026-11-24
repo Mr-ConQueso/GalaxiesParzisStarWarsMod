@@ -1,8 +1,8 @@
 package dev.pswg.utilities;
 
+import dev.pswg.block.MultipartBlock;
 import dev.pswg.gadgets.WorkstationInventory;
 import dev.pswg.gadgets.WorkstationMenu;
-import dev.pswg.util.VoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -10,70 +10,94 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class MoistureVaporator extends WaterloggedUtility
+public final class MoistureVaporator extends MultipartBlock<MoistureVaporator.Inventory>
 {
-	private static final VoxelShape SHAPE = VoxelShapeUtil.getCenteredCube(10, 40);
-	private static final net.minecraft.world.level.block.state.properties.DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	// The original GX-8 mesh is just over eight blocks tall. Only occupied cells are reserved.
+	private static final List<Part> PARTS = List.of(
+			part(0, 0, 0,  0, 0, 0, 16, 16, 16),
+			part(-1, 0, -1,  9, 0, 9, 16, 6, 16),
+			part(-1, 0, 0,  5, 0, 0, 16, 16, 16),
+			part(-1, 0, 1,  9, 0, 0, 16, 6, 7),
+			part(0, 0, -1,  0, 0, 5.5, 16, 16, 16),
+			part(0, 0, 1,  0, 0, 0, 16, 16, 10.5),
+			part(1, 0, -1,  0, 0, 4, 7, 16, 16),
+			part(1, 0, 0,  0, 0, 0, 7, 16, 16),
+			part(1, 0, 1,  0, 0, 0, 7, 16, 12),
+			part(-1, 1, -1,  14, 6, 14, 16, 16, 16),
+			part(-1, 1, 0,  5, 0, 0, 16, 16, 16),
+			part(-1, 1, 1,  14, 6, 0, 16, 16, 2),
+			part(0, 1, -1,  0, 0, 5.5, 16, 16, 16),
+			part(0, 1, 0,  0, 0, 0, 16, 6, 16),
+			part(0, 1, 1,  0, 0, 0, 16, 16, 10.5),
+			part(1, 1, -1,  0, 0, 4, 4.5, 16, 16),
+			part(1, 1, 0,  0, 0, 0, 4, 16, 16),
+			part(1, 1, 1,  0, 0, 0, 4.5, 16, 12),
+			part(-1, 2, -1,  14, 0, 14, 16, 6, 16),
+			part(-1, 2, 0,  5, 0, 0, 16, 16, 16),
+			part(-1, 2, 1,  14, 0, 0, 16, 6, 2),
+			part(0, 2, -1,  0, 0, 5.5, 16, 16, 16),
+			part(0, 2, 0,  0, 5.5, 0, 16, 16, 16),
+			part(0, 2, 1,  0, 0, 0, 16, 16, 10.5),
+			part(1, 2, -1,  0, 0, 4, 4.5, 16, 16),
+			part(1, 2, 0,  0, 0, 0, 4, 16, 16),
+			part(1, 2, 1,  0, 0, 0, 4.5, 16, 12),
+			part(-1, 3, -1,  15, 5.5, 15, 16, 13, 16),
+			part(-1, 3, 0,  5, 0, 0, 16, 16, 16),
+			part(-1, 3, 1,  15, 5.5, 0, 16, 13, 1),
+			part(0, 3, -1,  0, 0, 5.5, 16, 16, 16),
+			part(0, 3, 0,  0, 0, 0, 16, 16, 16),
+			part(0, 3, 1,  0, 0, 0, 16, 16, 10.5),
+			part(1, 3, -1,  0, 0, 4, 4.5, 16, 16),
+			part(1, 3, 0,  0, 0, 0, 1, 13, 16),
+			part(1, 3, 1,  0, 0, 0, 4.5, 16, 12),
+			part(-1, 4, 0,  5, 0, 6, 9.5, 10.5, 10),
+			part(0, 4, -1,  14.5, 0, 5.5, 16, 10, 8.5),
+			part(0, 4, 0,  2, 0, 2, 14, 16, 14),
+			part(0, 4, 1,  14.5, 0, 7.5, 16, 10, 10.5),
+			part(1, 4, -1,  0, 0, 4, 4.5, 10.5, 10),
+			part(1, 4, 1,  0, 0, 6, 4.5, 10.5, 12),
+			part(0, 5, 0,  4, 0, 4, 13, 16, 12),
+			part(0, 6, 0,  5, 0, 5, 11, 16, 11),
+			part(-1, 7, 0,  13.5, 11, 7, 16, 16, 9),
+			part(0, 7, -1,  11, 11, 13.5, 14.5, 16, 16),
+			part(0, 7, 0,  0, 0, 0, 14, 16, 16),
+			part(0, 7, 1,  11, 11, 0, 14.5, 16, 2.5),
+			part(-1, 8, 0,  13.5, 0, 7, 16, 1, 9),
+			part(0, 8, -1,  11, 0, 13.5, 14.5, 1, 16),
+			part(0, 8, 0,  0, 0, 0, 14, 3, 16),
+			part(0, 8, 1,  11, 0, 0, 14.5, 1, 2.5)
+	);
+	private static final IntegerProperty PART = IntegerProperty.create("part", 0, PARTS.size() - 1);
 
 	public MoistureVaporator(Properties properties)
 	{
-		super(properties);
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.EAST));
+		super(properties, PARTS, () -> LegacyUtilities.VAPORATOR_ENTITY.get(), Inventory::tick);
 	}
 
-	@Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { super.createBlockStateDefinition(builder); builder.add(FACING); }
-	@Override public BlockState getStateForPlacement(BlockPlaceContext context) { return super.getStateForPlacement(context).setValue(FACING, context.getHorizontalDirection()); }
-	@Override protected BlockState rotate(BlockState state, Rotation rotation) { return state.setValue(FACING, rotation.rotate(state.getValue(FACING))); }
-	@Override protected BlockState mirror(BlockState state, Mirror mirror) { return state.rotate(mirror.getRotation(state.getValue(FACING))); }
-	@Override protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) { return SHAPE; }
-	@Override public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new Inventory(pos, state); }
-	@Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
+	@Override protected IntegerProperty partProperty() { return PART; }
+
+	public static boolean providesMoisture(BlockState state)
 	{
-		return world.isClientSide ? null : createTickerHelper(type, LegacyUtilities.VAPORATOR_ENTITY.get(), Inventory::tick);
+		return state.getBlock() instanceof MoistureVaporator vaporator && vaporator.partIndex(state) == 0;
 	}
 
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit)
+	private static Part part(int x, int y, int z, double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
 	{
-		if (!world.isClientSide && world.getBlockEntity(pos) instanceof Inventory machine)
-			player.openMenu(machine);
-		return InteractionResult.sidedSuccess(world.isClientSide);
-	}
-
-	@Override
-	protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState replacement, boolean moving)
-	{
-		if (!state.is(replacement.getBlock()) && !world.isClientSide)
-			Containers.dropContentsOnDestroy(state, replacement, world, pos);
-		super.onRemove(state, world, pos, replacement, moving);
+		return new Part(new BlockPos(x, y, z), box(minX, minY, minZ, maxX, maxY, maxZ));
 	}
 
 	private static Optional<RecipeHolder<VaporatorRecipe>> findRecipe(Level world, ItemStack stack)

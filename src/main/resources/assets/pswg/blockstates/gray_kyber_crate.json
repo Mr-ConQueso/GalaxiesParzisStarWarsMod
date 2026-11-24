@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/gray_kyber_crate"
+    },
+    "facing=south": {
+      "model": "pswg:block/gray_kyber_crate",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/gray_kyber_crate",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/gray_kyber_crate",
+      "y": 270
+    }
+  }
+}

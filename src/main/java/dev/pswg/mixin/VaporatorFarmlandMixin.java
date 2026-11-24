@@ -1,6 +1,6 @@
 package dev.pswg.mixin;
 
-import dev.pswg.utilities.LegacyUtilities;
+import dev.pswg.utilities.MoistureVaporator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.FarmBlock;
@@ -17,7 +17,7 @@ abstract class VaporatorFarmlandMixin
 	{
 		if (callback.getReturnValue()) return;
 		for (var pos : BlockPos.betweenClosed(farmland.offset(-4, 1, -4), farmland.offset(4, 1, 4)))
-			if (level.getBlockState(pos).is(LegacyUtilities.VAPORATOR.get()))
+			if (MoistureVaporator.providesMoisture(level.getBlockState(pos)))
 			{
 				callback.setReturnValue(true);
 				return;

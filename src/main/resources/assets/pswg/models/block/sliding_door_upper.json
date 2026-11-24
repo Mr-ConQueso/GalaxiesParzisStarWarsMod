@@ -1,5 +1,19 @@
 {
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/tatooine_home_door",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "hidden_parts": [
+    "door"
+  ],
+  "clip_axes": "y",
+  "slice": [
+    0,
+    1,
+    0
+  ],
   "textures": {
+    "texture": "pswg:block/model/door/sliding_1x2/frame",
     "particle": "minecraft:block/stone"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/light/hangar_light",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "textures": {
+    "texture": "pswg:block/model/light/red_hangar_light",
+    "particle": "pswg:block/model/light/hangar_light_particle"
+  }
+}

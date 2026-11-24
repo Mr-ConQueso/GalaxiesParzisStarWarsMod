@@ -2,6 +2,31 @@
 	"sources": [
 		{
 			"type": "pswg:ptex"
+		},
+		{
+			"type": "paletted_permutations",
+			"textures": [
+				"pswg:trims/blocks/model/segmented_crate"
+			],
+			"palette_key": "pswg:trims/color_palettes/segmented_crate/seg_key",
+			"permutations": {
+				"white": "pswg:trims/color_palettes/segmented_crate/seg_white",
+				"orange": "pswg:trims/color_palettes/segmented_crate/seg_orange",
+				"magenta": "pswg:trims/color_palettes/segmented_crate/seg_magenta",
+				"light_blue": "pswg:trims/color_palettes/segmented_crate/seg_light_blue",
+				"yellow": "pswg:trims/color_palettes/segmented_crate/seg_yellow",
+				"lime": "pswg:trims/color_palettes/segmented_crate/seg_lime",
+				"pink": "pswg:trims/color_palettes/segmented_crate/seg_pink",
+				"gray": "pswg:trims/color_palettes/segmented_crate/seg_gray",
+				"light_gray": "pswg:trims/color_palettes/segmented_crate/seg_light_gray",
+				"cyan": "pswg:trims/color_palettes/segmented_crate/seg_cyan",
+				"purple": "pswg:trims/color_palettes/segmented_crate/seg_purple",
+				"blue": "pswg:trims/color_palettes/segmented_crate/seg_blue",
+				"brown": "pswg:trims/color_palettes/segmented_crate/seg_brown",
+				"green": "pswg:trims/color_palettes/segmented_crate/seg_green",
+				"red": "pswg:trims/color_palettes/segmented_crate/seg_red",
+				"black": "pswg:trims/color_palettes/segmented_crate/seg_black"
+			}
 		}
 	]
 }

@@ -1,6 +1,7 @@
 package dev.pswg.gadgets;
 
 import com.mojang.serialization.Codec;
+import dev.pswg.container.GalaxiesBlocks;
 import dev.pswg.gadgets.brewing.BrewingMap;
 import dev.pswg.gadgets.brewing.Mixer;
 import dev.pswg.gadgets.brewing.MixerMenu;
@@ -109,7 +110,7 @@ public final class Workstations
 
 	private static void populateTabs(BuildCreativeModeTabContentsEvent event)
 	{
-		if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS))
+		if (event.getTabKey().equals(GalaxiesBlocks.CONSTRUCTION_TAB))
 		{
 			event.accept(MIXER_ITEM.get());
 			event.accept(SCRAPPING_ITEM.get());

@@ -13,6 +13,7 @@ import dev.pswg.particle.GalaxiesParticles;
 import dev.pswg.container.DrinkItems;
 import dev.pswg.container.GalaxiesBlocks;
 import dev.pswg.container.GalaxiesItems;
+import dev.pswg.container.LegacyConstruction;
 import dev.pswg.container.Tatooine;
 import dev.pswg.datagen.G3dData;
 import dev.pswg.datagen.TerrainData;
@@ -46,6 +47,7 @@ public final class Galaxies
 		NeoForge.EVENT_BUS.addListener(Galaxies::registerReloadListeners);
 		NeoForge.EVENT_BUS.addListener(DimensionCommand::register);
 		GalaxiesBlocks.register(modBus);
+		LegacyConstruction.register(modBus);
 		CoreComponents.register(modBus);
 		CoreSounds.register(modBus);
 		GalaxiesParticles.register(modBus);

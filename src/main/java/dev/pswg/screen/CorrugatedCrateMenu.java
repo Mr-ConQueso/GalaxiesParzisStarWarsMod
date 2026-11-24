@@ -7,12 +7,14 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public final class CorrugatedCrateMenu extends AbstractContainerMenu
 {
 	private final Container crate;
+	private final int columns;
 
 	public CorrugatedCrateMenu(int id, Inventory playerInventory)
 	{
@@ -21,22 +23,31 @@ public final class CorrugatedCrateMenu extends AbstractContainerMenu
 
 	public CorrugatedCrateMenu(int id, Inventory playerInventory, Container crate)
 	{
-		super(Crates.MENU.get(), id);
-		checkContainerSize(crate, CorrugatedCrateBlockEntity.SIZE);
-		this.crate = crate;
-		crate.startOpen(playerInventory.player);
+		this(Crates.MENU.get(), id, playerInventory, crate, 5);
+	}
 
+	public CorrugatedCrateMenu(MenuType<CorrugatedCrateMenu> type, int id, Inventory playerInventory, Container crate, int columns)
+	{
+		super(type, id);
+		checkContainerSize(crate, columns * 3);
+		this.crate = crate;
+		this.columns = columns;
+		crate.startOpen(playerInventory.player);
+		int crateX = columns == 13 ? 8 : 44;
+		int playerX = columns == 13 ? 44 : 8;
 		for (int row = 0; row < 3; row++)
-			for (int column = 0; column < 5; column++)
-				addSlot(new Slot(crate, column + row * 5, column * 18 + 44, row * 18 + 18));
+			for (int column = 0; column < columns; column++)
+				addSlot(new Slot(crate, column + row * columns, column * 18 + crateX, row * 18 + 18));
 
 		for (int row = 0; row < 3; row++)
 			for (int column = 0; column < 9; column++)
-				addSlot(new Slot(playerInventory, column + row * 9 + 9, column * 18 + 8, row * 18 + 86));
+				addSlot(new Slot(playerInventory, column + row * 9 + 9, column * 18 + playerX, row * 18 + 86));
 
 		for (int column = 0; column < 9; column++)
-			addSlot(new Slot(playerInventory, column, column * 18 + 8, 144));
+			addSlot(new Slot(playerInventory, column, column * 18 + playerX, 144));
 	}
+
+	public int columns() { return columns; }
 
 	@Override
 	public boolean stillValid(Player player)

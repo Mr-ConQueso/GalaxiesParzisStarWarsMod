@@ -1,0 +1,13 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/segmented_crate",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "multipart_block": "pswg:cyan_segmented_crate",
+  "clip_axes": "z",
+  "z": -0.5,
+  "textures": {
+    "texture": "pswg:trims/blocks/model/segmented_crate_cyan",
+    "particle": "pswg:trims/blocks/model/segmented_crate_cyan"
+  }
+}

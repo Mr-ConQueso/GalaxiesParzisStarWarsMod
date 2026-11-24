@@ -1,0 +1,14 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/crate/kyber",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "multipart_block": "pswg:orange_kyber_crate",
+  "clip_axes": "z",
+  "z": 0.0238,
+  "y": 0.0023,
+  "textures": {
+    "texture": "pswg:block/model/crate/kyber_orange",
+    "particle": "pswg:block/model/crate/kyber_orange_particle"
+  }
+}

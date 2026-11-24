@@ -64,6 +64,9 @@ public final class GalaxiesClient
 	public static void registerScreens(RegisterMenuScreensEvent event)
 	{
 		event.register(Crates.MENU.get(), CorrugatedCrateScreen::new);
+		event.register(Crates.KYBER_MENU.get(), CorrugatedCrateScreen::new);
+		event.register(Crates.TOOLBOX_MENU.get(), CorrugatedCrateScreen::new);
+		event.register(Crates.SEGMENTED_MENU.get(), CorrugatedCrateScreen::new);
 		event.register(Workstations.MIXER_MENU.get(), MixerScreen::new);
 		event.register(Workstations.SCRAPPING_MENU.get(), ScrappingScreen::new);
 	}

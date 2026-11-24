@@ -3,10 +3,6 @@
     "facing=east": {
       "model": "pswg:block/gx8_moisture_vaporator"
     },
-    "facing=north": {
-      "model": "pswg:block/gx8_moisture_vaporator",
-      "y": 270
-    },
     "facing=south": {
       "model": "pswg:block/gx8_moisture_vaporator",
       "y": 90
@@ -14,6 +10,10 @@
     "facing=west": {
       "model": "pswg:block/gx8_moisture_vaporator",
       "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/gx8_moisture_vaporator",
+      "y": 270
     }
   }
 }

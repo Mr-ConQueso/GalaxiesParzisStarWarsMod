@@ -1,6 +1,7 @@
 package dev.pswg.utilities;
 
 import dev.pswg.Galaxies;
+import dev.pswg.container.GalaxiesBlocks;
 import dev.pswg.gadgets.WorkstationRecipes;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
@@ -94,8 +95,10 @@ public final class LegacyUtilities
 		SERIALIZERS.register(bus);
 		COMPONENTS.register(bus);
 		bus.addListener((BuildCreativeModeTabContentsEvent event) -> {
-			if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS))
-				ITEMS.getEntries().forEach(item -> event.accept(item.get()));
+			if (event.getTabKey().equals(GalaxiesBlocks.CONSTRUCTION_TAB))
+				BLOCKS.getEntries().forEach(block -> event.accept(block.get()));
+			if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES))
+				event.accept(CABLE.get());
 		});
 	}
 }

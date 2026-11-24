@@ -2,6 +2,7 @@ package dev.pswg.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.pswg.blockEntity.CorrugatedCrateBlockEntity;
+import dev.pswg.container.Crates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
@@ -12,19 +13,30 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.function.Supplier;
+
 public final class CorrugatedCrateBlock extends WaterloggableRotatingBlock implements EntityBlock
 {
 	public static final MapCodec<CorrugatedCrateBlock> CODEC = simpleCodec(CorrugatedCrateBlock::new);
-	private static final VoxelShape SHAPE = box(1, 0, 1, 15, 16, 15);
+	private final VoxelShape shape;
+	private final Supplier<BlockEntityType<CorrugatedCrateBlockEntity>> entity;
 
 	public CorrugatedCrateBlock(Properties properties)
 	{
+		this(properties, box(1, 0, 1, 15, 16, 15), Crates.ENTITY);
+	}
+
+	public CorrugatedCrateBlock(Properties properties, VoxelShape shape, Supplier<BlockEntityType<CorrugatedCrateBlockEntity>> entity)
+	{
 		super(properties);
+		this.shape = shape;
+		this.entity = entity;
 	}
 
 	@Override
@@ -36,13 +48,13 @@ public final class CorrugatedCrateBlock extends WaterloggableRotatingBlock imple
 	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context)
 	{
-		return SHAPE;
+		return shape;
 	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new CorrugatedCrateBlockEntity(pos, state);
+		return entity.get().create(pos, state);
 	}
 
 	@Override

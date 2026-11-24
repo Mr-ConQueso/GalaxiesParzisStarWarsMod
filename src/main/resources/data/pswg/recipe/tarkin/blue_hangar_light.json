@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:blue_hangar_light",
+  "pattern": [
+    " a ",
+    "aba",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:blue_dye"
+    },
+    "a": {
+      "item": "pswg:plasteel_ingot"
+    },
+    "b": {
+      "item": "pswg:light_panel"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "pswg:blue_hangar_light"
+  }
+}

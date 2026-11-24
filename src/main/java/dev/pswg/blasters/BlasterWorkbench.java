@@ -1,7 +1,8 @@
 package dev.pswg.blasters;
 
 import dev.pswg.Galaxies;
-import dev.pswg.gadgets.WorkstationBlock;
+import dev.pswg.container.GalaxiesBlocks;
+import dev.pswg.block.WideBlock;
 import dev.pswg.gadgets.WorkstationInventory;
 import dev.pswg.gadgets.WorkstationMenu;
 import net.minecraft.core.BlockPos;
@@ -15,13 +16,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.block.SoundType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -39,8 +39,8 @@ public final class BlasterWorkbench extends WorkstationInventory
 
 	public static final Supplier<BlockEntityType<BlasterWorkbench>> ENTITY = ENTITIES.register("blaster_workbench",
 			() -> BlockEntityType.Builder.of(BlasterWorkbench::new, BlasterWorkbench.BLOCK.get()).build(null));
-	public static final Supplier<WorkstationBlock<BlasterWorkbench>> BLOCK = BLOCKS.register("blaster_workbench",
-			() -> new WorkstationBlock<>(BlockBehaviour.Properties.of().strength(2.5F).noOcclusion(), ENTITY, null, Shapes.block()));
+	public static final Supplier<WideBlock<BlasterWorkbench>> BLOCK = BLOCKS.register("blaster_workbench",
+			() -> new WideBlock<>(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3.5F).requiresCorrectToolForDrops().noOcclusion(), ENTITY));
 	public static final Supplier<MenuType<Menu>> MENU = MENUS.register("blaster_workbench",
 			() -> new MenuType<>(Menu::new, FeatureFlags.DEFAULT_FLAGS));
 	private static final Supplier<net.minecraft.world.item.BlockItem> ITEM = ITEMS.registerSimpleBlockItem("blaster_workbench", BLOCK);
@@ -57,7 +57,7 @@ public final class BlasterWorkbench extends WorkstationInventory
 		ENTITIES.register(bus);
 		MENUS.register(bus);
 		bus.addListener((net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent event) -> {
-			if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS))
+			if (event.getTabKey().equals(GalaxiesBlocks.CONSTRUCTION_TAB))
 				event.accept(ITEM.get());
 		});
 	}

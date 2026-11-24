@@ -1,0 +1,24 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/segmented_crate",
+  "parent": "minecraft:block/block",
+  "fit_item": true,
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.94,
+        0.94,
+        0.94
+      ]
+    }
+  },
+  "textures": {
+    "texture": "pswg:trims/blocks/model/segmented_crate_blue",
+    "particle": "pswg:trims/blocks/model/segmented_crate_blue"
+  }
+}

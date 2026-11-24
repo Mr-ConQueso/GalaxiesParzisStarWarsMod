@@ -3,7 +3,8 @@ package dev.pswg.sabers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.pswg.Galaxies;
-import dev.pswg.gadgets.WorkstationBlock;
+import dev.pswg.container.GalaxiesBlocks;
+import dev.pswg.block.WideBlock;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -17,11 +18,10 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.block.SoundType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -53,8 +53,8 @@ public final class Sabers
 					.clientTrackingRange(6).updateInterval(2).build(Galaxies.id("thrown_lightsaber").toString()));
 	public static final Supplier<BlockEntityType<SaberForge>> FORGE_ENTITY = BLOCK_ENTITIES.register("lightsaber_forge",
 			() -> BlockEntityType.Builder.of(SaberForge::new, Sabers.FORGE.get()).build(null));
-	public static final Supplier<WorkstationBlock<SaberForge>> FORGE = BLOCKS.register("lightsaber_forge",
-			() -> new WorkstationBlock<>(BlockBehaviour.Properties.of().strength(2.5F).noOcclusion(), FORGE_ENTITY, null, Shapes.block()));
+	public static final Supplier<WideBlock<SaberForge>> FORGE = BLOCKS.register("lightsaber_forge",
+			() -> new WideBlock<>(BlockBehaviour.Properties.of().sound(SoundType.WOOD).strength(2.5F).noOcclusion(), FORGE_ENTITY));
 	public static final Supplier<MenuType<SaberForge.Menu>> FORGE_MENU = MENUS.register("lightsaber_forge",
 			() -> new MenuType<>(SaberForge.Menu::new, FeatureFlags.DEFAULT_FLAGS));
 	private static final Supplier<BlockItem> FORGE_ITEM = ITEMS.registerSimpleBlockItem("lightsaber_forge", FORGE);
@@ -84,7 +84,7 @@ public final class Sabers
 		COMPONENTS.register(bus);
 		bus.addListener(SaberNetwork::register);
 		bus.addListener((BuildCreativeModeTabContentsEvent event) -> {
-			if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS))
+			if (event.getTabKey().equals(GalaxiesBlocks.CONSTRUCTION_TAB))
 				event.accept(FORGE_ITEM.get());
 		});
 	}

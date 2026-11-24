@@ -9,30 +9,47 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.function.Supplier;
+
 public final class CorrugatedCrateBlockEntity extends RandomizableContainerBlockEntity
 {
 	public static final int SIZE = 15;
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(SIZE, ItemStack.EMPTY);
+	private final Supplier<MenuType<CorrugatedCrateMenu>> menu;
+	private final String name;
+	private final int columns;
+	private NonNullList<ItemStack> inventory;
 
 	public CorrugatedCrateBlockEntity(BlockPos pos, BlockState state)
 	{
-		super(Crates.ENTITY.get(), pos, state);
+		this(Crates.ENTITY.get(), Crates.MENU, pos, state, "corrugated_crate", 5);
+	}
+
+	public CorrugatedCrateBlockEntity(BlockEntityType<?> type, Supplier<MenuType<CorrugatedCrateMenu>> menu,
+	                                  BlockPos pos, BlockState state, String name, int columns)
+	{
+		super(type, pos, state);
+		this.menu = menu;
+		this.name = name;
+		this.columns = columns;
+		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 	}
 
 	@Override
 	public int getContainerSize()
 	{
-		return SIZE;
+		return columns * 3;
 	}
 
 	@Override
 	protected Component getDefaultName()
 	{
-		return Component.translatable("container.pswg.corrugated_crate");
+		return Component.translatable("container.pswg." + name);
 	}
 
 	@Override
@@ -50,7 +67,7 @@ public final class CorrugatedCrateBlockEntity extends RandomizableContainerBlock
 	@Override
 	protected CorrugatedCrateMenu createMenu(int id, Inventory playerInventory)
 	{
-		return new CorrugatedCrateMenu(id, playerInventory, this);
+		return new CorrugatedCrateMenu(menu.get(), id, playerInventory, this, columns);
 	}
 
 	@Override
@@ -65,7 +82,7 @@ public final class CorrugatedCrateBlockEntity extends RandomizableContainerBlock
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
-		inventory = NonNullList.withSize(SIZE, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		if (!tryLoadLootTable(tag))
 			ContainerHelper.loadAllItems(tag, inventory, registries);
 	}

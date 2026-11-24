@@ -1,7 +1,12 @@
 {
   "loader": "pswg:p3d",
   "p3d": "pswg:block/blaster_workbench",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "multipart_block": "pswg:blaster_workbench",
+  "clip_axes": "z",
   "textures": {
-    "particle": "pswg:block/blaster_workbench"
+    "texture": "pswg:block/model/blaster_workbench",
+    "particle": "pswg:block/model/workbench_particle"
   }
 }

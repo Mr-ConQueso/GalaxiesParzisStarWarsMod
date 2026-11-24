@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/scaffold_stairs"
+    },
+    "facing=south": {
+      "model": "pswg:block/scaffold_stairs",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/scaffold_stairs",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/scaffold_stairs",
+      "y": 270
+    }
+  }
+}

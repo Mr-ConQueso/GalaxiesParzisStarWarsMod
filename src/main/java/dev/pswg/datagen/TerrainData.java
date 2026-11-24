@@ -1,6 +1,8 @@
 package dev.pswg.datagen;
 
 import dev.pswg.Galaxies;
+import dev.pswg.blasters.BlasterWorkbench;
+import dev.pswg.sabers.Sabers;
 import dev.pswg.block.AccumulatingBlock;
 import dev.pswg.block.VerticalSlabBlock;
 import dev.pswg.block.plant.AridPlant;
@@ -9,6 +11,7 @@ import dev.pswg.block.plant.HkakBushBlock;
 import dev.pswg.block.plant.MoloShrubBlock;
 import dev.pswg.block.plant.VaporatorMushroomBlock;
 import dev.pswg.container.GalaxiesBlocks;
+import dev.pswg.container.LegacyConstruction;
 import dev.pswg.utilities.LegacyUtilities;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -30,6 +33,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public final class TerrainData
 {
@@ -74,7 +78,19 @@ public final class TerrainData
 						GalaxiesBlocks.DESERT_LOAM.get(), GalaxiesBlocks.TALL_LAMP.get());
 
 				var pickaxe = tag(BlockTags.MINEABLE_WITH_PICKAXE);
-				pickaxe.add(LegacyUtilities.VAPORATOR.get(), LegacyUtilities.COUPLING.get(), LegacyUtilities.SLIDING_DOOR.get(),
+				for (var entry : LegacyConstruction.entries())
+				{
+					var block = entry.get();
+					pickaxe.add(block);
+					if (block instanceof VerticalSlabBlock)
+						tag(BlockTags.SLABS).add(block);
+					if (block instanceof StairBlock || block == LegacyConstruction.SCAFFOLD_STAIRS.get())
+						tag(BlockTags.STAIRS).add(block);
+					if (block instanceof TrapDoorBlock)
+						tag(BlockTags.TRAPDOORS).add(block);
+				}
+				tag(BlockTags.CLIMBABLE).add(LegacyConstruction.SCAFFOLD.get());
+				pickaxe.add(BlasterWorkbench.BLOCK.get(), Sabers.FORGE.get(), LegacyUtilities.VAPORATOR.get(), LegacyUtilities.COUPLING.get(), LegacyUtilities.SLIDING_DOOR.get(),
 						LegacyUtilities.CAGE.get(), LegacyUtilities.TERRARIUM.get());
 				LegacyUtilities.DYED_TERRARIA.forEach(terrarium -> pickaxe.add(terrarium.get()));
 
@@ -136,7 +152,7 @@ public final class TerrainData
 		@Override
 		protected Iterable<Block> getKnownBlocks()
 		{
-			return GalaxiesBlocks.entries().stream()
+			return Stream.concat(GalaxiesBlocks.entries().stream(), LegacyConstruction.entries().stream())
 					.filter(entry -> !AUTHORED_LOOT.contains(entry.getId().getPath()))
 					.<Block>map(entry -> entry.get()).toList();
 		}

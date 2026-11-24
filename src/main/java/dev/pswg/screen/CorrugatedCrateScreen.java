@@ -9,11 +9,17 @@ import net.minecraft.world.entity.player.Inventory;
 
 public final class CorrugatedCrateScreen extends AbstractContainerScreen<CorrugatedCrateMenu>
 {
-	private static final ResourceLocation TEXTURE = Galaxies.id("textures/gui/container/crate_5x3.png");
+	private final ResourceLocation texture;
 
 	public CorrugatedCrateScreen(CorrugatedCrateMenu menu, Inventory inventory, Component title)
 	{
 		super(menu, inventory, title);
+		if (menu.columns() == 13)
+		{
+			imageWidth = 248;
+			inventoryLabelX = 44;
+		}
+		texture = Galaxies.id("textures/gui/container/crate_" + menu.columns() + "x3.png");
 	}
 
 	@Override
@@ -34,6 +40,6 @@ public final class CorrugatedCrateScreen extends AbstractContainerScreen<Corruga
 	@Override
 	protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
 	{
-		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 }

@@ -50,32 +50,30 @@ public final class SlidingDoor extends WaterloggedUtility
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final IntegerProperty INSERT = IntegerProperty.create("door_color", 0, 16);
-	private static final VoxelShape[][][] OUTLINE = geometry(true);
-	private static final VoxelShape[][][] COLLISION = geometry(false);
+	public static final float SLIDE_DISTANCE = 1.352F;
+	private static final float MODEL_SCALE = 0.625F;
+	private static final int ANIMATION_TICKS = 10;
+	private static final VoxelShape[][] OUTLINE = frameShapes(true);
+	private static final VoxelShape[][] COLLISION = frameShapes(false);
 
 	public SlidingDoor(Properties properties)
 	{
-		super(properties);
+		super(properties.dynamicShape());
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.EAST).setValue(HALF, DoubleBlockHalf.LOWER)
 				.setValue(OPEN, true).setValue(POWERED, false).setValue(INSERT, 0));
 	}
 
-	private static VoxelShape[][][] geometry(boolean outline)
+	private static VoxelShape[][] frameShapes(boolean outline)
 	{
-		var shapes = new VoxelShape[2][2][4];
+		var shapes = new VoxelShape[2][4];
 		var posts = Shapes.or(Block.box(4, 0, 0, 12, 16, 1), Block.box(4, 0, 15, 12, 16, 16));
 		for (var half : DoubleBlockHalf.values())
 		{
 			boolean upper = half == DoubleBlockHalf.UPPER;
 			var trim = Block.box(4, upper ? 15 : 0, 0, 12, upper ? 16 : 1, 16);
 			var frame = outline ? Shapes.or(posts, trim) : posts;
-			for (int open = 0; open <= 1; open++)
-			{
-				var panel = Block.box(6, upper ? 0 : 1, open == 0 ? 1 : 14.5, 10, upper ? 15 : 16, 15);
-				var shape = Shapes.or(frame, panel);
-				for (int rotation = 0; rotation < 4; rotation++)
-					shapes[half.ordinal()][open][rotation] = VoxelShapeUtil.rotate(shape, rotation);
-			}
+			for (int rotation = 0; rotation < 4; rotation++)
+				shapes[half.ordinal()][rotation] = VoxelShapeUtil.rotate(frame, rotation);
 		}
 		return shapes;
 	}
@@ -89,15 +87,24 @@ public final class SlidingDoor extends WaterloggedUtility
 	@Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { super.createBlockStateDefinition(builder); builder.add(FACING, HALF, OPEN, POWERED, INSERT); }
 	@Override protected BlockState rotate(BlockState state, Rotation rotation) { return state.setValue(FACING, rotation.rotate(state.getValue(FACING))); }
 	@Override protected BlockState mirror(BlockState state, Mirror mirror) { return state.rotate(mirror.getRotation(state.getValue(FACING))); }
-	@Override protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) { return shape(state, OUTLINE); }
-	@Override protected VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) { return shape(state, COLLISION); }
+	@Override protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) { return shape(state, world, pos, OUTLINE); }
+	@Override protected VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) { return shape(state, world, pos, COLLISION); }
 	@Override public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new Animation(pos, state) : null; }
 	@Override protected boolean isPathfindable(BlockState state, PathComputationType path) { return state.getValue(OPEN) && path != PathComputationType.WATER; }
 
-	private static VoxelShape shape(BlockState state, VoxelShape[][][] shapes)
+	private static VoxelShape shape(BlockState state, BlockGetter world, BlockPos pos, VoxelShape[][] frames)
 	{
+		var half = state.getValue(HALF);
 		int rotation = (state.getValue(FACING).get2DDataValue() + 1) % 4;
-		return shapes[state.getValue(HALF).ordinal()][state.getValue(OPEN) ? 1 : 0][rotation];
+		var frame = frames[half.ordinal()][rotation];
+		if (color(state) == null)
+			return frame;
+		float openness = world.getBlockEntity(lower(state, pos)) instanceof Animation animation
+				? animation.openness(0) : state.getValue(OPEN) ? 1 : 0;
+		boolean upper = half == DoubleBlockHalf.UPPER;
+		double edge = 1 + openness * SLIDE_DISTANCE * MODEL_SCALE * 16;
+		var panel = Block.box(6, upper ? 0 : 1, edge, 10, upper ? 15 : 16, 15);
+		return Shapes.or(frame, VoxelShapeUtil.rotate(panel, rotation));
 	}
 
 	@Override
@@ -204,11 +211,13 @@ public final class SlidingDoor extends WaterloggedUtility
 	private static void change(Level world, BlockPos pos, BlockState state, boolean open, boolean powered, Player player)
 	{
 		boolean moving = state.getValue(OPEN) != open;
-		if (moving && world.getBlockEntity(pos) instanceof Animation animation)
-			animation.begin(open);
+		var animation = world.getBlockEntity(pos) instanceof Animation value ? value : null;
+		float from = moving && animation != null ? animation.openness(0) : 0;
 		world.setBlock(pos, state.setValue(OPEN, open).setValue(POWERED, powered), Block.UPDATE_ALL);
 		if (moving)
 		{
+			if (animation != null)
+				animation.begin(from, open);
 			world.playSound(null, pos, open ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 0.65F, 1.15F);
 			world.gameEvent(player, open ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		}
@@ -222,9 +231,9 @@ public final class SlidingDoor extends WaterloggedUtility
 
 		public Animation(BlockPos pos, BlockState state) { super(LegacyUtilities.DOOR_ENTITY.get(), pos, state); }
 
-		void begin(boolean open)
+		void begin(float from, boolean open)
 		{
-			from = openness(0);
+			this.from = from;
 			opening = open;
 			start = level.getGameTime();
 			setChanged();
@@ -233,10 +242,12 @@ public final class SlidingDoor extends WaterloggedUtility
 
 		public float openness(float partial)
 		{
-			if (level == null || start == Long.MIN_VALUE || level.getGameTime() - start >= 10)
+			if (level == null || start == Long.MIN_VALUE || level.getGameTime() - start >= ANIMATION_TICKS)
 				return getBlockState().getValue(OPEN) ? 1 : 0;
-			float t = Mth.clamp((level.getGameTime() - start + partial) / 10, 0, 1);
-			return Mth.lerp(1 - (1 - t) * (1 - t) * (1 - t), from, opening ? 1 : 0);
+			float t = Mth.clamp((level.getGameTime() - start + partial) / ANIMATION_TICKS, 0, 1);
+			float remaining = 1 - t;
+			float eased = opening ? 1 - remaining * remaining * remaining : t * t * t;
+			return Mth.lerp(eased, from, opening ? 1 : 0);
 		}
 
 		@Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries)

@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/stool",
+  "scale": 0.625,
+  "rotation_y": -90,
+  "textures": {
+    "texture": "pswg:block/model/stool",
+    "particle": "pswg:block/model/stool_particle"
+  }
+}
