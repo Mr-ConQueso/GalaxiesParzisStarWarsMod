@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "group": "pswg:chromium_ingot",
+  "result": {
+    "id": "pswg:chromium_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "pswg:raw_chromium"
+  }
+}

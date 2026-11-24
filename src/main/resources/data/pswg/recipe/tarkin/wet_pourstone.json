@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:wet_pourstone",
+  "ingredients": [
+    {
+      "item": "pswg:desert_loam"
+    },
+    {
+      "item": "pswg:desert_loam"
+    },
+    {
+      "item": "pswg:desert_loam"
+    },
+    {
+      "tag": "minecraft:sand"
+    },
+    {
+      "tag": "minecraft:sand"
+    },
+    {
+      "tag": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "pswg:wet_pourstone"
+  }
+}

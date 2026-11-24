@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:beskar_axe",
+  "pattern": [
+    "aa",
+    "ba",
+    "b "
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:beskar_ingot"
+    },
+    "b": {
+      "item": "pswg:durasteel_rod"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:beskar_axe"
+  }
+}

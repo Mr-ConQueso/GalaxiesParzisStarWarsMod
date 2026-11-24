@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "pswg:light_gray_imperial_flooring_0"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "pswg:blocks/light_gray_imperial_flooring_0"
+}

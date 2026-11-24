@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/orange_stained_imperial_glass_border",
+    "center": "pswg:block/orange_stained_imperial_glass",
+    "particle": "pswg:block/orange_stained_imperial_glass_border"
+  },
+  "render_type": "minecraft:translucent",
+  "inside_faces": true
+}

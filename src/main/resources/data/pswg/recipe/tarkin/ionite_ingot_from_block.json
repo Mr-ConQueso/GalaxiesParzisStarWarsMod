@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:ionite_ingot",
+  "ingredients": [
+    {
+      "item": "pswg:ionite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:ionite_ingot"
+  }
+}

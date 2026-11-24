@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:turbine",
+  "pattern": [
+    "a a",
+    " b ",
+    "a a"
+  ],
+  "key": {
+    "b": {
+      "item": "pswg:ball_bearing"
+    },
+    "a": {
+      "item": "pswg:durasteel_ingot"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:turbine"
+  }
+}

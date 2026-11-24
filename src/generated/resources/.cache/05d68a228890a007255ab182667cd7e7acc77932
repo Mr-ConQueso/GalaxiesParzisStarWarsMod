@@ -1,7 +1,0 @@
-// 1.21.1	2026-11-24T11:11:44.196607553	Tags for minecraft:block mod id pswg
-20ed66606bcef5b0cb89901476fe4ce3a0915203 data/minecraft/tags/block/mineable/pickaxe.json
-9adc63c382f6da1d0c4b9fb4182ca77c48afc580 data/minecraft/tags/block/slabs.json
-d164dd715adad4bd131ec7176ff3b588727f746c data/minecraft/tags/block/stairs.json
-08d6b71633edfef7461ea3f0512e7b62299ec30b data/minecraft/tags/block/walls.json
-d782340afe2bd414eea111c7588d60e455c94082 data/pswg/tags/block/arid_plant_placeable.json
-188cb1682183b334e020de3ba2f5178c26e216d6 data/pswg/tags/block/bush_placeable.json

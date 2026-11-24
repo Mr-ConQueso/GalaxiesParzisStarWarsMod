@@ -1,0 +1,33 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "pswg:item/black_melon"
+  },
+  "base": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "pswg:item/black_melon"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "pswg:item/black_melon_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "pswg:item/black_melon_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "pswg:item/black_melon_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "pswg:item/black_melon_in_hand"
+    },
+    "head": {
+      "parent": "pswg:item/black_melon_in_hand"
+    },
+    "none": {
+      "parent": "pswg:item/black_melon_in_hand"
+    }
+  }
+}

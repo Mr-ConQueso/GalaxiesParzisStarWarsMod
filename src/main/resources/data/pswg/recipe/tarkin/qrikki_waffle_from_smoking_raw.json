@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "group": "pswg:qrikki_waffle",
+  "result": {
+    "id": "pswg:qrikki_waffle"
+  },
+  "experience": 0.35,
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "pswg:qrikki_bread"
+  }
+}

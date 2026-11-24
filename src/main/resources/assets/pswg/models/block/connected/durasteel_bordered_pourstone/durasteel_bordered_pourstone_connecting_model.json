@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/durasteel_bordered_pourstone_border",
+    "center": "pswg:block/durasteel_bordered_pourstone",
+    "particle": "pswg:block/durasteel_bordered_pourstone_border"
+  }
+}

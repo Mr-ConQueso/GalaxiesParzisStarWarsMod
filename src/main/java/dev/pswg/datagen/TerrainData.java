@@ -1,9 +1,13 @@
 package dev.pswg.datagen;
 
 import dev.pswg.Galaxies;
+import dev.pswg.block.AccumulatingBlock;
 import dev.pswg.block.VerticalSlabBlock;
 import dev.pswg.block.plant.AridPlant;
+import dev.pswg.block.plant.ChasukaCrop;
 import dev.pswg.block.plant.HkakBushBlock;
+import dev.pswg.block.plant.MoloShrubBlock;
+import dev.pswg.block.plant.VaporatorMushroomBlock;
 import dev.pswg.container.GalaxiesBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -12,6 +16,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -47,6 +55,14 @@ public final class TerrainData
 						tag(BlockTags.STAIRS).add(block);
 					if (block instanceof WallBlock)
 						tag(BlockTags.WALLS).add(block);
+					if (block instanceof FenceBlock)
+						tag(BlockTags.WOODEN_FENCES).add(block);
+					if (block instanceof FenceGateBlock)
+						tag(BlockTags.FENCE_GATES).add(block);
+					if (block instanceof TrapDoorBlock)
+						tag(BlockTags.WOODEN_TRAPDOORS).add(block);
+					if (block instanceof DoorBlock)
+						tag(BlockTags.WOODEN_DOORS).add(block);
 					if (block.defaultBlockState().requiresCorrectToolForDrops())
 						tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
 				}
@@ -62,6 +78,15 @@ public final class TerrainData
 				tag(GalaxiesBlocks.BUSH_PLACEABLE).add(GalaxiesBlocks.CAKED_SALT.get(), GalaxiesBlocks.DESERT_LOAM.get(),
 						Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.PODZOL, Blocks.COARSE_DIRT)
 						.addOptionalTag(BlockTags.SAND.location());
+				tag(BlockTags.LOGS_THAT_BURN).add(GalaxiesBlocks.JAPOR_LOG.get(), GalaxiesBlocks.JAPOR_WOOD.get(),
+						GalaxiesBlocks.SEQUOIA_LOG.get(), GalaxiesBlocks.STRIPPED_SEQUOIA_LOG.get(),
+						GalaxiesBlocks.MOSSY_SEQUOIA_LOG.get(), GalaxiesBlocks.SEQUOIA_WOOD.get(),
+						GalaxiesBlocks.TATOOINE_LOG.get(), GalaxiesBlocks.TATOOINE_WOOD.get());
+				tag(BlockTags.LEAVES).add(GalaxiesBlocks.JAPOR_LEAVES.get(), GalaxiesBlocks.SEQUOIA_LEAVES.get());
+				tag(BlockTags.CROPS).add(GalaxiesBlocks.CHASUKA.get());
+				tag(BlockTags.PLANKS).add(GalaxiesBlocks.JAPOR.planks().get(), GalaxiesBlocks.SEQUOIA.planks().get());
+				tag(BlockTags.WOODEN_SLABS).add(GalaxiesBlocks.JAPOR.slab().get(), GalaxiesBlocks.SEQUOIA.slab().get());
+				tag(BlockTags.WOODEN_STAIRS).add(GalaxiesBlocks.JAPOR.stairs().get(), GalaxiesBlocks.SEQUOIA.stairs().get());
 			}
 		});
 
@@ -72,10 +97,19 @@ public final class TerrainData
 			{
 				for (var entry : GalaxiesBlocks.entries())
 				{
-					if (entry.get() instanceof AridPlant || entry.get() instanceof HkakBushBlock)
+					var block = entry.get();
+					if (block instanceof AridPlant || block instanceof HkakBushBlock || block instanceof ChasukaCrop
+							|| block instanceof MoloShrubBlock || block instanceof VaporatorMushroomBlock || block instanceof DoorBlock
+							|| block == GalaxiesBlocks.JAPOR_LEAVES.get())
 						continue;
 					String path = entry.getId().getPath();
-					String parent = entry.get() instanceof WallBlock ? path + "_inventory" : path;
+					String parent = switch (block) {
+						case WallBlock wall -> path + "_inventory";
+						case FenceBlock fence -> path + "_inventory";
+						case TrapDoorBlock door -> path + "_bottom";
+						case AccumulatingBlock layers -> path + "_height2";
+						default -> path;
+					};
 					withExistingParent(path, modLoc("block/" + parent));
 				}
 			}
@@ -84,6 +118,10 @@ public final class TerrainData
 
 	private static final class TerrainLoot extends BlockLootSubProvider
 	{
+		private static final Set<String> AUTHORED_LOOT = Set.of("beskar_ore", "chromium_ore", "cortosis_ore", "desh_ore",
+				"diatium_ore", "helicite_ore", "ionite_ore", "lommite_ore", "thorilide_ore", "titanium_ore", "zersium_ore",
+				"chasuka", "molo_shrub", "vaporator_mushroom_colony", "wall_cluster_light");
+
 		private TerrainLoot(HolderLookup.Provider registries)
 		{
 			super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
@@ -92,7 +130,9 @@ public final class TerrainData
 		@Override
 		protected Iterable<Block> getKnownBlocks()
 		{
-			return GalaxiesBlocks.entries().stream().<Block>map(entry -> entry.get()).toList();
+			return GalaxiesBlocks.entries().stream()
+					.filter(entry -> !AUTHORED_LOOT.contains(entry.getId().getPath()))
+					.<Block>map(entry -> entry.get()).toList();
 		}
 
 		@Override
@@ -102,6 +142,8 @@ public final class TerrainData
 			{
 				if (block instanceof VerticalSlabBlock)
 					add(block, this::createSlabItemTable);
+				else if (block instanceof DoorBlock)
+					add(block, this::createDoorTable);
 				else
 					dropSelf(block);
 			}

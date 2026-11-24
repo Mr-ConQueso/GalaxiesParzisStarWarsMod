@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:lommite_crystal",
+  "ingredients": [
+    {
+      "item": "pswg:lommite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:lommite_crystal"
+  }
+}

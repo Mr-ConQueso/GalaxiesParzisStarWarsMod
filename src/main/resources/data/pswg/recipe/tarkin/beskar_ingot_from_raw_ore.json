@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "group": "pswg:beskar_ingot",
+  "result": {
+    "id": "pswg:beskar_ingot"
+  },
+  "experience": 5.0,
+  "cookingtime": 200,
+  "ingredient": {
+    "item": "pswg:raw_beskar"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "values": [
+    "pswg_gadgets:thermal_detonator",
+    "pswg_gadgets:fragmentation_grenade",
+    {
+      "id": "pswg_gadgets:nerve_gas_grenade",
+      "required": false
+    },
+    "pswg_gadgets:smoke_signal_grenade",
+    "pswg_gadgets:impact_grenade",
+    {
+      "id": "pswg_gadgets:inferno_grenade",
+      "required": false
+    }
+  ]
+}

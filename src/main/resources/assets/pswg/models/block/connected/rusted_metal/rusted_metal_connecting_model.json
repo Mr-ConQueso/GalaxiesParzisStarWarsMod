@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/rusted_metal_border",
+    "center": "pswg:block/rusted_metal",
+    "particle": "pswg:block/rusted_metal_border"
+  }
+}

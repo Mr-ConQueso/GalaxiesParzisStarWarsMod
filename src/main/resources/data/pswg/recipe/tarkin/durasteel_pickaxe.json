@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:durasteel_pickaxe",
+  "pattern": [
+    "aaa",
+    " b ",
+    " b "
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:durasteel_ingot"
+    },
+    "b": {
+      "item": "pswg:durasteel_rod"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:durasteel_pickaxe"
+  }
+}

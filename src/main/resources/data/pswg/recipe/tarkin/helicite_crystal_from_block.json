@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:helicite_crystal",
+  "ingredients": [
+    {
+      "item": "pswg:helicite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:helicite_crystal"
+  }
+}

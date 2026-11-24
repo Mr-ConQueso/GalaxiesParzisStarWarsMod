@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:desh_coil",
+  "pattern": [
+    "aaa",
+    "a a",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:desh_wire"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:desh_coil"
+  }
+}

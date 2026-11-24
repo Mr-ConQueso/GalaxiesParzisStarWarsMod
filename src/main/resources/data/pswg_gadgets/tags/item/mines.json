@@ -1,0 +1,9 @@
+{
+  "values": [
+    "pswg_gadgets:pressure_mine",
+    {
+      "id": "pswg_gadgets:tripwire_mine",
+      "required": false
+    }
+  ]
+}

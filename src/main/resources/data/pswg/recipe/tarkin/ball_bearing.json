@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:ball_bearing",
+  "pattern": [
+    "aaa",
+    "a a",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:durasteel_nugget"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:ball_bearing"
+  }
+}

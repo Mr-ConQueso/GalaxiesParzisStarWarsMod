@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/external_imperial_plating_border",
+    "center": "pswg:block/external_imperial_plating",
+    "particle": "pswg:block/external_imperial_plating_border"
+  }
+}

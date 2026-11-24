@@ -1,0 +1,7 @@
+{
+  "parent": "pswg:block/template_connected_block_item",
+  "textures": {
+    "all": "pswg:block/pink_stained_imperial_glass_border"
+  },
+  "render_type": "minecraft:translucent"
+}

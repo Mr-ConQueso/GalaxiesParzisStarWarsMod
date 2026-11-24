@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:beskar_ingot",
+  "ingredients": [
+    {
+      "item": "pswg:beskar_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:beskar_ingot"
+  }
+}

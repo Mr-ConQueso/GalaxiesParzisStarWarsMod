@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:plasteel_nugget",
+  "ingredients": [
+    {
+      "item": "pswg:plasteel_ingot"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:plasteel_nugget"
+  }
+}

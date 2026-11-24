@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:cortosis_ingot",
+  "ingredients": [
+    {
+      "item": "pswg:cortosis_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:cortosis_ingot"
+  }
+}

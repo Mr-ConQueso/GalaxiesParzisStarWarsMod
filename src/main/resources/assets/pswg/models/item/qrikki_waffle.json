@@ -1,0 +1,33 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "pswg:item/qrikki_waffle"
+  },
+  "base": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "pswg:item/qrikki_waffle"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    },
+    "head": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    },
+    "none": {
+      "parent": "pswg:item/qrikki_waffle_in_hand"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:desh_wire",
+  "pattern": [
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:desh_ingot"
+    }
+  },
+  "result": {
+    "count": 9,
+    "id": "pswg:desh_wire"
+  }
+}

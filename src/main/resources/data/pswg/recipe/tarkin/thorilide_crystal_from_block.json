@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:thorilide_crystal",
+  "ingredients": [
+    {
+      "item": "pswg:thorilide_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:thorilide_crystal"
+  }
+}

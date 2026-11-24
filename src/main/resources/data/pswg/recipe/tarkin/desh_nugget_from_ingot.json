@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:desh_nugget",
+  "ingredients": [
+    {
+      "item": "pswg:desh_ingot"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:desh_nugget"
+  }
+}

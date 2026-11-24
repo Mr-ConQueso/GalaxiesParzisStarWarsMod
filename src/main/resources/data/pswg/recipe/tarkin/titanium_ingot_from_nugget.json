@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:titanium_ingot",
+  "pattern": [
+    "aaa",
+    "aaa",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:titanium_nugget"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:titanium_ingot"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "pswg_gadgets:item/grenade/fragmentation_grenade_primed"
+  },
+  "base": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "pswg_gadgets:item/grenade/fragmentation_grenade_primed"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "head": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "fixed": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    },
+    "none": {
+      "parent": "pswg_gadgets:item/fragmentation_grenade_primed_in_hand"
+    }
+  }
+}

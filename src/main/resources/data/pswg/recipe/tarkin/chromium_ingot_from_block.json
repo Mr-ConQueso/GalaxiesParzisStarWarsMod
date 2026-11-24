@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:chromium_ingot",
+  "ingredients": [
+    {
+      "item": "pswg:chromium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "pswg:chromium_ingot"
+  }
+}

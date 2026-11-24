@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/mossy_large_imperial_plating_border",
+    "center": "pswg:block/mossy_large_imperial_plating",
+    "particle": "pswg:block/mossy_large_imperial_plating_border"
+  }
+}

@@ -2,6 +2,8 @@
   "values": [
     "pswg:canyon_stone_slab",
     "pswg:canyon_cobblestone_slab",
+    "pswg:sequoia_slab",
+    "pswg:japor_slab",
     "pswg:pourstone_slab",
     "pswg:smooth_pourstone_slab",
     "pswg:cracked_pourstone_slab",
@@ -18,6 +20,9 @@
     "pswg:gray_imperial_panel_blank_slab",
     "pswg:light_gray_imperial_panel_blank_slab",
     "pswg:white_imperial_panel_blank_slab",
+    "pswg:ruined_wet_pourstone_slab",
+    "pswg:wet_pourstone_slab",
+    "pswg:gray_imperial_lighting_panel_slab",
     "pswg:white_pourstone_slab",
     "pswg:orange_pourstone_slab",
     "pswg:magenta_pourstone_slab",

@@ -1,0 +1,9 @@
+{
+  "display": {},
+  "textures": {
+    "0": "pswg:block/model/wall_cluster_light",
+    "particle": "pswg:block/model/light/cluster_particle"
+  },
+  "loader": "pswg:g3d",
+  "g3d": "pswg:block/wall_cluster_light_2"
+}

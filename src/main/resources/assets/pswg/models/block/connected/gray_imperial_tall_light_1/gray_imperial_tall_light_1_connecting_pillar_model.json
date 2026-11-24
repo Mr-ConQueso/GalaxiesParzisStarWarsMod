@@ -1,0 +1,9 @@
+{
+  "loader": "pswg:connected_texture",
+  "pillar": true,
+  "textures": {
+    "center": "pswg:block/gray_imperial_panel_pattern_3",
+    "border": "pswg:block/gray_imperial_tall_light_1_border",
+    "particle": "pswg:block/gray_imperial_tall_light_1_border"
+  }
+}

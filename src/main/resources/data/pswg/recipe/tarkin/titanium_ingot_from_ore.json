@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "group": "pswg:titanium_ingot",
+  "result": {
+    "id": "pswg:titanium_ingot"
+  },
+  "experience": 2.0,
+  "cookingtime": 200,
+  "ingredient": {
+    "item": "pswg:titanium_ore"
+  }
+}

@@ -2,6 +2,7 @@ package dev.pswg.util.worldgen.mc;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.pswg.structure.DerelictContainer;
 import dev.pswg.util.worldgen.TerrainGenerator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -92,6 +92,7 @@ public class GalaxiesChunkGenerator extends ChunkGenerator
 	@Override
 	public void applyBiomeDecoration(WorldGenLevel world, ChunkAccess chunk, StructureManager structureAccessor)
 	{
+		DerelictContainer.placeInTatooine(world, chunk, structureAccessor, this);
 		this.backing.generateDecorations(new MinecraftWorldView(world), new MinecraftChunkView(chunk));
 	}
 
@@ -110,13 +111,20 @@ public class GalaxiesChunkGenerator extends ChunkGenerator
 	@Override
 	public int getBaseHeight(int x, int z, Heightmap.Types heightmap, LevelHeightAccessor world, RandomState noiseConfig)
 	{
-		return 0;
+		var column = getBaseColumn(x, z, world, noiseConfig);
+		int minY = Math.max(world.getMinBuildHeight(), getMinY());
+		int maxY = Math.min(world.getMaxBuildHeight(), getMinY() + getGenDepth());
+		var opaque = heightmap.isOpaque();
+		for (int y = maxY - 1; y >= minY; y--)
+			if (opaque.test(column.getBlock(y)))
+				return y + 1;
+		return world.getMinBuildHeight();
 	}
 
 	@Override
 	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor world, RandomState noiseConfig)
 	{
-		return new NoiseColumn(0, new BlockState[0]);
+		return backing.sampleBaseColumn(x, z);
 	}
 
 	@Override

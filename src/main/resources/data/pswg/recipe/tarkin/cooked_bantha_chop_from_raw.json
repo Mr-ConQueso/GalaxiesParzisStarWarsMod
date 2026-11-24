@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "group": "pswg:cooked_bantha_chop",
+  "result": {
+    "id": "pswg:cooked_bantha_chop"
+  },
+  "experience": 0.35,
+  "cookingtime": 200,
+  "ingredient": {
+    "item": "pswg:bantha_chop"
+  }
+}

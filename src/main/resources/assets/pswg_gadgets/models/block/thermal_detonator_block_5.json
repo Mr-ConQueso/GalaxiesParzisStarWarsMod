@@ -1,0 +1,9 @@
+{
+  "display": {},
+  "textures": {
+    "particle": "pswg_gadgets:block/model/thermal_detonator_block"
+  },
+  "loader": "pswg:g3d",
+  "g3d": "pswg_gadgets:block/thermal_detonator_block_5",
+  "render_type": "minecraft:cutout"
+}

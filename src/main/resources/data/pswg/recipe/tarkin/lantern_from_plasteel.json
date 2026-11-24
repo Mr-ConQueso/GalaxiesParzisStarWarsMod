@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "minecraft:lantern",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:torch"
+    },
+    "a": {
+      "item": "pswg:plasteel_nugget"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:lantern"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/plasteel_block_border",
+    "center": "pswg:block/plasteel_block",
+    "particle": "pswg:block/plasteel_block_border"
+  }
+}

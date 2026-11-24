@@ -12,6 +12,7 @@ import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -169,33 +170,58 @@ public final class TerrainGenerator
 		return (x * 5) + z;
 	}
 
+	public NoiseColumn sampleBaseColumn(int x, int z)
+	{
+		int gridX = Math.floorDiv(x, 4);
+		int gridZ = Math.floorDiv(z, 4);
+		double xProgress = Math.floorMod(x, 4) / 4.0;
+		double zProgress = Math.floorMod(z, 4) / 4.0;
+		double[] nearLeft = new double[49];
+		double[] nearRight = new double[49];
+		double[] farLeft = new double[49];
+		double[] farRight = new double[49];
+		sampleNoise(nearLeft, gridX, gridZ);
+		sampleNoise(nearRight, gridX + 1, gridZ);
+		sampleNoise(farLeft, gridX, gridZ + 1);
+		sampleNoise(farRight, gridX + 1, gridZ + 1);
+
+		var air = Blocks.AIR.defaultBlockState();
+		var column = new BlockState[cg.getGenDepth()];
+		for (int i = 0; i < column.length; i++)
+		{
+			int gridY = i / 8;
+			double yProgress = (i % 8) / 8.0;
+			double near = Mth.lerp(xProgress, Mth.lerp(yProgress, nearLeft[gridY], nearLeft[gridY + 1]),
+					Mth.lerp(yProgress, nearRight[gridY], nearRight[gridY + 1]));
+			double far = Mth.lerp(xProgress, Mth.lerp(yProgress, farLeft[gridY], farLeft[gridY + 1]),
+					Mth.lerp(yProgress, farRight[gridY], farRight[gridY + 1]));
+			column[i] = Mth.lerp(zProgress, near, far) > 0 ? geology : air;
+		}
+		return new NoiseColumn(cg.getMinY(), column);
+	}
+
 	private void sampleNoises(double[][] noises, int x, int z)
 	{
 		for (int x1 = 0; x1 < 5; x1++)
-		{
 			for (int z1 = 0; z1 < 5; z1++)
+				sampleNoise(noises[getNoiseIndex(x1, z1)], x + x1, z + z1);
+	}
+
+	private void sampleNoise(double[] noise, int x, int z)
+	{
+		Reference2DoubleMap<TerrainBuilder> builders = new Reference2DoubleOpenHashMap<>();
+		for (int offsetX = -2; offsetX <= 2; offsetX++)
+			for (int offsetZ = -2; offsetZ <= 2; offsetZ++)
 			{
-				Reference2DoubleMap<TerrainBuilder> builders = new Reference2DoubleOpenHashMap<>();
-
-				for (int x2 = -2; x2 <= 2; x2++)
-				{
-					for (int z2 = -2; z2 <= 2; z2++)
-					{
-						TerrainBiome biome = biomes.getBiome(x + x1 + x2, z + z1 + z2);
-
-						builders.mergeDouble(biome.terrain(), 1.0, Double::sum);
-					}
-				}
-
-				for (Reference2DoubleMap.Entry<TerrainBuilder> e : builders.reference2DoubleEntrySet())
-				{
-					double weight = e.getDoubleValue() / 25.0;
-					for (int i = 0; i < 49; i++)
-					{
-						noises[x1 * 5 + z1][i] += e.getKey().build(x + x1, i - 8, z + z1) * weight;
-					}
-				}
+				TerrainBiome biome = biomes.getBiome(x + offsetX, z + offsetZ);
+				builders.mergeDouble(biome.terrain(), 1.0, Double::sum);
 			}
+
+		for (var entry : builders.reference2DoubleEntrySet())
+		{
+			double weight = entry.getDoubleValue() / 25.0;
+			for (int i = 0; i < noise.length; i++)
+				noise[i] += entry.getKey().build(x, i - 8, z) * weight;
 		}
 	}
 

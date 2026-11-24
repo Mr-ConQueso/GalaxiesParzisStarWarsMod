@@ -1,3 +1,7 @@
+import org.jetbrains.gradle.ext.Application
+import org.jetbrains.gradle.ext.GradleTask
+import org.jetbrains.gradle.ext.Make
+
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '1.0.14'
@@ -48,6 +52,20 @@ neoForge {
     mods {
         pswg {
             sourceSet sourceSets.main
+        }
+    }
+}
+
+// IntelliJ Application runs consume ModDevGradle argument files that a Gradle clean removes.
+idea.project.settings.runConfigurations.withType(Application).configureEach { application ->
+    def run = neoForge.runs.find { it.ideName.get() == application.name }
+    if (run != null && application.mainClass == 'net.neoforged.devlaunch.Main') {
+        def prepareRun = tasks.named("prepare${run.name.capitalize()}Run")
+        if (application.beforeRun.empty) {
+            application.beforeRun.create('Build', Make)
+        }
+        application.beforeRun.create(prepareRun.name, GradleTask) { beforeRun ->
+            beforeRun.task = prepareRun.get()
         }
     }
 }

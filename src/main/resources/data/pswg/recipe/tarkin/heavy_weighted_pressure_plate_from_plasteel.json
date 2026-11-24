@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "minecraft:heavy_weighted_pressure_plate",
+  "pattern": [
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:plasteel_ingot"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:heavy_weighted_pressure_plate"
+  }
+}

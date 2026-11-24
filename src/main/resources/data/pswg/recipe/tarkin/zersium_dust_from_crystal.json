@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pswg:zersium_dust",
+  "ingredients": [
+    {
+      "item": "pswg:zersium_crystal"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "pswg:zersium_dust"
+  }
+}

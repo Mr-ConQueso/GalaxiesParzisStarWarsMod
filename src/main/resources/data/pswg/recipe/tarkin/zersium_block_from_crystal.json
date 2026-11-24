@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pswg:zersium_block",
+  "pattern": [
+    "aaa",
+    "aaa",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "pswg:zersium_crystal"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "pswg:zersium_block"
+  }
+}

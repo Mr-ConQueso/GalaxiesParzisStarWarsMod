@@ -1,0 +1,9 @@
+{
+  "display": {},
+  "textures": {
+    "particle": "pswg_gadgets:block/model/fragmentation_grenade_block"
+  },
+  "loader": "pswg:g3d",
+  "g3d": "pswg_gadgets:block/fragmentation_grenade_block_2",
+  "render_type": "minecraft:cutout"
+}

@@ -14,14 +14,12 @@ public final class DrinkColors
 
 	public static void register(RegisterColorHandlersEvent.Item event)
 	{
-		for (var glass : DrinkItems.glassContainers())
-			event.register(DrinkColors::tint, glass.filled().get());
+		for (var container : DrinkItems.CONTAINERS)
+			event.register((stack, layer) -> layer == container.tintLayer() ? tint(stack) : -1, container.filled().get());
 	}
 
-	private static int tint(ItemStack stack, int layer)
+	private static int tint(ItemStack stack)
 	{
-		if (layer != 1)
-			return -1;
 		var dye = stack.get(DataComponents.DYED_COLOR);
 		if (dye != null)
 			return DyedItemColor.getOrDefault(stack, DEFAULT_COLOR);

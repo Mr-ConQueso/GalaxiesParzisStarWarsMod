@@ -1,0 +1,6 @@
+{
+  "textures": {
+    "base": "pswg:textures/armor/rebel_forest_helmet.png",
+    "particle": "#base"
+  }
+}

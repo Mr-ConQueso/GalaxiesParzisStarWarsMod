@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "group": "pswg:cooked_nerf_chop",
+  "result": {
+    "id": "pswg:cooked_nerf_chop"
+  },
+  "experience": 0.35,
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "pswg:nerf_chop"
+  }
+}

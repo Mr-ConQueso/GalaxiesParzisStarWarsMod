@@ -1,0 +1,8 @@
+{
+  "loader": "pswg:connected_texture",
+  "textures": {
+    "border": "pswg:block/rusted_large_imperial_plating_border",
+    "center": "pswg:block/rusted_large_imperial_plating",
+    "particle": "pswg:block/rusted_large_imperial_plating_border"
+  }
+}
