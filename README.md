@@ -1,43 +1,21 @@
-![Galaxies: Parzi's Star Wars Mod](https://raw.githubusercontent.com/Parzivail-Modding-Team/GalaxiesParzisStarWarsMod/master/resources/images/logo_medium.png "Galaxies: Parzi's Star Wars Mod")
+# Galaxies: Parzi’s Star Wars Mod for NeoForge
 
-# Galaxies: Parzi's Star Wars Mod (PSWG) Port for Minecraft Neoforge 1.21.1
+This fork is building a native NeoForge port for Minecraft 1.21.1. The target combines the current PSWG development bundle and playable content from the Fabric 1.20.1 release. The port is in progress. See [the parity matrix](PORT_PARITY.md) for implemented and pending features.
 
-![GitHub downloads](https://img.shields.io/github/downloads/Parzivail-Modding-Team/GalaxiesParzisStarWarsMod/total.svg)
-![Discord](https://img.shields.io/discord/412945916476129280.svg)
+## Development
 
-## Community and Support
-You can join the community in [the Discord server!](https://discord.gg/54MVQZZ) I also encourage everyone to voice your suggestions, comments, and questions in the Discord.
+Use Java 21 and the included Gradle wrapper.
 
-If you'd like to help support and sustain the mod, please consider becoming a donor!
+| Command | Purpose |
+| --- | --- |
+| `./gradlew build` | Build the development JAR in `build/libs` |
+| `./gradlew runData` | Regenerate the 1.21.1 item models, block tags, and loot tables |
+| `./gradlew runGameTestServer` | Check behavior on the dedicated GameTest server |
+| `./gradlew runClient` | Start the NeoForge development client |
+| `./gradlew runServer` | Start an isolated dedicated server under `run/server` |
 
-[![Become a donor!](https://storage.ko-fi.com/cdn/brandasset/kofi_bg_tag_white.png)](https://ko-fi.com/parzivail/tiers)
+Use a fresh world for this port. The [parity matrix](PORT_PARITY.md) records the pinned source revisions and verification status.
 
-## Building
-PSWG builds using the Gradle build system. I recommend you use IntelliJ as an IDE. Simply import the gradle project, setup your development workspace, and build.
+## Credits
 
-* Set up your development workspace by importing the Gradle project
-* Decompile Minecraft sources: `gradlew genSources`
-* All dependencies are met with Maven and are subsequently compiled into the resulting jarfile.
-* Build a jarfile with `gradlew build` to produce `pswg-<version>.jar` in `./build/libs`.
-
-Recommended:
-
-* [MinecraftDev IntelliJ IDEA Plugin](https://plugins.jetbrains.com/plugin/8327)
-
-## Contributing
-Please only create pull requests for content additions or bugfixes (i.e. not as a way to report issues or post suggestions).
-
-Things to consider:
-
-* Before spending a lot of time on adding a feature, please discuss feature additions with the team on Discord.
-* Conform to the code style of the class you are editing or similar classes.
-* Search previous pull requests to make sure the feature you're adding or the bug you are fixing hasn't already:
-    * Been implemented.
-    * Been rejected.
-
-## Auxillary Licensing Information
-Some ideas and concepts Copyright or Trademark Lucasfilm LTD., LucasArts, or Disney.
-
-Non-code assets [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-
-If you are a modpack owner or distributor, you are fully responsible for supporting this mod's integration with the pack in form and function. If an issue is *caused* by this mod, you or the player is responsible for posting a support ticket/issue here.
+Galaxies was created by the [Parzivail Modding Team](https://github.com/Parzivail-Modding-Team/GalaxiesParzisStarWarsMod). Some ideas and concepts are copyright or trademarks of Lucasfilm Ltd., LucasArts, or Disney. Code is licensed under [LGPL-3.0](LICENSE). Unless otherwise stated, non-code assets are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).

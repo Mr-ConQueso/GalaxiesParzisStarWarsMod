@@ -1,9 +1,0 @@
-{
-  "type": "pswg:growth_chamber",
-  "ingredient": {
-    "item": "pswg:raw_bismuth"
-  },
-  "result": {
-    "id": "pswg:bismuth"
-  }
-}

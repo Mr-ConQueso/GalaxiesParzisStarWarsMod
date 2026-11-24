@@ -1,77 +1,32 @@
-name: build
+name: NeoForge build
+
 on:
   pull_request:
   push:
-    paths-ignore:
-      - resources/**
-    branches-ignore:
-      - l10n
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
   build:
-    strategy:
-      matrix:
-        # Use these Java versions
-        java: [
-          25,    # Current Java LTS & minimum supported by Minecraft
-        ]
     runs-on: ubuntu-24.04
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          filter: tree:0
-      - name: setup jdk ${{ matrix.java }}
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: ${{ matrix.java }}
-      - name: setup python for uploader
-        if: github.ref == 'refs/heads/develop'
-        uses: actions/setup-python@v5
-        with:
-          python-version : '3.12'
-          cache: pip
-      - name: cache toolchain runtime data
-        uses: actions/cache@v4
-        with:
-          path: |
-            toolchain/bin
-            toolchain/work/cache
-          key: toolchain-cache-${{ runner.os }}-${{ hashFiles('toolchain/toolchain.properties', 'toolchain.toml') }}
-      - name: build
-        id: toolchain
-        run: ./toolchain/toolchain.sh artifacts assemble --module pswg_entrypoint --ci-build
-      - name: Get Id Token
-        if: github.ref == 'refs/heads/develop'
-        uses: actions/github-script@v7
-        id: idtoken
-        with:
-          script: |
-            let id_token = await core.getIDToken("https://mc.pswg.dev")
-            core.setOutput('id_token', id_token)
-      - name: upload
-        if: always() && github.ref == 'refs/heads/develop' && (steps.toolchain.outcome == 'success' || steps.toolchain.outcome == 'failure')
-        continue-on-error: true
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Check source and generated data
         run: |
-          pip install -r scripts/requirements.txt
-          ARTIFACT_DIR="$(find toolchain/work/artifacts -mindepth 1 -maxdepth 1 -type d | sort | tail -n 1)"
-          UPLOAD_DIR="toolchain/work/upload-dev"
-          rm -rf "$UPLOAD_DIR"
-          mkdir -p "$UPLOAD_DIR"
-          if [ -n "$ARTIFACT_DIR" ]; then
-            shopt -s nullglob
-            ARTIFACTS=("$ARTIFACT_DIR"/pswg-*.jar)
-            if [ ${#ARTIFACTS[@]} -gt 0 ]; then
-              cp "${ARTIFACTS[@]}" "$UPLOAD_DIR"/
-            fi
-          fi
-          cd "$UPLOAD_DIR"
-          python ../../../scripts/upload_dev.py --token ${{ steps.idtoken.outputs.id_token }} --result ${{ steps.toolchain.outcome }} --webhook ${{ secrets.DISCORD_DEV_FEED_WEBHOOK }} --webhook ${{ secrets.DISCORD_RCOE_WEBHOOK }} --serverupdate ${{ secrets.SERVER_UPDATER }}
-        env:
-          BUILD_NUMBER: ${{ github.run_number }}
+          ./gradlew build runData
+          git diff --exit-code -- src/generated/resources
+          test -z "$(git status --porcelain --untracked-files=all -- src/generated/resources)"
+      - name: Run server GameTests
+        run: ./gradlew runGameTestServer
+      - name: Upload NeoForge JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: pswg-neoforge-1.21.1
+          path: build/libs/pswg-*.jar
+          if-no-files-found: error
