@@ -24,13 +24,19 @@ final class WakeParticles
 			super(level, x, y, z, 0, 0, 0, option.getState());
 			updateSprite(option.getState(), option.getPos());
 			maxSize = 0.04F * (1 + random.nextFloat() * random.nextFloat() * 6);
+			quadSize = 0;
 			gravity = 0.5F;
 			friction = 0.98F;
 			setParticleSpeed(horizontal * (2 * random.nextDouble() - 1), vertical * (0.9 + 0.2 * random.nextDouble()),
 					depth * (2 * random.nextDouble() - 1));
 		}
 
-		@Override public float getQuadSize(float partial) { return maxSize * growth(age, lifetime); }
+		@Override
+		public void tick()
+		{
+			quadSize = maxSize * growth(age, lifetime);
+			super.tick();
+		}
 	}
 
 	static final class WaterWake extends TextureSheetParticle
@@ -45,6 +51,7 @@ final class WakeParticles
 			float shade = 0.7F + random.nextFloat() * 0.3F;
 			setColor(shade, shade, shade);
 			maxSize = 0.1F * (1 + random.nextFloat() * random.nextFloat() * 6);
+			quadSize = 0;
 			lifetime = (int) (16 / (random.nextFloat() * 0.8 + 0.2)) + 2;
 			gravity = 0.5F;
 			friction = 0.98F;
@@ -56,12 +63,12 @@ final class WakeParticles
 		@Override
 		public void tick()
 		{
+			quadSize = maxSize * growth(age, lifetime);
 			super.tick();
 			if (isAlive())
 				setSpriteFromAge(sprites);
 		}
 
-		@Override public float getQuadSize(float partial) { return maxSize * growth(age, lifetime); }
 		@Override public ParticleRenderType getRenderType() { return ParticleRenderType.PARTICLE_SHEET_OPAQUE; }
 	}
 

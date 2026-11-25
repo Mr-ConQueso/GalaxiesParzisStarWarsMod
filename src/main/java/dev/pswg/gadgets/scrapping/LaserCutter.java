@@ -132,7 +132,7 @@ public final class LaserCutter extends Item
 		Vec3 normal = Vec3.atLowerCornerOf(face.getNormal());
 		var mark = new Vec3(markCoordinate(point.x, normal.x), markCoordinate(point.y, normal.y), markCoordinate(point.z, normal.z));
 		// A zero-count particle packet forwards the offsets as a single face normal.
-		level.sendParticles(Workstations.LASER_CUT.get(), mark.x, mark.y, mark.z, 0, normal.x, normal.y, normal.z, 0.05);
+		level.sendParticles(Workstations.LASER_CUT.get(), mark.x, mark.y, mark.z, 0, normal.x, normal.y, normal.z, 1);
 	}
 
 	private static double markCoordinate(double point, double normal)

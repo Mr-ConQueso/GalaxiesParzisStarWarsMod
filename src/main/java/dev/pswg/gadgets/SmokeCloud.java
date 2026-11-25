@@ -17,17 +17,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class SmokeCloud extends Entity implements IEntityWithComplexSpawn
 {
 	public static final int MAX_AGE = 900;
 	private static final EntityDataAccessor<CompoundTag> VISUAL_CELLS = SynchedEntityData.defineId(SmokeCloud.class, EntityDataSerializers.COMPOUND_TAG);
 	private Map<BlockPos, Integer> visualCells = Map.of();
-	private final Map<BlockPos, Float> cells = new HashMap<>();
+	private final Map<BlockPos, Float> cells = new ConcurrentHashMap<>(1024);
 	private final Map<UUID, Float> exposure = new HashMap<>();
 	private final boolean nerve;
 	private int age;
@@ -88,11 +88,12 @@ public final class SmokeCloud extends Entity implements IEntityWithComplexSpawn
 		if (age == 1 && cells.isEmpty())
 		{
 			var origin = blockPosition().above();
-			if (server.getBlockState(origin).isSolid())
+			var state = server.getBlockState(origin);
+			if (!state.is(Demolitions.GAS_PASS_THROUGH) && state.isSolid())
 				origin = blockPosition();
 			cells.put(origin, nerve ? 80F : 240F);
 		}
-		if (age % 2 == 0)
+		if (age > 1)
 			diffuse(server);
 		if (nerve)
 			applyExposure(server);
@@ -102,36 +103,40 @@ public final class SmokeCloud extends Entity implements IEntityWithComplexSpawn
 
 	private void diffuse(ServerLevel level)
 	{
-		var changed = new HashMap<>(cells);
-		var neighbors = new ArrayList<BlockPos>(6);
+		int totalPermeability = 0;
+		float diffusion = nerve ? 0.7F : 0.9F;
 		for (var cell : cells.entrySet())
 		{
 			var pos = cell.getKey();
 			var current = level.getBlockState(pos);
-			neighbors.clear();
+			int openFaces = 0;
 			for (var face : Direction.values())
 			{
 				var adjacent = pos.relative(face);
 				if (!level.hasChunkAt(adjacent))
 					continue;
 				var state = level.getBlockState(adjacent);
-				if ((state.is(Demolitions.GAS_PASS_THROUGH) || !state.isFaceSturdy(level, adjacent, face.getOpposite()))
-						&& (current.is(Demolitions.GAS_PASS_THROUGH) || !current.isFaceSturdy(level, pos, face)))
-					neighbors.add(adjacent);
+				if (!state.isFaceSturdy(level, adjacent, face.getOpposite()) && !current.isFaceSturdy(level, pos, face))
+					openFaces |= 1 << face.ordinal();
 			}
-			for (var adjacent : neighbors)
+			// Fabric accumulates permeability across the cloud's whole update and applies each transfer in place.
+			totalPermeability += Integer.bitCount(openFaces);
+			float concentration = cell.getValue();
+			for (var face : Direction.values())
 			{
-				float transferred = (nerve ? 0.7F : 0.9F) * (cell.getValue() - cells.getOrDefault(adjacent, 0F)) / neighbors.size();
+				if ((openFaces & (1 << face.ordinal())) == 0)
+					continue;
+				var adjacent = pos.relative(face);
+				float transferred = diffusion * (concentration - cells.getOrDefault(adjacent, 0F)) / totalPermeability;
 				if (transferred > 0.00625F)
 				{
-					changed.merge(adjacent, transferred, Float::sum);
-					changed.merge(pos, -transferred, Float::sum);
+					cells.merge(adjacent, transferred, Float::sum);
+					concentration -= transferred;
 				}
 			}
+			cells.put(pos, concentration);
 		}
-		changed.values().removeIf(amount -> amount < 0.01F);
-		cells.clear();
-		cells.putAll(changed);
+		cells.values().removeIf(amount -> amount < 0.01F);
 	}
 
 	private void syncVisualCells()

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "HumanoidArmorLayerMixin",
+    "ParticleEngineAccessor",
     "PlayerArmorOverlayMixin",
     "LaserCutterMouseMixin",
     "BlasterMouseMixin",

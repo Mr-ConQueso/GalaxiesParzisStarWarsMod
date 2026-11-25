@@ -145,8 +145,8 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 				hit = water;
 		}
 		boolean collided = hit.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hit);
-		if (mode == FiringMode.SLUGTHROWER && level().isClientSide)
-			BlasterEffects.slugTrail(level(), start, collided ? hit.getLocation() : start.add(velocity));
+		if (mode == FiringMode.SLUGTHROWER && level().isClientSide && tickCount > 1)
+			BlasterEffects.slugTrail(level(), start, start.add(velocity));
 		if (collided)
 		{
 			range -= hit.getLocation().distanceTo(start);

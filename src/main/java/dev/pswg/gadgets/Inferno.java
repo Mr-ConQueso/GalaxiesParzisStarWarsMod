@@ -35,10 +35,12 @@ final class Inferno
 		if (reached.add(center))
 			burn(level, center, true);
 		if (age % 2 == 0)
-			spread(level, charge, center, age <= FIRE_WAVE_TICKS);
+			spread(level, charge, center);
+		if (age <= FIRE_WAVE_TICKS)
+			flameWave(level, charge.position(), (double) age * MAX_RADIUS / FIRE_WAVE_TICKS);
 	}
 
-	private void spread(ServerLevel level, GadgetCharge charge, BlockPos center, boolean flameWave)
+	private void spread(ServerLevel level, GadgetCharge charge, BlockPos center)
 	{
 		var next = new HashSet<BlockPos>();
 		for (var visited : reached)
@@ -64,11 +66,21 @@ final class Inferno
 			burn(level, pos, inner);
 			if (!level.isEmptyBlock(pos))
 				for (var side : sides)
-				{
 					scorch(level, pos, side, inner);
-					if (flameWave)
-						flames(level, pos, side);
-				}
+		}
+	}
+
+	private void flameWave(ServerLevel level, Vec3 origin, double radius)
+	{
+		for (var pos : reached)
+		{
+			var state = level.getBlockState(pos);
+			if (state.isAir() || !state.getFluidState().isEmpty() || !pos.closerToCenterThan(origin, radius + 1)
+					|| pos.closerToCenterThan(origin, radius))
+				continue;
+			for (var side : Direction.values())
+				if (level.isEmptyBlock(pos.relative(side)))
+					flames(level, pos, side);
 		}
 	}
 
@@ -108,7 +120,7 @@ final class Inferno
 		for (int i = 0; i < 4; i++)
 		{
 			var at = center.add(tangent.scale((i & 1) == 0 ? 0.25 : -0.25)).add(bitangent.scale((i & 2) == 0 ? 0.25 : -0.25));
-			level.sendParticles(particle, at.x, at.y, at.z, 0, normal.x, normal.y, normal.z, inner ? 0.05 : 0.15);
+			level.sendParticles(particle, at.x, at.y, at.z, 0, normal.x, normal.y, normal.z, 1);
 		}
 	}
 

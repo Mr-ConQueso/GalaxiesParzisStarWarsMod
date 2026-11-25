@@ -25,11 +25,11 @@ final class BlasterEffects
 		for (int i = 0; i < 16; i++)
 		{
 			var scatter = randomVector(level, 0.03);
-			spawn(level, GalaxiesParticles.SPARK.get(), point, scattered(level, reflection, scatter, 0.3));
+			spawn(level, GalaxiesParticles.SPARK.get(), contact, scattered(level, reflection, scatter, 0.3));
 			if (i % 3 == 0)
-				spawn(level, debris, point, scattered(level, reflection, scatter, 0.15));
+				spawn(level, debris, contact, scattered(level, reflection, scatter, 0.15));
 			if (i % 2 == 0)
-				spawn(level, ParticleTypes.SMOKE, point, scattered(level, reflection, scatter, 0.08));
+				spawn(level, ParticleTypes.SMOKE, contact, scattered(level, reflection, scatter, 0.08));
 		}
 	}
 

@@ -221,14 +221,13 @@ public final class GadgetCharge extends Projectile
 		}
 
 		var face = mountedFace();
-		if (face != null && isPrimed() && !isDetonating() && tickCount % 2 == 0)
+		if (face != null && isPrimed() && !isDetonating())
 		{
 			var direction = Vec3.atLowerCornerOf(face.getNormal());
-			for (double distance = BEAM_START; distance < beamLength(); distance += 0.015)
+			for (double distance = 0.015; distance < beamLength(); distance += 0.015)
 			{
 				var point = position().add(direction.scale(distance));
-				level().addParticle(Demolitions.WIRE_LASER.get(), point.x, point.y, point.z,
-						direction.x * 0.001, direction.y * 0.001, direction.z * 0.001);
+				level().addParticle(Demolitions.WIRE_LASER.get(), point.x, point.y, point.z, 0, 0, 0);
 			}
 		}
 		else if (isInWater() && !entityData.get(SETTLED) && !isDetonating())
@@ -396,7 +395,7 @@ public final class GadgetCharge extends Projectile
 		for (int i = 0; i < count; i++)
 		{
 			double rise = onSurface ? Math.abs(random.nextGaussian() * 0.8) : random.nextGaussian() * 0.4;
-			level().addParticle(Demolitions.FRAGMENTATION_SPARK.get(), getX(), getY() + 0.05, getZ(),
+			level().addParticle(Demolitions.FRAGMENTATION_SPARK.get(), getX(), getY(), getZ(),
 					random.nextGaussian() * 0.5, rise, random.nextGaussian() * 0.5);
 		}
 	}
