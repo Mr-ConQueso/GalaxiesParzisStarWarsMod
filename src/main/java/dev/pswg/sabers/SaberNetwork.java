@@ -24,12 +24,9 @@ public final class SaberNetwork
 	{
 		var stack = player.getItemInHand(action.hand());
 		if (!player.isAlive() || player.isSpectator() || player.isSleeping() || player.containerMenu != player.inventoryMenu
-				|| !(stack.getItem() instanceof SaberItem))
+				|| action.throwBlade() || !(stack.getItem() instanceof SaberItem))
 			return;
-		if (action.throwBlade())
-			SaberItem.throwBlade(player.serverLevel(), player, action.hand());
-		else
-			SaberItem.toggle(player.serverLevel(), player, stack);
+		SaberItem.toggle(player.serverLevel(), player, stack);
 	}
 
 	public record Action(InteractionHand hand, boolean throwBlade) implements CustomPacketPayload

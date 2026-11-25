@@ -1,6 +1,10 @@
 {
   "loader": "pswg:p3d",
-  "p3d": "pswg:block/segmented_crate",
+  "p3d": "pswg:block/released_segmented_crate",
+  "textures": {
+    "texture": "pswg:block/model/segmented_crate/gray",
+    "particle": "pswg:block/model/segmented_crate/gray_particle"
+  },
   "parent": "minecraft:block/block",
   "fit_item": true,
   "display": {
@@ -16,9 +20,5 @@
         0.94
       ]
     }
-  },
-  "textures": {
-    "texture": "pswg:trims/blocks/model/segmented_crate_gray",
-    "particle": "pswg:trims/blocks/model/segmented_crate_gray"
   }
 }

@@ -1,94 +1,74 @@
 package dev.pswg.mobs;
 
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 
-import java.util.EnumSet;
-
-public final class Worrt extends PathfinderMob
+public final class Worrt extends Rabbit
 {
-	private static final EntityDataAccessor<Integer> TONGUE_TARGET = SynchedEntityData.defineId(Worrt.class, EntityDataSerializers.INT);
-
-	public Worrt(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
-
-	@Override
-	protected void defineSynchedData(SynchedEntityData.Builder data)
+	public Worrt(EntityType<? extends Worrt> type, Level level)
 	{
-		super.defineSynchedData(data);
-		data.define(TONGUE_TARGET, -1);
+		super(type, level);
 	}
-
-	public int tongueTarget() { return entityData.get(TONGUE_TARGET); }
 
 	@Override
 	protected void registerGoals()
 	{
-		goalSelector.addGoal(0, new FloatGoal(this));
-		goalSelector.addGoal(1, new PanicGoal(this, 2));
-		goalSelector.addGoal(2, new TongueGoal());
-		goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1));
-		goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6));
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, SandSkitter.class, 5, true, false, entity -> entity.getType().is(Creatures.WORRT_FOOD)));
-	}
-
-	private final class TongueGoal extends Goal
-	{
-		private int remaining;
-		private int cooldown;
-
-		TongueGoal() { setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK)); }
-		@Override public boolean canUse()
+		goalSelector.addGoal(1, new FloatGoal(this));
+		goalSelector.addGoal(1, new PanicGoal(this, 0.5)
 		{
-			return --cooldown <= 0 && getTarget() != null && getTarget().isAlive() && distanceToSqr(getTarget()) < 36;
-		}
-		@Override public boolean canContinueToUse() { return remaining > 0 && getTarget() != null && getTarget().isAlive(); }
-		@Override public boolean requiresUpdateEveryTick() { return true; }
-
-		@Override
-		public void start()
-		{
-			remaining = 20;
-			getNavigation().stop();
-			entityData.set(TONGUE_TARGET, getTarget().getId());
-			playSound(SoundEvents.FROG_TONGUE, 1, 1);
-		}
-
-		@Override
-		public void tick()
-		{
-			remaining--;
-			var target = getTarget();
-			if (target == null || !hasLineOfSight(target))
-				return;
-			getLookControl().setLookAt(target);
-			if (distanceToSqr(target) <= 0.25)
+			@Override
+			public void tick()
 			{
-				target.discard();
-				playSound(SoundEvents.PLAYER_BURP, 1, 1);
-				remaining = 0;
+				super.tick();
+				setSpeedModifier(0.5);
 			}
-			else
-				target.setDeltaMovement(position().subtract(target.position()).normalize().scale(0.75));
-		}
-
-		@Override
-		public void stop()
-		{
-			entityData.set(TONGUE_TARGET, -1);
-			setTarget(null);
-			cooldown = 20;
-		}
+		});
+		goalSelector.addGoal(4, new AvoidEntityGoal<>(this, Player.class, 8, 0.3, 0.7));
+		goalSelector.addGoal(4, new AvoidEntityGoal<>(this, Monster.class, 4, 0.3, 0.7));
+		goalSelector.addGoal(6, new RandomStrollGoal(this, 0.7, 5000));
+		goalSelector.addGoal(11, new LookAtPlayerGoal(this, Player.class, 10));
 	}
+
+	@Override
+	protected float getJumpPower()
+	{
+		if (horizontalCollision || moveControl.hasWanted() && moveControl.getWantedY() > getY() + 0.5)
+			return 0.75F;
+		var path = navigation.getPath();
+		if (path != null && !path.isDone() && path.getNextEntityPos(this).y > getY() + 0.5)
+			return 0.5F;
+		return (float) moveControl.getSpeedModifier() * 0.5F;
+	}
+
+	public float airborneProgress(float partial)
+	{
+		var position = getPosition(partial);
+		var ground = level().clip(new ClipContext(position, position.add(0, -1, 0),
+				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+		return ground.getType() == HitResult.Type.MISS ? 1F : (float) Math.min(1, position.distanceTo(ground.getLocation()));
+	}
+
+	@Override protected SoundEvent getJumpSound() { return SoundEvents.EMPTY; }
+	@Override protected SoundEvent getAmbientSound() { return null; }
+	@Override protected SoundEvent getHurtSound(DamageSource source) { return null; }
+	@Override protected SoundEvent getDeathSound() { return null; }
+	@Override public boolean canSpawnSprintParticle() { return false; }
+	@Override public boolean isFood(ItemStack stack) { return false; }
+	@Override public Worrt getBreedOffspring(ServerLevel level, AgeableMob other) { return null; }
 }

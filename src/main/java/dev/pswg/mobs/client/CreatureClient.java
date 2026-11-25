@@ -17,7 +17,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -32,6 +31,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import org.joml.Matrix4f;
 
 import java.util.List;
@@ -55,6 +55,12 @@ public final class CreatureClient
 
 	@SubscribeEvent
 	public static void menus(RegisterMenuScreensEvent event) { event.register(Creatures.DROID_MENU.get(), DroidScreen::new); }
+
+	@SubscribeEvent
+	public static void reload(RegisterClientReloadListenersEvent event)
+	{
+		event.registerReloadListener((net.minecraft.server.packs.resources.ResourceManagerReloadListener) resources -> AstromechPaint.clear());
+	}
 
 	private static final class CreatureRenderer<T extends Mob> extends MobRenderer<T, CreatureModel<T>>
 	{
@@ -83,20 +89,6 @@ public final class CreatureClient
 			}
 		}
 
-		@Override
-		public void render(T mob, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light)
-		{
-			super.render(mob, yaw, partial, pose, buffers, light);
-			if (mob instanceof Worrt worrt && worrt.level().getEntity(worrt.tongueTarget()) instanceof Mob prey)
-			{
-				var delta = prey.getPosition(partial).subtract(worrt.getPosition(partial)).add(0, prey.getBbHeight() * 0.5, 0);
-				var line = buffers.getBuffer(RenderType.lines());
-				var normal = delta.add(0, -0.23, 0).normalize().toVector3f();
-				line.addVertex(pose.last().pose(), 0, 0.23F, 0).setColor(0xffdc695f).setNormal(normal.x, normal.y, normal.z);
-				line.addVertex(pose.last().pose(), (float) delta.x, (float) delta.y, (float) delta.z)
-						.setColor(0xffdc695f).setNormal(normal.x, normal.y, normal.z);
-			}
-		}
 	}
 
 	private static final class CreatureModel<T extends Mob> extends HierarchicalModel<T>
@@ -140,16 +132,7 @@ public final class CreatureClient
 			{
 				var body = root().getChild("body");
 				if (mob instanceof Worrt worrt)
-				{
-					body.xRot += (float) Mth.clamp(worrt.getDeltaMovement().y, -0.5, 0.5) * 0.7F;
-					if (body.hasChild("head"))
-					{
-						body.getChild("head").yRot += yaw * Mth.DEG_TO_RAD * 0.25F;
-						body.getChild("head").xRot += pitch * Mth.DEG_TO_RAD * 0.25F;
-					}
-					if (body.hasChild("jaw"))
-						body.getChild("jaw").xRot += worrt.tongueTarget() >= 0 ? 0.55F : Mth.sin(age * 0.15F) * 0.03F;
-				}
+					WorrtPose.apply(body, worrt, age - worrt.tickCount, age, yaw, pitch);
 				else if (mob instanceof GalaxiesFish fish)
 					fish(body, fish, fish.isNoAi() ? 0 : age);
 			}
@@ -192,7 +175,7 @@ public final class CreatureClient
 	private static final class DroidRenderer extends EntityRenderer<Astromech>
 	{
 		DroidRenderer(EntityRendererProvider.Context context) { super(context); shadowRadius = 0.4F; }
-		@Override public ResourceLocation getTextureLocation(Astromech droid) { return Galaxies.id("textures/droid/r/preset/" + droid.paint() + ".png"); }
+		@Override public ResourceLocation getTextureLocation(Astromech droid) { return AstromechPaint.resolve(droid.paint()); }
 
 		@Override
 		public void render(Astromech droid, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light)
@@ -203,7 +186,8 @@ public final class CreatureClient
 				pose.pushPose();
 				pose.scale(0.625F, 0.625F, 0.625F);
 				pose.mulPose(Axis.YP.rotationDegrees(180 - yaw));
-				P3dRenderer.render(model, pose, buffers, part -> getTextureLocation(droid), part -> joint(droid, part, yaw, partial),
+				var texture = getTextureLocation(droid);
+				P3dRenderer.render(model, pose, buffers, part -> texture, part -> joint(droid, part, yaw, partial),
 						light, OverlayTexture.NO_OVERLAY);
 				pose.popPose();
 			}

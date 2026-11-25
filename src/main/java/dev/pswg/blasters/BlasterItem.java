@@ -269,7 +269,7 @@ public final class BlasterItem extends Item
 		{
 			float startHeat = (legacy == null ? heat : stats.heat().capacity()) + stats.heat().overheatPenalty();
 			state = state.withCooling(Mode.OVERHEAT, now, startHeat);
-			play(level, player, "overheat");
+			play(level, player, "overheat", legacy != null);
 		}
 		stack.set(Blasters.STATE.get(), state);
 
@@ -298,24 +298,24 @@ public final class BlasterItem extends Item
 		if (cooling.primaryBypassTolerance() > 0 && Math.abs(cursor - cooling.primaryBypassTime()) <= cooling.primaryBypassTolerance())
 		{
 			stack.set(Blasters.STATE.get(), state.bypass(now, false));
-			play(level, player, "bypass.primary");
+			play(level, player, "bypass.primary", definition.legacy().isPresent());
 		}
 		else if (cooling.secondaryBypassTolerance() > 0 && Math.abs(cursor - cooling.secondaryBypassTime()) <= cooling.secondaryBypassTolerance())
 		{
 			stack.set(Blasters.STATE.get(), state.bypass(now, true));
-			play(level, player, "bypass.secondary");
+			play(level, player, "bypass.secondary", definition.legacy().isPresent());
 		}
 		else
 		{
 			stack.set(Blasters.STATE.get(), state.withCooling(Mode.FAILED_OVERCHARGE, now, heat));
-			play(level, player, "bypass.failed");
+			play(level, player, "bypass.failed", definition.legacy().isPresent());
 		}
 	}
 
 	private static boolean dryFire(ServerLevel level, Player player, ItemStack stack, BlasterState state, long ready)
 	{
 		stack.set(Blasters.STATE.get(), state.withFireCooldown(ready).withoutBurst());
-		play(level, player, "dryfire");
+		play(level, player, "dryfire", true);
 		return false;
 	}
 
@@ -326,7 +326,7 @@ public final class BlasterItem extends Item
 			if (inventory.getItem(slot).is(Blasters.SMALL_POWER_PACK.get()))
 			{
 				inventory.removeItem(slot, 1);
-				play(level, player, "reload");
+				play(level, player, "reload", true);
 				return Math.min(75, Math.max(1, Math.round(legacy.mechanics().magazine()
 						* multiplier(stack, definition, "magazine_multiplier"))));
 			}
@@ -343,13 +343,15 @@ public final class BlasterItem extends Item
 		if (state.mode() == Mode.PASSIVE && heat > 0)
 		{
 			stack.set(Blasters.STATE.get(), state.withCooling(Mode.REQUESTED_BYPASS, level.getGameTime(), heat));
-			play(level, player, "vent");
+			if (definition.legacy().isEmpty())
+				play(level, player, "vent", false);
 		}
 	}
 
-	private static void play(ServerLevel level, Player player, String sound)
+	private static void play(ServerLevel level, Player player, String sound, boolean legacy)
 	{
-		level.playSound(null, player.blockPosition(), Blasters.sound(Blasters.id("blaster." + sound)), SoundSource.PLAYERS, 1F, pitch(level));
+		var id = legacy ? Galaxies.id("blaster." + sound) : Blasters.id("blaster." + sound);
+		level.playSound(null, player.blockPosition(), Blasters.sound(id), SoundSource.PLAYERS, 1F, legacy ? 1F : pitch(level));
 	}
 
 	private static float pitch(Level level)
@@ -384,9 +386,8 @@ public final class BlasterItem extends Item
 		long now = level.getGameTime();
 		if (!stack.has(Blasters.READY.get()))
 			stack.set(Blasters.READY.get(), now + definition.legacy().get().mechanics().readyTime());
-		if (living instanceof Player player && state.overchargeStart() >= 0 && overcharge(state, definition, now, 0F) == 0F)
+		if (living instanceof Player && state.overchargeStart() >= 0 && overcharge(state, definition, now, 0F) == 0F)
 		{
-			play(server, player, "bypass.secondary_end");
 			stack.set(Blasters.STATE.get(), new BlasterState(state.isAiming(), state.lastFired(), state.fireCooldown(),
 					state.cooldownStart(), state.lastTotalHeat(), state.lastVentingHeat(), state.mode(), state.burstBoltsRemaining(), -1));
 		}

@@ -25,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class Blasters
@@ -38,6 +39,7 @@ public final class Blasters
 	private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, NAMESPACE);
 	private static final DeferredRegister<net.neoforged.neoforge.attachment.AttachmentType<?>> PLAYER_STATES =
 			DeferredRegister.create(net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.ATTACHMENT_TYPES, NAMESPACE);
+	private static final DeferredRegister<SoundEvent> LEGACY_SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, Galaxies.MODID);
 	private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, NAMESPACE);
 
 	public static final Supplier<net.neoforged.neoforge.attachment.AttachmentType<Boolean>> PATROL = PLAYER_STATES.register("patrol_posture",
@@ -88,6 +90,11 @@ public final class Blasters
 			var sound = id("blaster." + name);
 			REGISTERED_SOUNDS.put(sound, SOUNDS.register(sound.getPath(), () -> SoundEvent.createVariableRangeEvent(sound)));
 		}
+		for (String name : List.of("reload", "dryfire", "overheat", "bypass.primary", "bypass.secondary", "bypass.failed", "hiss"))
+		{
+			var sound = Galaxies.id("blaster." + name);
+			REGISTERED_SOUNDS.put(sound, LEGACY_SOUNDS.register(sound.getPath(), () -> SoundEvent.createVariableRangeEvent(sound)));
+		}
 	}
 
 	public static SoundEvent sound(ResourceLocation id)
@@ -113,6 +120,7 @@ public final class Blasters
 		TABS.register(bus);
 		ENTITIES.register(bus);
 		SOUNDS.register(bus);
+		LEGACY_SOUNDS.register(bus);
 		bus.addListener(BlasterNetwork::register);
 		bus.addListener(Blasters::populateCombatTab);
 		NeoForge.EVENT_BUS.addListener(BlasterNetwork::syncDefinitions);

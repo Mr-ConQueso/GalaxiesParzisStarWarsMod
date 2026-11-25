@@ -1,0 +1,24 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/released_segmented_crate",
+  "textures": {
+    "texture": "pswg:block/model/segmented_crate/gray_panel",
+    "particle": "pswg:block/model/segmented_crate/gray_panel_particle"
+  },
+  "parent": "minecraft:block/block",
+  "fit_item": true,
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.94,
+        0.94,
+        0.94
+      ]
+    }
+  }
+}

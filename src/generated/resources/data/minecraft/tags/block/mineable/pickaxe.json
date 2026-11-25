@@ -276,6 +276,8 @@
     "pswg:green_segmented_crate",
     "pswg:red_segmented_crate",
     "pswg:black_segmented_crate",
+    "pswg:segmented_crate",
+    "pswg:gray_panel_crate",
     "pswg:toolbox",
     "pswg:large_pipe",
     "pswg:scaffold",

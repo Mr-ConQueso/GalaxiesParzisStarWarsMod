@@ -9,12 +9,15 @@ import dev.pswg.blasters.BlasterState;
 import dev.pswg.blasters.BlasterWorkbench;
 import dev.pswg.blasters.Blasters;
 import dev.pswg.blasters.LegacyBlaster.FiringMode;
+import dev.pswg.container.GalaxiesBlocks;
+import dev.pswg.container.GalaxiesItems;
 import dev.pswg.gadgets.Demolitions;
 import dev.pswg.gadgets.GadgetCharge;
 import dev.pswg.gadgets.SmokeCloud;
 import dev.pswg.jetpacks.JetpackNetwork;
 import dev.pswg.jetpacks.Jetpacks;
 import dev.pswg.mobs.Creatures;
+import dev.pswg.mobs.Astromech;
 import dev.pswg.rendering.p3d.P3dModel;
 import dev.pswg.rendering.p3d.P3dResources;
 import dev.pswg.sabers.SaberForge;
@@ -42,15 +45,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -133,11 +141,24 @@ public final class LegacyGameTests
 		bench.setItem(0, gun);
 		var menu = (BlasterWorkbench.Menu) bench.createMenu(4, player.getInventory(), player);
 		var scope = Galaxies.id("dlt19/scope_x");
-		int index = 0;
-		while (!menu.options().get(index).getKey().equals(scope)) index++;
-		test.assertTrue(!menu.clickMenuButton(player, index), "A closed menu rejects workbench edits");
+		var original = gun.copy();
+		var preview = original.copy();
+		test.assertTrue(BlasterWorkbench.toggleAttachment(preview, menu.definition(), scope), "A scope can be staged");
+		test.assertTrue(ItemStack.matches(original, bench.getItem(0)), "Staging leaves the live stack untouched");
+		var staged = BlasterItem.attachments(preview, menu.definition());
+		test.assertTrue(!menu.build(player, original, staged), "A closed menu rejects workbench edits");
 		player.containerMenu = menu;
-		test.assertTrue(menu.clickMenuButton(player, index), "A sniper scope can be fitted at the workbench");
+		var invalid = new Blasters.EquippedAttachments(staged.hud(), Map.of(Galaxies.id("invalid_slot"), scope));
+		test.assertTrue(!menu.build(player, original, invalid), "The server rejects illegal slot mappings");
+		test.assertTrue(menu.build(player, original, staged), "Build fits the staged scope");
+		test.assertTrue(!menu.build(player, original, staged), "A stale preview cannot overwrite a newer build");
+		var ee3 = Blasters.PRESETS.get(Galaxies.id("ee3")).toStack();
+		var ee3Definition = BlasterItem.definition(level, ee3);
+		var stock = Galaxies.id("ee3/stock_metal");
+		test.assertTrue(BlasterWorkbench.toggleAttachment(ee3, ee3Definition, stock)
+						&& BlasterWorkbench.toggleAttachment(ee3, ee3Definition, stock)
+						&& BlasterItem.attachments(ee3, ee3Definition).applied().containsValue(Galaxies.id("ee3/stock_wood")),
+				"Removing a staged alternate in a required slot restores the original default");
 		var data = bench.saveWithoutMetadata(level.registryAccess());
 		bench.loadWithComponents(data, level.registryAccess());
 		test.assertTrue(BlasterItem.hasFunction(bench.getItem(0), menu.definition(), "sniper_scope"), "The fitted scope survives block-entity reload");
@@ -171,9 +192,12 @@ public final class LegacyGameTests
 		player.containerMenu = player.inventoryMenu;
 		player.setItemInHand(InteractionHand.MAIN_HAND, blade.copy());
 		SaberItem.toggle(level, player, player.getMainHandItem());
-		SaberItem.throwBlade(level, player, InteractionHand.MAIN_HAND);
-		test.assertTrue(player.getMainHandItem().isEmpty() && !level.getEntitiesOfClass(ThrownSaber.class, new AABB(player.blockPosition()).inflate(4)).isEmpty(),
-				"A survival throw transfers the held hilt to one projectile");
+		var secondary = serverPlayer(test);
+		secondary.setItemInHand(InteractionHand.MAIN_HAND, player.getMainHandItem());
+		SaberNetwork.handle(secondary, new SaberNetwork.Action(InteractionHand.MAIN_HAND, true));
+		test.assertTrue(!secondary.getMainHandItem().isEmpty()
+						&& level.getEntitiesOfClass(ThrownSaber.class, new AABB(secondary.blockPosition()).inflate(4)).isEmpty(),
+				"The released secondary saber action leaves the hilt in hand");
 		test.succeed();
 	}
 
@@ -236,7 +260,90 @@ public final class LegacyGameTests
 		test.assertTrue(!Jetpacks.authorizedFlight(player), "Descending releases thrust");
 		Jetpacks.equip(player, ItemStack.EMPTY);
 		test.assertTrue(Jetpacks.equipped(player).isEmpty() && ItemStack.matches(armor, player.getItemBySlot(EquipmentSlot.CHEST)), "Removing the pack leaves chest armor equipped");
+		test.assertValueEqual(Jetpacks.ACCESSORIES.size(), 11, "Every released decorative back item is registered");
+		for (var item : Jetpacks.ACCESSORIES)
+		{
+			Jetpacks.equip(player, item.toStack());
+			copy.load(player.saveWithoutId(new CompoundTag()));
+			test.assertTrue(Jetpacks.equipped(copy).is(item.get()) && copy.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE),
+					"Back equipment survives reload alongside chest armor");
+			JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.ASCEND));
+			NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
+			test.assertTrue(!Jetpacks.authorizedFlight(player), "Decorative equipment cannot grant thrust");
+		}
 		test.succeed();
+	}
+
+	@GameTest(template = "port_test_empty")
+	public static void releasedCratesAndClusterLightCraft(GameTestHelper test)
+	{
+		var level = test.getLevel();
+		var crate = new BlockPos(2, 1, 2);
+		for (String name : List.of("segmented_crate", "gray_segmented_crate", "gray_panel_crate"))
+		{
+			var block = BuiltInRegistries.BLOCK.get(Galaxies.id(name));
+			test.setBlock(crate, block);
+			var storage = (Container) level.getBlockEntity(test.absolutePos(crate));
+			test.assertTrue(storage != null && storage.getContainerSize() == 15, "The released ID opens 15 slots: " + name);
+			test.assertValueEqual(BuiltInRegistries.ITEM.getKey(block.asItem()), Galaxies.id(name), "The crate has its released item ID");
+			var state = level.getBlockState(test.absolutePos(crate));
+			var east = state.setValue(BlockStateProperties.FACING, Direction.EAST).getShape(level, test.absolutePos(crate)).bounds();
+			var north = state.setValue(BlockStateProperties.FACING, Direction.NORTH).getShape(level, test.absolutePos(crate)).bounds();
+			test.assertTrue(east.getZsize() == 1.75 && north.getXsize() == 1.75, "The released long bounds rotate with placement");
+		}
+		var metal = GalaxiesItems.PLASTEEL_INGOT.toStack();
+		var panel = GalaxiesItems.LIGHT_PANEL.toStack();
+		var input = CraftingInput.of(3, 3, List.of(ItemStack.EMPTY, metal, ItemStack.EMPTY,
+				metal, panel, metal, ItemStack.EMPTY, metal, ItemStack.EMPTY));
+		var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).orElseThrow();
+		test.assertValueEqual(recipe.id(), Galaxies.id("tarkin/wall_cluster_light"), "The original recipe ID is loaded");
+		var result = recipe.value().assemble(input, level.registryAccess());
+		test.assertTrue(result.is(GalaxiesBlocks.WALL_CLUSTER_LIGHT.get().asItem()) && result.getCount() == 4, "Original crafting output");
+		test.succeed();
+	}
+
+	@GameTest(template = "port_test_empty")
+	public static void releasedCreatureMovementAndPaint(GameTestHelper test)
+	{
+		for (int x = 0; x < 8; x++)
+			for (int z = 0; z < 8; z++)
+				test.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+		var worrt = test.spawn(Creatures.WORRT.get(), new BlockPos(2, 1, 2));
+		var skitter = test.spawn(Creatures.SAND_SKITTER.get(), new BlockPos(2, 1, 3));
+		var droid = test.spawn(Creatures.DROIDS.getFirst().type().get(), new BlockPos(2, 1, 6));
+		var tag = droid.saveWithoutId(new CompoundTag());
+		var paint = new Astromech.Paint("r", false, "r2d2", 0xff00ff, 0xffff00, 0x00ffff);
+		var parameters = new CompoundTag();
+		parameters.putString("series", paint.series());
+		parameters.putBoolean("usingPaintPreset", paint.usingPaintPreset());
+		parameters.putString("paintPreset", paint.paintPreset());
+		parameters.putInt("baseTint", paint.baseTint());
+		parameters.putInt("domeTint", paint.domeTint());
+		parameters.putInt("paintTint", paint.paintTint());
+		tag.put("pswg:astromech_parameters", parameters);
+		droid.load(tag);
+		var copy = Creatures.DROIDS.getFirst().type().get().create(test.getLevel());
+		copy.load(droid.saveWithoutId(new CompoundTag()));
+		test.assertValueEqual(copy.paint(), paint, "The released custom paint NBT survives reload");
+		test.assertValueEqual(worrt.getAttributeValue(Attributes.MOVEMENT_SPEED), 1D, "Released Worrt movement attribute");
+		var hopTarget = test.absolutePos(new BlockPos(1, 1, 2));
+		worrt.getMoveControl().setWantedPosition(hopTarget.getX() + 0.5, hopTarget.getY(), hopTarget.getZ() + 0.5, 0.7);
+		worrt.jumpFromGround();
+		test.assertTrue(worrt.getDeltaMovement().y > 0.3, "Worrt uses the released speed-dependent hop");
+		var start = droid.position();
+		var target = test.absolutePos(new BlockPos(6, 1, 6));
+		droid.setOnGround(true);
+		test.assertTrue(droid.getNavigation().moveTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5, 0.2),
+				"The droid finds a route");
+		test.runAfterDelay(12, () -> {
+			test.assertTrue(droid.extension(1) > 0 && droid.extension(1) < 1, "The center leg is extending");
+			test.assertTrue(droid.position().distanceToSqr(start) < 0.01, "Leg extension precedes driving");
+			test.assertTrue(skitter.isAlive() && worrt.getTarget() == null, "The Worrt leaves nearby skitters alone");
+		});
+		test.runAfterDelay(40, () -> {
+			test.assertTrue(droid.position().distanceToSqr(start) > 0.05, "The droid travels once its leg is extended");
+			test.succeed();
+		});
 	}
 
 	@GameTest(template = "port_test_empty")

@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public final class LegacyConstruction
 {
@@ -57,8 +58,10 @@ public final class LegacyConstruction
 	public static final List<DeferredBlock<KyberCrateBlock>> KYBER_CRATES = List.of("orange", "gray", "black").stream()
 			.map(color -> block(color + "_kyber_crate", () -> new KyberCrateBlock(crate()))).toList();
 	public static final List<DeferredBlock<?>> SEGMENTED_CRATES = Arrays.stream(DyeColor.values())
-			.<DeferredBlock<?>>map(color -> block(color.getName() + "_segmented_crate", () ->
+			.<DeferredBlock<?>>map(color -> color == DyeColor.GRAY ? releasedCrate("gray_segmented_crate") : block(color.getName() + "_segmented_crate", () ->
 					new WideBlock<>(crate(), Crates.SEGMENTED, Block.box(1, 0, 0, 15, 16, 14), Block.box(1, 0, 2, 15, 16, 16)))).toList();
+	public static final DeferredBlock<CorrugatedCrateBlock> RELEASED_BROWN_CRATE = releasedCrate("segmented_crate");
+	public static final DeferredBlock<CorrugatedCrateBlock> GRAY_PANEL_CRATE = releasedCrate("gray_panel_crate");
 	public static final DeferredBlock<CorrugatedCrateBlock> TOOLBOX = block("toolbox",
 			() -> new CorrugatedCrateBlock(crate(), Shapes.block(), Crates.TOOLBOX));
 	public static final DeferredBlock<LargePipeBlock> LARGE_PIPE = block("large_pipe", () -> new LargePipeBlock(copper(3.5F).noOcclusion()));
@@ -107,6 +110,17 @@ public final class LegacyConstruction
 	private static BlockBehaviour.Properties crate()
 	{
 		return BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2.5F).noOcclusion();
+	}
+
+	private static DeferredBlock<CorrugatedCrateBlock> releasedCrate(String name)
+	{
+		return block(name, () -> new CorrugatedCrateBlock(crate().dynamicShape(), VoxelShapeUtil.getCentered(14, 28, 14), Crates.SEGMENTED));
+	}
+
+	static Block[] segmentedCrateBlocks()
+	{
+		return Stream.concat(SEGMENTED_CRATES.stream(), Stream.of(RELEASED_BROWN_CRATE, GRAY_PANEL_CRATE))
+				.map(DeferredHolder::get).toArray(Block[]::new);
 	}
 
 	private static <T extends Block> DeferredBlock<T> block(String name, Supplier<T> factory)

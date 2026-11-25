@@ -175,5 +175,50 @@
         "attenuation_distance": 128
       }
     ]
+  },
+  "blaster.reload": {
+    "sounds": [
+      "pswg:blaster/reload"
+    ],
+    "subtitle": "subtitle.pswg.blaster.reload"
+  },
+  "blaster.dryfire": {
+    "sounds": [
+      "pswg:blaster/dryfire"
+    ],
+    "subtitle": "subtitle.pswg.blaster.dryfire"
+  },
+  "blaster.overheat": {
+    "sounds": [
+      "pswg:blaster/overheat"
+    ],
+    "subtitle": "subtitle.pswg.blaster.overheat"
+  },
+  "blaster.bypass.primary": {
+    "sounds": [
+      "pswg:blaster/bypass/primary"
+    ],
+    "subtitle": "subtitle.pswg.blaster.bypass.primary"
+  },
+  "blaster.bypass.secondary": {
+    "sounds": [
+      "pswg:blaster/bypass/secondary"
+    ],
+    "subtitle": "subtitle.pswg.blaster.bypass.secondary"
+  },
+  "blaster.bypass.failed": {
+    "sounds": [
+      "pswg:blaster/bypass/failed"
+    ],
+    "subtitle": "subtitle.pswg.blaster.bypass.failed"
+  },
+  "blaster.hiss": {
+    "sounds": [
+      {
+        "name": "pswg:blaster/hiss",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitle.pswg.blaster.hiss"
   }
 }

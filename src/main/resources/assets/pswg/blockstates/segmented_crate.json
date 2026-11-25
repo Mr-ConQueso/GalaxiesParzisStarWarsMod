@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/segmented_crate"
+    },
+    "facing=south": {
+      "model": "pswg:block/segmented_crate",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/segmented_crate",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/segmented_crate",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "pswg:block/segmented_crate"
+    },
+    "facing=down": {
+      "model": "pswg:block/segmented_crate",
+      "x": 180
+    }
+  }
+}

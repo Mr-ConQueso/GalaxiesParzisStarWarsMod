@@ -21,7 +21,6 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -96,7 +95,6 @@ public final class SaberItem extends Item
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag)
 	{
 		tooltip.add(Component.translatable("tooltip.pswg.lightsaber.controls", Component.keybind("key.pswg.blaster_mode")));
-		tooltip.add(Component.translatable("tooltip.pswg.lightsaber.throw", Component.keybind("key.pswg.throw_saber")));
 	}
 
 	@Override
@@ -122,30 +120,6 @@ public final class SaberItem extends Item
 		if (!active && user.isUsingItem() && user.getUseItem() == stack)
 			user.stopUsingItem();
 		level.playSound(null, user.blockPosition(), (active ? Sabers.START : Sabers.STOP).get(), SoundSource.PLAYERS, 1, 1);
-	}
-
-	public static void throwBlade(ServerLevel level, Player player, InteractionHand hand)
-	{
-		var stack = player.getItemInHand(hand);
-		if (!(stack.getItem() instanceof SaberItem) || !state(stack).active() || player.getCooldowns().isOnCooldown(stack.getItem()))
-			return;
-		var thrown = Sabers.THROWN.get().create(level);
-		if (thrown == null)
-			return;
-		var direction = Vec3.directionFromRotation(player.getXRot(), player.getYRot());
-		thrown.setPos(player.getEyePosition().add(direction.scale(0.3)));
-		thrown.setOwner(player);
-		thrown.setItem(stack);
-		thrown.setDeltaMovement(direction.scale(0.6));
-		thrown.setXRot(player.getXRot());
-		thrown.setYRot(player.getYRot());
-		thrown.setRecoverable(!player.hasInfiniteMaterials());
-		if (level.addFreshEntity(thrown))
-		{
-			player.getCooldowns().addCooldown(stack.getItem(), 20);
-			if (!player.hasInfiniteMaterials())
-				stack.shrink(1);
-		}
 	}
 
 	@Override

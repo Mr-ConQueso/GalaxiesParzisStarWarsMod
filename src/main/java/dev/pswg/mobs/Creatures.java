@@ -30,7 +30,6 @@ public final class Creatures
 	private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, Galaxies.MODID);
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Galaxies.MODID);
 	private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, Galaxies.MODID);
-	public static final TagKey<EntityType<?>> WORRT_FOOD = TagKey.create(Registries.ENTITY_TYPE, Galaxies.id("worrt_food"));
 	public static final TagKey<Item> BANTHA_FOOD = TagKey.create(Registries.ITEM, Galaxies.id("bantha_tempt_items"));
 	public static final TagKey<Block> SKITTER_DIGGABLE = TagKey.create(Registries.BLOCK, Galaxies.id("sand_skitter_can_dig"));
 	public static final Supplier<EntityType<Worrt>> WORRT = entity("worrt", Worrt::new, MobCategory.CREATURE, 0.6F, 0.6F, 8);
@@ -90,7 +89,7 @@ public final class Creatures
 
 	private static void attributes(EntityAttributeCreationEvent event)
 	{
-		event.put(WORRT.get(), Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4).add(Attributes.MOVEMENT_SPEED, 0.2).add(Attributes.ATTACK_DAMAGE, 10).build());
+		event.put(WORRT.get(), Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4).add(Attributes.MOVEMENT_SPEED, 1).build());
 		event.put(BANTHA.get(), Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 40).add(Attributes.MOVEMENT_SPEED, 0.1).build());
 		event.put(SAND_SKITTER.get(), Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4).add(Attributes.MOVEMENT_SPEED, 0.2).add(Attributes.FOLLOW_RANGE, 8).build());
 		event.put(FAA.get(), AbstractFish.createAttributes().build());

@@ -98,7 +98,7 @@ public final class JetpackClient
 				open();
 
 		var keys = client.options;
-		boolean pressed = client.screen == null && !player.isPassenger() && !Jetpacks.equipped(player).isEmpty()
+		boolean pressed = client.screen == null && !player.isPassenger() && Jetpacks.equipped(player).getItem() instanceof Jetpacks.Jetpack
 				&& keys.keyJump.isDown();
 		if (pressed || sentThrust)
 		{
@@ -144,23 +144,21 @@ public final class JetpackClient
 		public void render(PoseStack pose, MultiBufferSource buffers, int light, AbstractClientPlayer player, float step, float walk,
 		                   float partial, float age, float yaw, float pitch)
 		{
-			if (!(Jetpacks.equipped(player).getItem() instanceof Jetpacks.Jetpack pack) || player.isInvisible())
+			if (!(Jetpacks.equipped(player).getItem() instanceof Jetpacks.BackEquipment pack) || player.isInvisible())
 				return;
-			var id = pack.appearance();
-			String armor = id.equals("jumptrooper_jetpack") ? "jumptrooper" : id;
 			int version = NemModels.INSTANCE.version();
 			if (reload != version)
 			{
 				models.clear();
 				reload = version;
 			}
-			var model = models.computeIfAbsent(armor, name -> NemModels.INSTANCE.bake(Galaxies.id("armor/" + name)));
-			if (model == null || !model.hasChild("body") || !model.getChild("body").hasChild("jetpack"))
+			var model = models.computeIfAbsent(pack.model(), name -> NemModels.INSTANCE.bake(Galaxies.id("armor/" + name)));
+			if (model == null || !model.hasChild("body") || !model.getChild("body").hasChild(pack.part()))
 				return;
 			pose.pushPose();
 			getParentModel().body.translateAndRotate(pose);
-			var texture = Galaxies.id("textures/armor/" + armor + ".png");
-			model.getChild("body").getChild("jetpack").render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)),
+			var texture = Galaxies.id("textures/armor/" + pack.texture() + ".png");
+			model.getChild("body").getChild(pack.part()).render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)),
 					light, OverlayTexture.NO_OVERLAY);
 			pose.popPose();
 		}

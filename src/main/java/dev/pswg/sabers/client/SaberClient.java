@@ -1,6 +1,5 @@
 package dev.pswg.sabers.client;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.pswg.Galaxies;
@@ -8,7 +7,6 @@ import dev.pswg.sabers.SaberItem;
 import dev.pswg.sabers.SaberNetwork;
 import dev.pswg.sabers.Sabers;
 import dev.pswg.sabers.ThrownSaber;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +25,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -39,8 +36,6 @@ import java.util.Map;
 @EventBusSubscriber(modid = Galaxies.MODID, value = Dist.CLIENT)
 public final class SaberClient
 {
-	private static final KeyMapping THROW = new KeyMapping("key.pswg.throw_saber", InputConstants.Type.KEYSYM,
-			InputConstants.KEY_R, "category.pswg.keybinds");
 	private static final Map<Entity, Hum> HUMS = new HashMap<>();
 
 	private SaberClient() {}
@@ -66,21 +61,18 @@ public final class SaberClient
 		}
 
 		@SubscribeEvent
-		public static void keys(RegisterKeyMappingsEvent event) { event.register(THROW); }
-
-		@SubscribeEvent
 		public static void menus(RegisterMenuScreensEvent event) { event.register(Sabers.FORGE_MENU.get(), SaberForgeScreen::new); }
 
 		@SubscribeEvent
 		public static void renderers(EntityRenderersEvent.RegisterRenderers event) { event.registerEntityRenderer(Sabers.THROWN.get(), ThrownRenderer::new); }
 	}
 
-	public static boolean send(Player player, boolean throwBlade)
+	public static boolean send(Player player)
 	{
 		for (InteractionHand hand : InteractionHand.values())
 			if (player.getItemInHand(hand).getItem() instanceof SaberItem)
 			{
-				PacketDistributor.sendToServer(new SaberNetwork.Action(hand, throwBlade));
+				PacketDistributor.sendToServer(new SaberNetwork.Action(hand, false));
 				return true;
 			}
 		return false;
@@ -90,9 +82,6 @@ public final class SaberClient
 	public static void tick(ClientTickEvent.Post event)
 	{
 		var client = Minecraft.getInstance();
-		while (THROW.consumeClick())
-			if (client.player != null && client.screen == null && !client.player.isSpectator() && !send(client.player, true))
-				dev.pswg.blasters.client.BlasterClient.ventLegacy(client.player);
 		HUMS.values().removeIf(Hum::isStopped);
 		if (client.level == null || client.player == null)
 		{

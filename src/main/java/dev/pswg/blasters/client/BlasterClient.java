@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterDefinition;
 import dev.pswg.blasters.BlasterDefinitions;
+import dev.pswg.blasters.BlasterBolt;
 import dev.pswg.blasters.BlasterItem;
 import dev.pswg.blasters.BlasterNetwork;
 import dev.pswg.blasters.BlasterState;
@@ -24,8 +25,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -42,6 +45,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.Map;
 
@@ -50,6 +54,8 @@ public final class BlasterClient
 {
 	private static final KeyMapping VENT = new KeyMapping("key.pswg.primary_action",
 			InputConstants.Type.KEYSYM, InputConstants.KEY_V, "category.pswg.keybinds");
+	private static final KeyMapping LEGACY_VENT = new KeyMapping("key.pswg.legacy_blaster_vent",
+			InputConstants.Type.KEYSYM, InputConstants.KEY_R, "category.pswg.keybinds");
 	private static final KeyMapping MODE = new KeyMapping("key.pswg.blaster_mode",
 			InputConstants.Type.KEYSYM, InputConstants.KEY_Z, "category.pswg.keybinds");
 	private static final KeyMapping PATROL = new KeyMapping("key.pswg.toggle_patrol_posture",
@@ -68,6 +74,7 @@ public final class BlasterClient
 		public static void registerKeys(RegisterKeyMappingsEvent event)
 		{
 			event.register(VENT);
+			event.register(LEGACY_VENT);
 			event.register(MODE);
 			event.register(PATROL);
 		}
@@ -171,6 +178,7 @@ public final class BlasterClient
 		{
 			attackDown = false;
 			while (VENT.consumeClick()) {}
+			while (LEGACY_VENT.consumeClick()) {}
 			while (MODE.consumeClick()) {}
 			while (PATROL.consumeClick()) {}
 			return;
@@ -178,9 +186,11 @@ public final class BlasterClient
 
 		if (VENT.consumeClick())
 			send(player, BlasterNetwork.Input.VENT);
+		if (LEGACY_VENT.consumeClick())
+			ventLegacy(player);
 		if (PATROL.consumeClick())
 			send(player, BlasterNetwork.Input.PATROL);
-		if (MODE.consumeClick() && !dev.pswg.sabers.client.SaberClient.send(player, false))
+		if (MODE.consumeClick() && !dev.pswg.sabers.client.SaberClient.send(player))
 			send(player, BlasterNetwork.Input.MODE);
 
 		if (!client.options.keyAttack.isDown())
@@ -211,6 +221,51 @@ public final class BlasterClient
 					send(player, BlasterNetwork.Input.REPEAT);
 				nextRepeat = now + Math.max(1, Math.round(definition.stats().automaticRepeatDelay()
 						/ BlasterItem.multiplier(stack, definition, "fire_rate_multiplier")));
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void boltFlyby(EntityTickEvent.Post event)
+	{
+		if (event.getEntity() instanceof BlasterBolt bolt && bolt.level().isClientSide && bolt.tickCount == 1
+				&& !bolt.isSilent() && bolt.hasLegacyFlyby())
+			Minecraft.getInstance().getSoundManager().play(new BoltHiss(bolt));
+	}
+
+	private static final class BoltHiss extends AbstractTickableSoundInstance
+	{
+		private final BlasterBolt bolt;
+
+		private BoltHiss(BlasterBolt bolt)
+		{
+			super(Blasters.sound(Galaxies.id("blaster.hiss")), SoundSource.PLAYERS, bolt.getRandom());
+			this.bolt = bolt;
+			looping = true;
+			tick();
+		}
+
+		@Override
+		public void tick()
+		{
+			var client = Minecraft.getInstance();
+			if (bolt.isRemoved() || bolt.level() != client.level)
+			{
+				stop();
+				return;
+			}
+			x = bolt.getX();
+			y = bolt.getY();
+			z = bolt.getZ();
+			var listener = client.getCameraEntity();
+			if (listener != null)
+			{
+				var source = bolt.getEyePosition();
+				var ear = listener.getEyePosition();
+				var sourceMotion = bolt.position().subtract(bolt.xo, bolt.yo, bolt.zo);
+				var listenerMotion = listener.position().subtract(listener.xo, listener.yo, listener.zo);
+				double approach = source.distanceTo(ear) - source.add(sourceMotion).distanceTo(ear.add(listenerMotion));
+				pitch = Mth.clamp(1F + (float) (approach / 13.75), 0.01F, 2F);
 			}
 		}
 	}

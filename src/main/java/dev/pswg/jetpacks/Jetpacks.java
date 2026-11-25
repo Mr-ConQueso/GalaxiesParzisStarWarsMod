@@ -43,6 +43,14 @@ public final class Jetpacks
 
 	public static final List<DeferredItem<Jetpack>> PACKS = List.of(pack("jumptrooper_jetpack"), pack("cj33_jetpack"),
 			pack("jt12_jetpack"), pack("z6_jetpack"), pack("rebel_jump_pack"));
+	public static final List<DeferredItem<BackEquipment>> ACCESSORIES = List.of(
+			accessory("artillerytrooper_backpack", "artillerytrooper", "legacy/artillerytrooper"),
+			accessory("sandtrooper_backpack", "sandtrooper", "legacy/sandtrooper"),
+			accessory("incineratortrooper_tank", "incineratortrooper", "legacy/incineratortrooper"),
+			accessory("brown_specialist_backpack", "specialist_backpack"), accessory("green_specialist_backpack", "specialist_backpack"),
+			accessory("white_light_backpack", "light_backpack"), accessory("green_light_backpack", "light_backpack"),
+			accessory("tan_light_backpack", "light_backpack"), accessory("white_heavy_backpack", "heavy_backpack"),
+			accessory("green_heavy_backpack", "heavy_backpack"), accessory("tan_heavy_backpack", "heavy_backpack"));
 	public static final Supplier<MenuType<Menu>> MENU = MENUS.register("jetpack_slot", () -> new MenuType<>(Menu::new, FeatureFlags.DEFAULT_FLAGS));
 	public static final Supplier<AttachmentType<ItemStack>> SLOT = ATTACHMENTS.register("jetpack_slot",
 			() -> AttachmentType.builder(() -> ItemStack.EMPTY).serialize(ItemStack.OPTIONAL_CODEC).build());
@@ -53,7 +61,18 @@ public final class Jetpacks
 
 	private static DeferredItem<Jetpack> pack(String id)
 	{
-		return ITEMS.register(id, () -> new Jetpack(id));
+		var model = id.equals("jumptrooper_jetpack") ? "jumptrooper" : id;
+		return ITEMS.register(id, () -> new Jetpack(model));
+	}
+
+	private static DeferredItem<BackEquipment> accessory(String id, String model)
+	{
+		return accessory(id, model, id);
+	}
+
+	private static DeferredItem<BackEquipment> accessory(String id, String model, String texture)
+	{
+		return ITEMS.register(id, () -> new BackEquipment(model, texture, "backpack"));
 	}
 
 	public static void register(IEventBus bus)
@@ -64,7 +83,10 @@ public final class Jetpacks
 		bus.addListener(JetpackNetwork::register);
 		bus.addListener((BuildCreativeModeTabContentsEvent event) -> {
 			if (event.getTabKey().equals(CreativeModeTabs.COMBAT))
+			{
 				PACKS.forEach(item -> event.accept(item.get()));
+				ACCESSORIES.forEach(item -> event.accept(item.get()));
+			}
 		});
 		var events = NeoForge.EVENT_BUS;
 		events.addListener(Jetpacks::tick);
@@ -142,9 +164,9 @@ public final class Jetpacks
 
 	public static void equip(ServerPlayer player, ItemStack stack)
 	{
-		if (!stack.isEmpty() && !(stack.getItem() instanceof Jetpack))
+		if (!stack.isEmpty() && !(stack.getItem() instanceof BackEquipment))
 			return;
-		player.setData(SLOT, stack.copy());
+		player.setData(SLOT, stack.copyWithCount(1));
 		player.removeData(FLIGHT);
 		JetpackNetwork.broadcast(player);
 	}
@@ -210,22 +232,28 @@ public final class Jetpacks
 		private Menu(int id, Inventory inventory, Container equipped)
 		{
 			super(MENU.get(), id, equipped);
-			addMachineSlot(0, 80, 30, 1, stack -> stack.getItem() instanceof Jetpack);
+			addMachineSlot(0, 80, 30, 1, stack -> stack.getItem() instanceof BackEquipment);
 			addPlayerSlots(inventory, 74);
 		}
 	}
 
-	public static final class Jetpack extends Item
+	public static class BackEquipment extends Item
 	{
-		private final String appearance;
+		private final String model;
+		private final String texture;
+		private final String part;
 
-		private Jetpack(String appearance)
+		private BackEquipment(String model, String texture, String part)
 		{
 			super(new Properties().stacksTo(1));
-			this.appearance = appearance;
+			this.model = model;
+			this.texture = texture;
+			this.part = part;
 		}
 
-		public String appearance() { return appearance; }
+		public String model() { return model; }
+		public String texture() { return texture; }
+		public String part() { return part; }
 
 		@Override
 		public InteractionResultHolder<ItemStack> use(Level level, Player user, InteractionHand hand)
@@ -240,6 +268,11 @@ public final class Jetpacks
 			}
 			return InteractionResultHolder.sidedSuccess(held, level.isClientSide);
 		}
+	}
+
+	public static final class Jetpack extends BackEquipment
+	{
+		private Jetpack(String model) { super(model, model, "jetpack"); }
 	}
 
 	static final class Flight

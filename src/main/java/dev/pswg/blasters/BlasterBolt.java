@@ -107,6 +107,7 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 	public float radius() { return radius; }
 	public FiringMode mode() { return mode; }
 	public HumanoidArm arm() { return arm; }
+	public boolean hasLegacyFlyby() { return falloff >= 0; }
 
 	@Override
 	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder)

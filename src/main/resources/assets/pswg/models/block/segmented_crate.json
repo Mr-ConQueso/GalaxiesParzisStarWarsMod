@@ -1,0 +1,10 @@
+{
+  "loader": "pswg:p3d",
+  "p3d": "pswg:block/released_segmented_crate",
+  "textures": {
+    "texture": "pswg:block/model/segmented_crate/brown",
+    "particle": "pswg:block/model/segmented_crate/brown_particle"
+  },
+  "scale": 0.625,
+  "rotation_y": -90
+}

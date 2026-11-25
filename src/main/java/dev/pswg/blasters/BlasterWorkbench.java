@@ -83,20 +83,43 @@ public final class BlasterWorkbench extends WorkstationInventory
 		var installed = new HashMap<>(equipment.applied());
 		var required = definition.legacy().map(LegacyBlaster::requiredSlots).orElse(List.of());
 		if (installed.containsValue(id))
-		{
-			if (required.stream().anyMatch(slot -> id.equals(installed.get(slot))))
-				return false;
 			installed.values().removeIf(id::equals);
-		}
 		else
 		{
 			var conflicts = option.slots().stream().map(installed::get).filter(java.util.Objects::nonNull).toList();
 			installed.values().removeIf(conflicts::contains);
 			option.slots().forEach(slot -> installed.put(slot, id));
-			if (!installed.keySet().containsAll(required))
+		}
+		for (var slot : required)
+		{
+			if (installed.containsKey(slot))
+				continue;
+			var fallback = definition.attachments().defaults().get(slot);
+			var defaultOption = fallback == null ? null : definition.attachments().options().get(fallback);
+			if (defaultOption == null || defaultOption.slots().stream().anyMatch(installed::containsKey))
+				return false;
+			defaultOption.slots().forEach(empty -> installed.put(empty, fallback));
+		}
+		var staged = new Blasters.EquippedAttachments(equipment.hud(), installed);
+		if (staged.equals(equipment) || !isValid(definition, staged))
+			return false;
+		stack.set(Blasters.ATTACHMENTS.get(), staged);
+		return true;
+	}
+
+	private static boolean isValid(BlasterDefinition definition, Blasters.EquippedAttachments attachments)
+	{
+		var installed = attachments.applied();
+		var required = definition.legacy().map(LegacyBlaster::requiredSlots).orElse(List.of());
+		if (!installed.keySet().containsAll(required))
+			return false;
+		for (var entry : installed.entrySet())
+		{
+			var option = definition.attachments().options().get(entry.getValue());
+			if (option == null || !option.slots().contains(entry.getKey())
+					|| option.slots().stream().anyMatch(slot -> !entry.getValue().equals(installed.get(slot))))
 				return false;
 		}
-		stack.set(Blasters.ATTACHMENTS.get(), new Blasters.EquippedAttachments(equipment.hud(), installed));
 		return true;
 	}
 
@@ -136,14 +159,16 @@ public final class BlasterWorkbench extends WorkstationInventory
 					.sorted(Map.Entry.comparingByKey()).toList();
 		}
 
-		@Override
-		public boolean clickMenuButton(Player player, int index)
+		public boolean build(Player player, ItemStack original, Blasters.EquippedAttachments desired)
 		{
 			if (player.containerMenu != this || player.isSpectator() || !stillValid(player) || level.isClientSide)
 				return false;
-			var options = options();
-			if (index < 0 || index >= options.size() || !toggleAttachment(weapon(), definition(), options.get(index).getKey()))
+			var weapon = weapon();
+			var definition = definition();
+			if (definition == null || !ItemStack.matches(weapon, original)
+					|| !BlasterItem.attachments(weapon, definition).hud().equals(desired.hud()) || !isValid(definition, desired))
 				return false;
+			weapon.set(Blasters.ATTACHMENTS.get(), desired);
 			inventory.setChanged();
 			broadcastChanges();
 			return true;

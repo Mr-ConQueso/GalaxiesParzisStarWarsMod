@@ -42,7 +42,7 @@ public final class Crates
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CorrugatedCrateBlockEntity>> TOOLBOX = legacyEntity("toolbox", 5,
 			TOOLBOX_MENU, () -> Crates.TOOLBOX.get(), () -> new Block[] { LegacyConstruction.TOOLBOX.get() });
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CorrugatedCrateBlockEntity>> SEGMENTED = legacyEntity("segmented_crate", 5,
-			SEGMENTED_MENU, () -> Crates.SEGMENTED.get(), () -> LegacyConstruction.SEGMENTED_CRATES.stream().map(DeferredHolder::get).toArray(Block[]::new));
+			SEGMENTED_MENU, () -> Crates.SEGMENTED.get(), LegacyConstruction::segmentedCrateBlocks);
 
 	private static DeferredHolder<MenuType<?>, MenuType<CorrugatedCrateMenu>> legacyMenu(String name, int columns,
 	                                                                                  Supplier<MenuType<CorrugatedCrateMenu>> type)

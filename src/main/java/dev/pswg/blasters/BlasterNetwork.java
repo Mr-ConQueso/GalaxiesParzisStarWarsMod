@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -33,6 +35,10 @@ public final class BlasterNetwork
 		registrar.playToServer(Action.TYPE, Action.STREAM, (payload, context) -> {
 			if (context.player() instanceof ServerPlayer player)
 				handleAction(player, payload);
+		});
+		registrar.playToServer(WorkbenchBuild.TYPE, WorkbenchBuild.STREAM, (payload, context) -> {
+			if (context.player().containerMenu instanceof BlasterWorkbench.Menu menu && menu.containerId == payload.menuId())
+				menu.build(context.player(), payload.original(), payload.attachments());
 		});
 		registrar.playToClient(Definitions.TYPE, Definitions.STREAM, (payload, context) ->
 				BlasterDefinitions.updateClient(payload.definitions()));
@@ -54,6 +60,16 @@ public final class BlasterNetwork
 			player.setXRot(Mth.clamp(player.getXRot() + payload.vertical(), -90F, 90F));
 			player.setYRot(player.getYRot() + payload.horizontal());
 		});
+	}
+
+	public record WorkbenchBuild(int menuId, ItemStack original, Blasters.EquippedAttachments attachments) implements CustomPacketPayload
+	{
+		private static final Type<WorkbenchBuild> TYPE = new Type<>(Blasters.id("workbench_build"));
+		private static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchBuild> STREAM = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, WorkbenchBuild::menuId, ItemStack.STREAM_CODEC, WorkbenchBuild::original,
+				ByteBufCodecs.fromCodec(Blasters.EquippedAttachments.CODEC), WorkbenchBuild::attachments, WorkbenchBuild::new);
+
+		@Override public Type<WorkbenchBuild> type() { return TYPE; }
 	}
 
 	public static void handleAction(ServerPlayer player, Action payload)

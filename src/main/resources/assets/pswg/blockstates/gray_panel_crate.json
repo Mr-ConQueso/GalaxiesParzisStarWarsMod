@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pswg:block/gray_panel_crate"
+    },
+    "facing=south": {
+      "model": "pswg:block/gray_panel_crate",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "pswg:block/gray_panel_crate",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "pswg:block/gray_panel_crate",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "pswg:block/gray_panel_crate"
+    },
+    "facing=down": {
+      "model": "pswg:block/gray_panel_crate",
+      "x": 180
+    }
+  }
+}
