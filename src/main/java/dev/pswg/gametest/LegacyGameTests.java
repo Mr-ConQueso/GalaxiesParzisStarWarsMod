@@ -65,6 +65,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -238,18 +240,25 @@ public final class LegacyGameTests
 	public static void jetpackSlotPersistsAndRejectsInvalidFlight(GameTestHelper test)
 	{
 		var player = serverPlayer(test);
+		var curios = CuriosApi.getCuriosInventory(player).orElseThrow();
+		var back = new SlotContext("back", player, 0, false, true);
 		var armor = new ItemStack(Items.IRON_CHESTPLATE);
 		player.setItemSlot(EquipmentSlot.CHEST, armor);
+		test.assertTrue(curios.getStacksHandler("back").isPresent() && !CuriosApi.isStackValid(back, armor),
+				"Curios provides a Back slot that rejects chest armor");
 		JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.ASCEND));
 		NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
 		test.assertTrue(!Jetpacks.authorizedFlight(player), "A client cannot request thrust without a pack");
+		for (var item : Jetpacks.PACKS)
+			test.assertTrue(CuriosApi.isStackValid(back, item.toStack()), "Jetpacks belong in the Curios Back slot");
 		var pack = Jetpacks.PACKS.getFirst().toStack();
-		Jetpacks.equip(player, pack);
+		curios.setEquippedCurio("back", 0, pack);
 		var saved = player.saveWithoutId(new CompoundTag());
 		var copy = serverPlayer(test);
 		copy.load(saved);
-		test.assertTrue(ItemStack.matches(Jetpacks.equipped(copy), pack) && copy.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE),
-				"The attached pack and chest armor coexist after reload");
+		var restored = CuriosApi.getCuriosInventory(copy).orElseThrow().findCurio("back", 0).orElseThrow();
+		test.assertTrue(ItemStack.matches(restored.stack(), pack) && copy.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE),
+				"The Curios jetpack and chest armor coexist after reload");
 		player.fallDistance = 6;
 		JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.ASCEND));
 		NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
@@ -258,14 +267,19 @@ public final class LegacyGameTests
 		JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.DESCEND));
 		NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
 		test.assertTrue(!Jetpacks.authorizedFlight(player), "Descending releases thrust");
-		Jetpacks.equip(player, ItemStack.EMPTY);
-		test.assertTrue(Jetpacks.equipped(player).isEmpty() && ItemStack.matches(armor, player.getItemBySlot(EquipmentSlot.CHEST)), "Removing the pack leaves chest armor equipped");
+		JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.ASCEND));
+		curios.setEquippedCurio("back", 0, ItemStack.EMPTY);
+		NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
+		test.assertTrue(!Jetpacks.hasJetpack(player) && !Jetpacks.authorizedFlight(player)
+				&& ItemStack.matches(armor, player.getItemBySlot(EquipmentSlot.CHEST)), "Removing the pack cancels thrust and leaves chest armor equipped");
 		test.assertValueEqual(Jetpacks.ACCESSORIES.size(), 11, "Every released decorative back item is registered");
 		for (var item : Jetpacks.ACCESSORIES)
 		{
-			Jetpacks.equip(player, item.toStack());
+			test.assertTrue(CuriosApi.isStackValid(back, item.toStack()), "Decorative equipment belongs in the Curios Back slot");
+			curios.setEquippedCurio("back", 0, item.toStack());
 			copy.load(player.saveWithoutId(new CompoundTag()));
-			test.assertTrue(Jetpacks.equipped(copy).is(item.get()) && copy.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE),
+			var accessory = CuriosApi.getCuriosInventory(copy).orElseThrow().findCurio("back", 0).orElseThrow();
+			test.assertTrue(accessory.stack().is(item.get()) && copy.getItemBySlot(EquipmentSlot.CHEST).is(Items.IRON_CHESTPLATE),
 					"Back equipment survives reload alongside chest armor");
 			JetpackNetwork.handle(player, new JetpackNetwork.Input(JetpackNetwork.ASCEND));
 			NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));

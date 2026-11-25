@@ -59,7 +59,7 @@ public final class BlasterClient
 	private static final KeyMapping MODE = new KeyMapping("key.pswg.blaster_mode",
 			InputConstants.Type.KEYSYM, InputConstants.KEY_Z, "category.pswg.keybinds");
 	private static final KeyMapping PATROL = new KeyMapping("key.pswg.toggle_patrol_posture",
-			InputConstants.Type.KEYSYM, InputConstants.KEY_G, "category.pswg.keybinds");
+			InputConstants.Type.KEYSYM, InputConstants.KEY_B, "category.pswg.keybinds");
 	private static final ResourceLocation LEGACY_HUD = Galaxies.id("textures/gui/blasters.png");
 	private static final ResourceLocation HUD = Blasters.id("textures/gui/hud_elements.png");
 	private static final int HUD_WIDTH = 61;

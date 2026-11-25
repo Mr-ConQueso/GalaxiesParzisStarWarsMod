@@ -1,6 +1,7 @@
 package dev.pswg.rendering.p3d;
 
 import com.google.common.io.LittleEndianDataInputStream;
+import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public record P3dModel(List<Part> roots, Map<String, Socket> sockets)
+public record P3dModel(List<Part> roots, Map<String, Socket> sockets, AABB bounds)
 {
 	public static P3dModel read(InputStream stream, boolean geometry) throws IOException
 	{
@@ -35,9 +36,10 @@ public record P3dModel(List<Part> roots, Map<String, Socket> sockets)
 		}
 		int rootCount = count(input, 8192);
 		var roots = new ArrayList<Part>(rootCount);
+		var bounds = new Bounds();
 		for (int i = 0; i < rootCount; i++)
-			roots.add(part(input, sockets, null, geometry, 0));
-		var model = new P3dModel(List.copyOf(roots), Map.copyOf(sockets));
+			roots.add(part(input, sockets, null, geometry, 0, bounds));
+		var model = new P3dModel(List.copyOf(roots), Map.copyOf(sockets), bounds.box());
 		for (String name : model.sockets.keySet())
 			if (model.transform(name) == null)
 				throw new IOException("Missing or circular ancestry for " + name);
@@ -45,7 +47,7 @@ public record P3dModel(List<Part> roots, Map<String, Socket> sockets)
 	}
 
 	private static Part part(LittleEndianDataInputStream stream, Map<String, Socket> sockets, String parent, boolean geometry,
-	                         int depth) throws IOException
+	                         int depth, Bounds bounds) throws IOException
 	{
 		if (depth >= 64)
 			throw new IOException("P3D model hierarchy exceeds 64 levels");
@@ -60,13 +62,17 @@ public record P3dModel(List<Part> roots, Map<String, Socket> sockets)
 			var normal = new Vector3f(stream.readFloat(), stream.readFloat(), stream.readFloat());
 			var vertices = new Vertex[4];
 			for (int j = 0; j < 4; j++)
-				vertices[j] = new Vertex(stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat(), 1F - stream.readFloat());
+			{
+				var vertex = new Vertex(stream.readFloat(), stream.readFloat(), stream.readFloat(), stream.readFloat(), 1F - stream.readFloat());
+				vertices[j] = vertex;
+				bounds.include(vertex);
+			}
 			faces.add(new Face(normal, vertices));
 		}
 		int childCount = count(stream, 8192);
 		var children = new ArrayList<Part>(childCount);
 		for (int i = 0; i < childCount; i++)
-			children.add(part(stream, sockets, name, geometry, depth + 1));
+			children.add(part(stream, sockets, name, geometry, depth + 1, bounds));
 		return new Part(name, transform, material, List.copyOf(faces), List.copyOf(children));
 	}
 
@@ -139,6 +145,32 @@ public record P3dModel(List<Part> roots, Map<String, Socket> sockets)
 			value.mulLocal(socket.transform);
 		}
 		return value;
+	}
+
+	// The Fabric item renderer framed P3D icons using all raw vertices, including optional parts.
+	private static final class Bounds
+	{
+		private float minX = Float.POSITIVE_INFINITY;
+		private float minY = Float.POSITIVE_INFINITY;
+		private float minZ = Float.POSITIVE_INFINITY;
+		private float maxX = Float.NEGATIVE_INFINITY;
+		private float maxY = Float.NEGATIVE_INFINITY;
+		private float maxZ = Float.NEGATIVE_INFINITY;
+
+		private void include(Vertex vertex)
+		{
+			minX = Math.min(minX, vertex.x());
+			minY = Math.min(minY, vertex.y());
+			minZ = Math.min(minZ, vertex.z());
+			maxX = Math.max(maxX, vertex.x());
+			maxY = Math.max(maxY, vertex.y());
+			maxZ = Math.max(maxZ, vertex.z());
+		}
+
+		private AABB box()
+		{
+			return minX != Float.POSITIVE_INFINITY ? new AABB(minX, minY, minZ, maxX, maxY, maxZ) : new AABB(0, 0, 0, 0, 0, 0);
+		}
 	}
 
 	public record Socket(String parent, Matrix4f transform) {}

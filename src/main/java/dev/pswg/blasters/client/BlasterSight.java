@@ -6,6 +6,7 @@ import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterDefinition;
 import dev.pswg.blasters.BlasterItem;
 import dev.pswg.blasters.Blasters;
+import dev.pswg.blasters.LegacyBlaster;
 import dev.pswg.vehicles.Ship;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -41,6 +42,8 @@ public final class BlasterSight
 	private static ItemStack aimedStack = ItemStack.EMPTY;
 	private static float previousProgress;
 	private static float progress;
+	private static float previousLegacyFovScale = 1F;
+	private static float legacyFovScale = 1F;
 
 	@EventBusSubscriber(modid = Galaxies.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 	public static final class ModEvents
@@ -58,11 +61,19 @@ public final class BlasterSight
 		var player = firstPersonPlayer();
 		var stack = player == null ? ItemStack.EMPTY : player.getItemInHand(BlasterItem.firingHand(player));
 		if (!sameBlaster(stack, aimedStack))
+		{
 			progress = 0;
+			legacyFovScale = 1F;
+		}
 		aimedStack = stack;
 		previousProgress = progress;
 		boolean aiming = player != null && !player.isSprinting() && BlasterItem.isBlaster(stack) && BlasterItem.state(stack).isAiming();
 		progress = Mth.clamp(progress + (aiming ? 0.2F : -0.2F), 0F, 1F);
+
+		var definition = aiming ? BlasterItem.definition(player.level(), stack) : null;
+		double target = definition != null && definition.legacy().isPresent() ? 1D / Math.max(1F, BlasterItem.zoom(stack, definition)) : 1D;
+		previousLegacyFovScale = legacyFovScale;
+		legacyFovScale = (float) Mth.lerp(0.5D, legacyFovScale, target);
 	}
 
 	@SubscribeEvent
@@ -70,33 +81,36 @@ public final class BlasterSight
 	{
 		aimedStack = ItemStack.EMPTY;
 		previousProgress = progress = 0;
+		previousLegacyFovScale = legacyFovScale = 1F;
 	}
 
 	@SubscribeEvent
 	public static void fov(ViewportEvent.ComputeFov event)
 	{
 		var player = firstPersonPlayer();
-		// Minecraft computes another FOV for the hands. Zoom the world projection only.
-		if (event.usedConfiguredFov() && player != null && event.getCamera().getEntity() == player)
-			event.setFOV(event.getFOV() / zoom((float) event.getPartialTick()));
+		if (player != null && event.getCamera().getEntity() == player)
+			event.setFOV(event.getFOV() * projectionScale(player, (float) event.getPartialTick(), event.usedConfiguredFov()));
 	}
 
 	public static float zoom(float partial)
 	{
 		var player = firstPersonPlayer();
-		if (player != null)
-		{
-			var stack = player.getItemInHand(BlasterItem.firingHand(player));
-			if (!BlasterItem.isBlaster(stack) || !sameBlaster(stack, aimedStack))
-				return 1F;
-			var definition = BlasterItem.definition(player.level(), stack);
-			if (definition != null)
-			{
-				float target = Math.max(1F, BlasterItem.zoom(stack, definition));
-				return 1F / Mth.lerp(amount(stack, partial), 1F, 1F / target);
-			}
-		}
-		return 1F;
+		return player == null ? 1F : 1F / projectionScale(player, partial, true);
+	}
+
+	private static float projectionScale(LocalPlayer player, float partial, boolean worldProjection)
+	{
+		var stack = player.getItemInHand(BlasterItem.firingHand(player));
+		if (!BlasterItem.isBlaster(stack) || !sameBlaster(stack, aimedStack))
+			return 1F;
+		var definition = BlasterItem.definition(player.level(), stack);
+		if (definition == null)
+			return 1F;
+		// Fabric zoomed both projections for P3D weapons. Current G3D weapons use a fixed hand projection.
+		if (definition.legacy().isPresent())
+			return Mth.lerp(partial, previousLegacyFovScale, legacyFovScale);
+		float target = Math.max(1F, BlasterItem.zoom(stack, definition));
+		return worldProjection ? Mth.lerp(amount(stack, partial), 1F, 1F / target) : 1F;
 	}
 
 	private static boolean sameBlaster(ItemStack first, ItemStack second)
@@ -111,6 +125,14 @@ public final class BlasterSight
 			return 0;
 		float t = Mth.lerp(partial, previousProgress, progress);
 		return t * t * (3 - 2 * t);
+	}
+
+	static float legacyAmount(ItemStack stack, LegacyBlaster legacy, float partial)
+	{
+		if (!sameBlaster(stack, aimedStack))
+			return 0F;
+		float zoom = legacy.mechanics().zoom();
+		return zoom > 1F ? (1F - Mth.lerp(partial, previousLegacyFovScale, legacyFovScale)) / (1F - 1F / zoom) : amount(stack, partial);
 	}
 
 	@Nullable

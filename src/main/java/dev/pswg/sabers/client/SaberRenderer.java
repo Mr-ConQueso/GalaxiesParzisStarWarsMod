@@ -10,11 +10,16 @@ import dev.pswg.sabers.SaberItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 final class SaberRenderer extends BlockEntityWithoutLevelRenderer
 {
+	private static final float BLOCK_ROLL = 0.882F;
+
 	SaberRenderer(Minecraft client)
 	{
 		super(client.getBlockEntityRenderDispatcher(), client.getEntityModels());
@@ -38,11 +43,18 @@ final class SaberRenderer extends BlockEntityWithoutLevelRenderer
 				pose.scale(2, 2, 2);
 			}
 			case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> {
-				var player = Minecraft.getInstance().player;
-				if (player != null && SaberItem.blocks(player) && player.getUseItem() == stack)
+				var client = Minecraft.getInstance();
+				var player = client.player;
+				if (player != null && SaberItem.blocks(player) && player.getUseItem().is(stack.getItem()))
 				{
-					int side = display == ItemDisplayContext.FIRST_PERSON_LEFT_HAND ? -1 : 1;
-					pose.mulPose(Axis.ZP.rotationDegrees(side * -45));
+					var arm = player.getUsedItemHand() == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
+					boolean left = display == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+					if (left == (arm == HumanoidArm.LEFT))
+					{
+						float partial = client.getTimer().getGameTimeDeltaPartialTick(false);
+						float block = Mth.clamp((player.getTicksUsingItem() + partial) / 2F, 0F, 1F);
+						pose.mulPose(Axis.ZP.rotation((left ? -1 : 1) * BLOCK_ROLL * block));
+					}
 				}
 				pose.translate(0, 0, 0.08);
 			}

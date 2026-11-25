@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:builtin/entity",
+  "gui_light": "front",
   "textures": {
     "particle": "pswg:block/empty"
   }

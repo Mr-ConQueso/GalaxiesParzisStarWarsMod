@@ -24,6 +24,13 @@ versionRange = "[${neo_version},21.2)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.pswg]]
+modId = "curios"
+type = "required"
+versionRange = "[${curios_version},10)"
+ordering = "AFTER"
+side = "BOTH"
+
 [[mixins]]
 config = "pswg.client.mixins.json"
 [[mixins]]
