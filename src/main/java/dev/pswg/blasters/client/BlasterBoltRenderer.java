@@ -4,19 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterBolt;
-import dev.pswg.blasters.BlasterItem;
 import dev.pswg.blasters.LegacyBlaster.FiringMode;
 import dev.pswg.legacy.client.EnergyRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 final class BlasterBoltRenderer extends EntityRenderer<BlasterBolt>
 {
+	private final Map<BlasterBolt, Vec3> sourceOffsets = new WeakHashMap<>();
 	BlasterBoltRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
@@ -30,6 +32,7 @@ final class BlasterBoltRenderer extends EntityRenderer<BlasterBolt>
 			return;
 		pose.pushPose();
 		pose.translate(0, bolt.getBbHeight() * 0.5F, 0);
+		applyMuzzleOffset(bolt, partial, pose);
 		float angle = (float) Math.atan2(direction.x, direction.z);
 		float pitch = (float) Math.asin(direction.y);
 		if (bolt.mode() == FiringMode.STUN)
@@ -40,25 +43,38 @@ final class BlasterBoltRenderer extends EntityRenderer<BlasterBolt>
 		}
 		else
 		{
-			var client = Minecraft.getInstance();
-			boolean local = bolt.getOwner() == client.player && client.options.getCameraType().isFirstPerson() && client.player != null;
-			if (local)
+			var player = BlasterSight.firstPersonPlayer();
+			if (player != null && bolt.getOwner() == player)
 			{
-				float distance = (float) bolt.position().distanceTo(client.player.getEyePosition(partial));
+				float distance = (float) bolt.getPosition(partial).distanceTo(player.getEyePosition(partial));
 				float scale = Mth.clamp(distance / 1.5F, 0.01F, 1F);
 				pose.scale(scale, scale, scale);
 			}
 			pose.mulPose(Axis.YP.rotation(angle - Mth.HALF_PI));
 			pose.mulPose(Axis.ZP.rotation(pitch - Mth.HALF_PI));
-			if (local && !BlasterItem.state(client.player.getItemInHand(BlasterItem.firingHand(client.player))).isAiming())
-			{
-				double d = Mth.clamp(1 - bolt.position().distanceTo(client.player.getEyePosition(partial)) / 15, 0, 1);
-				pose.translate(0.2 * d * d * d, 0, (bolt.arm() == HumanoidArm.LEFT ? -0.5 : 0.5) * d * d * d);
-			}
-			if (bolt.mode() != FiringMode.SLUGTHROWER)
-				EnergyRenderer.beam(pose, buffers, 1.5F * bolt.length(), bolt.radius(), bolt.color(), false, false);
+			EnergyRenderer.beam(pose, buffers, 1.5F * bolt.length(), bolt.radius(), bolt.color(), false, false);
 		}
 		pose.popPose();
+	}
+
+	private void applyMuzzleOffset(BlasterBolt bolt, float partial, PoseStack pose)
+	{
+		if (bolt.handModel() == null || bolt.tickCount >= 15)
+			return;
+
+		var center = bolt.getPosition(partial).add(0, bolt.getBbHeight() * 0.5F, 0);
+		double travel = center.distanceTo(bolt.launchPoint());
+		if (travel >= 15)
+			return;
+
+		// Bend the visual path back to the sight line without changing server collision.
+		var muzzle = sourceOffsets.computeIfAbsent(bolt, BlasterMuzzle::boltOffset);
+		if (muzzle != null)
+		{
+			double fade = 1 - travel / 15;
+			var offset = muzzle.scale(fade * fade * fade);
+			pose.translate(offset.x, offset.y, offset.z);
+		}
 	}
 
 	@Override

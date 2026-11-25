@@ -47,6 +47,16 @@
 			]
 		}
 	],
+	"sockets": [
+		{
+			"id": "muzzle_flash",
+			"node": "barrel",
+			"localTransform": {
+				"translation": [8, 5, -34],
+				"rotation": [0, 1, 0, 0]
+			}
+		}
+	],
 	"meshes": [
 		{
 			"id": "body/0",
@@ -13280,6 +13290,5 @@
 				129
 			]
 		}
-	],
-	"sockets": []
+	]
 }

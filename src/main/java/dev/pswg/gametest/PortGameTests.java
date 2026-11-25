@@ -468,6 +468,10 @@ public final class PortGameTests
 
 		var rig = G3dResources.SERVER.get(ResourceLocation.fromNamespaceAndPath("pswg_blasters", "item/e11d")).orElseThrow();
 		test.assertTrue(rig.nodeIndex("barrel") >= 0 && rig.nodeIndex("stock") >= 0, "E-11D parts are available on the dedicated server");
+		var muzzle = rig.socket("muzzle_flash");
+		test.assertValueEqual(muzzle.node(), rig.nodeIndex("barrel"), "Muzzle socket belongs to the barrel");
+		test.assertValueEqual(muzzle.localTransform().translation().z(), rig.nodes().get(muzzle.node()).bounds().min().z(),
+				"E-11D muzzle sits at the end of the barrel mesh");
 		test.succeed();
 	}
 
@@ -493,6 +497,22 @@ public final class PortGameTests
 		test.assertValueEqual(BlasterItem.state(blaster), BlasterState.DEFAULT, "Only the active hand can fire");
 		BlasterNetwork.handleAction(player, new BlasterNetwork.Action(InteractionHand.OFF_HAND, BlasterNetwork.Input.PRESS, 11L));
 		test.assertValueEqual(BlasterItem.state(blaster).lastTotalHeat(), 20F, "A valid offhand shot adds 20 heat");
+		var bolt = level.getEntitiesOfClass(dev.pswg.blasters.BlasterBolt.class, player.getBoundingBox().inflate(1),
+				entity -> entity.getOwner() == player).stream().findFirst().orElseThrow();
+		var buffer = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), level.registryAccess());
+		var tracked = new dev.pswg.blasters.BlasterBolt(Blasters.BOLT.get(), level);
+		try
+		{
+			bolt.writeSpawnData(buffer);
+			tracked.readSpawnData(buffer);
+		}
+		finally
+		{
+			buffer.release();
+		}
+		test.assertValueEqual(tracked.arm(), player.getMainArm().getOpposite(), "Bolt presentation uses the firing arm");
+		test.assertValueEqual(tracked.handModel(), id, "The tracking client gets the fired model identifier");
+		test.assertValueEqual(tracked.launchPoint(), player.getEyePosition(), "The visual offset starts from the server hit trajectory");
 		BlasterNetwork.handleAction(player, new BlasterNetwork.Action(InteractionHand.OFF_HAND, BlasterNetwork.Input.REPEAT, 11L));
 		test.assertValueEqual(BlasterItem.state(blaster).lastTotalHeat(), 20F, "The repeat delay is enforced on the server");
 

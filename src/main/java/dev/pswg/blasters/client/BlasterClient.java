@@ -3,7 +3,15 @@ package dev.pswg.blasters.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.model.HumanoidModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.minecraft.world.entity.LivingEntity;
 import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterDefinition;
@@ -71,6 +79,15 @@ public final class BlasterClient
 	public static final class ModEvents
 	{
 		@SubscribeEvent
+		public static void reload(RegisterClientReloadListenersEvent event)
+		{
+			event.registerReloadListener((ResourceManagerReloadListener) resources -> {
+				BlasterFlash.reload();
+				BlasterMuzzle.reload(resources);
+			});
+		}
+
+		@SubscribeEvent
 		public static void registerKeys(RegisterKeyMappingsEvent event)
 		{
 			event.register(VENT);
@@ -91,22 +108,6 @@ public final class BlasterClient
 			event.registerItem(new IClientItemExtensions()
 			{
 				private LegacyBlasterRenderer renderer;
-
-				@Override
-				public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack)
-				{
-					var definition = BlasterItem.definition(entity.level(), stack);
-					if (definition == null || definition.legacy().isEmpty()) return null;
-					if (entity instanceof Player player && player.getData(Blasters.PATROL))
-						return HumanoidModel.ArmPose.ITEM;
-					if (definition.legacy().get().oneHanded())
-					{
-						long lastFired = BlasterItem.state(stack).lastFired();
-						return lastFired > 0 && entity.level().getGameTime() - lastFired < 10 || BlasterItem.state(stack).isAiming()
-								? HumanoidModel.ArmPose.TOOT_HORN : HumanoidModel.ArmPose.ITEM;
-					}
-					return BlasterItem.state(stack).isAiming() ? HumanoidModel.ArmPose.BOW_AND_ARROW : HumanoidModel.ArmPose.CROSSBOW_HOLD;
-				}
 
 				@Override
 				public BlockEntityWithoutLevelRenderer getCustomRenderer()
@@ -134,6 +135,37 @@ public final class BlasterClient
 						return Blasters.id("e11/bipod").equals(equipped.get(Blasters.id("barrel_slot"))) ? 1F : 0F;
 					}));
 		}
+	}
+
+	public static void withHeldItem(LivingEntity holder, ItemStack stack, ItemDisplayContext display, boolean left,
+	                                PoseStack pose, MultiBufferSource buffers, BakedModel model, Runnable render)
+	{
+		var previous = LegacyBlasterRenderer.holder;
+		LegacyBlasterRenderer.holder = holder;
+		try
+		{
+			render.run();
+		}
+		finally
+		{
+			LegacyBlasterRenderer.holder = previous;
+		}
+		if (holder != null && stack.is(Blasters.ITEM.get()) &&
+				(display == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || display == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND))
+		{
+			pose.pushPose();
+			ClientHooks.handleCameraTransforms(pose, model, display, left);
+			pose.translate(-0.5F, -0.5F, -0.5F);
+			BlasterMuzzle.current(holder, left ? HumanoidArm.LEFT : HumanoidArm.RIGHT, stack, pose, buffers, false,
+					Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+			pose.popPose();
+		}
+	}
+
+	@SubscribeEvent
+	public static void renderStage(RenderLevelStageEvent event)
+	{
+		BlasterMuzzle.renderStage(event);
 	}
 
 	@SubscribeEvent
@@ -294,6 +326,7 @@ public final class BlasterClient
 	public static void logout(ClientPlayerNetworkEvent.LoggingOut event)
 	{
 		BlasterDefinitions.updateClient(Map.of());
+		BlasterMuzzle.clear();
 		lastCreativeDefinitions = null;
 		attackDown = false;
 	}

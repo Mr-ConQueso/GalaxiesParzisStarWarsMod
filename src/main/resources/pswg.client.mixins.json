@@ -9,6 +9,8 @@
     "PlayerArmorOverlayMixin",
     "LaserCutterMouseMixin",
     "BlasterMouseMixin",
+    "BlasterItemRendererMixin",
+    "BlasterPlayerPoseMixin",
     "VehicleCameraMixin",
     "VehicleMouseMixin",
     "SpeciesPlayerRendererMixin",

@@ -4,7 +4,9 @@ import dev.pswg.Galaxies;
 import dev.pswg.blasters.LegacyBlaster.FiringMode;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -41,7 +43,8 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 	private float length = 1;
 	private float radius = 1;
 	private boolean ignoresWater = true;
-	private boolean pyrotechnics;
+	private ResourceLocation handModel;
+	private Vec3 launchPoint = Vec3.ZERO;
 	private HumanoidArm arm = HumanoidArm.RIGHT;
 	private FiringMode mode = FiringMode.AUTOMATIC;
 
@@ -55,9 +58,10 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 		launch(owner, damage, range, owner.getXRot(), owner.getYHeadRot(), SPEED);
 	}
 
-	void launch(LivingEntity owner, InteractionHand hand, float damage, int range)
+	void launch(LivingEntity owner, InteractionHand hand, ItemStack stack, float damage, int range)
 	{
 		arm = hand == InteractionHand.MAIN_HAND ? owner.getMainArm() : owner.getMainArm().getOpposite();
+		handModel = stack.get(Blasters.ID.get());
 		launch(owner, damage, range);
 	}
 
@@ -75,7 +79,8 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 		this.damage = Math.max(0, damage);
 		this.range = this.initialRange = Math.max(0, range);
 		setOwner(owner);
-		setPos(owner.getEyePosition().subtract(0, getBbHeight() * 0.5, 0));
+		launchPoint = owner.getEyePosition();
+		setPos(launchPoint.subtract(0, getBbHeight() * 0.5, 0));
 		setYRot(yaw);
 		setXRot(pitch);
 		yRotO = yaw;
@@ -91,7 +96,7 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 		this.length = legacy.beam().length();
 		this.radius = legacy.beam().radius();
 		this.falloff = legacy.beam().falloff();
-		this.pyrotechnics = legacy.beam().pyrotechnics();
+		this.handModel = stack.get(Blasters.ID.get());
 		this.ignoresWater = !legacy.mechanics().water().equals("none") || BlasterItem.hasFunction(stack, definition, "waterproof_bolts");
 		this.arm = hand == InteractionHand.MAIN_HAND ? owner.getMainArm() : owner.getMainArm().getOpposite();
 		float spread = BlasterItem.state(stack).isAiming() ? 0 : BlasterItem.multiplier(stack, definition, "spread_multiplier");
@@ -107,6 +112,8 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 	public float radius() { return radius; }
 	public FiringMode mode() { return mode; }
 	public HumanoidArm arm() { return arm; }
+	public ResourceLocation handModel() { return handModel; }
+	public Vec3 launchPoint() { return launchPoint; }
 	public boolean hasLegacyFlyby() { return falloff >= 0; }
 
 	@Override
@@ -130,13 +137,6 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 			setDeltaMovement(velocity);
 		}
 		var start = position();
-		if (level().isClientSide && tickCount == 1 && pyrotechnics)
-		{
-			var forward = velocity.normalize();
-			var right = forward.cross(new Vec3(0, 1, 0)).normalize();
-			var muzzle = start.add(forward.scale(0.65)).add(right.scale(arm == HumanoidArm.RIGHT ? 0.25 : -0.25)).add(0, -0.15, 0);
-			BlasterEffects.muzzle(level(), muzzle, forward);
-		}
 		var hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
 		if (!ignoresWater)
 		{
@@ -296,7 +296,9 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 		buffer.writeFloat(length);
 		buffer.writeFloat(radius);
 		buffer.writeBoolean(ignoresWater);
-		buffer.writeBoolean(pyrotechnics);
+		buffer.writeNullable(handModel, FriendlyByteBuf::writeResourceLocation);
+		if (handModel != null)
+			buffer.writeVec3(launchPoint);
 		buffer.writeEnum(arm);
 		buffer.writeEnum(mode);
 	}
@@ -311,7 +313,9 @@ public final class BlasterBolt extends Projectile implements IEntityWithComplexS
 		length = buffer.readFloat();
 		radius = buffer.readFloat();
 		ignoresWater = buffer.readBoolean();
-		pyrotechnics = buffer.readBoolean();
+		handModel = buffer.readNullable(FriendlyByteBuf::readResourceLocation);
+		if (handModel != null)
+			launchPoint = buffer.readVec3();
 		arm = buffer.readEnum(HumanoidArm.class);
 		mode = buffer.readEnum(FiringMode.class);
 	}

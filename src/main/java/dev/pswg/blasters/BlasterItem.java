@@ -205,7 +205,8 @@ public final class BlasterItem extends Item
 			return false;
 		}
 
-		var mode = firingMode(stack, definition);
+		var selectedMode = firingMode(stack, definition);
+		var mode = selectedMode;
 		if (repeated && mode != FiringMode.AUTOMATIC && (mode != FiringMode.BURST || state.burstBoltsRemaining() == 0))
 			return false;
 
@@ -243,13 +244,15 @@ public final class BlasterItem extends Item
 		float damage = stats.damage() * multiplier(stack, definition, "damage_multiplier");
 		int range = Math.max(1, Math.round(stats.range() * multiplier(stack, definition, "range_multiplier")));
 		if (legacy == null)
-			bolt.launch(player, hand, damage, range);
+			bolt.launch(player, hand, stack, damage, range);
 		else
 			bolt.launchLegacy(player, hand, stack, definition, legacy, mode, damage, range);
 		if (!level.addFreshEntity(bolt))
 			return false;
 		if (mode == FiringMode.STUN)
 			bolt.stunCone(player);
+		if (player instanceof ServerPlayer server && server.connection != null && bolt.handModel() != null)
+			BlasterNetwork.sendMuzzle(server, bolt.arm(), bolt.handModel(), selectedMode, legacy != null && legacy.beam().pyrotechnics());
 
 		if (legacy != null && !player.hasInfiniteMaterials())
 			stack.set(Blasters.AMMO.get(), ammo - 1);

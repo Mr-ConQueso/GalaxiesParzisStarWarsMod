@@ -39,17 +39,6 @@ final class BlasterEffects
 			spawn(level, GalaxiesParticles.SLUG_TRAIL.get(), from.lerp(to, i / 10D), randomVector(level, 0.01));
 	}
 
-	static void muzzle(Level level, Vec3 point, Vec3 forward)
-	{
-		for (int i = 0; i < 25; i++)
-		{
-			var scatter = randomVector(level, 0.03);
-			spawn(level, GalaxiesParticles.SPARK.get(), point, scattered(level, forward, scatter, 0.6));
-			if (i % 3 == 0)
-				spawn(level, ParticleTypes.SMOKE, point, scattered(level, forward, scatter, 0.05));
-		}
-	}
-
 	private static Vec3 randomVector(Level level, double scale)
 	{
 		return new Vec3(level.random.nextGaussian() * scale, level.random.nextGaussian() * scale, level.random.nextGaussian() * scale);

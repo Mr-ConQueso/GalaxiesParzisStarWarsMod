@@ -2,13 +2,11 @@ package dev.pswg.blasters.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import dev.pswg.Galaxies;
 import dev.pswg.blasters.BlasterDefinition;
 import dev.pswg.blasters.BlasterDefinitions;
 import dev.pswg.blasters.BlasterItem;
 import dev.pswg.blasters.Blasters;
 import dev.pswg.blasters.LegacyBlaster;
-import dev.pswg.blasters.LegacyBlaster.FiringMode;
 import dev.pswg.rendering.p3d.P3dModel;
 import dev.pswg.rendering.p3d.P3dRenderer;
 import dev.pswg.rendering.p3d.P3dResources;
@@ -16,15 +14,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -36,8 +33,8 @@ import java.util.HashMap;
 final class LegacyBlasterRenderer extends BlockEntityWithoutLevelRenderer
 {
 	private static final Matrix4f IDENTITY = new Matrix4f();
-	private static final int[] FLASH_FRAMES = { 9, 0, 5, 7, 9 };
 	private static final float MODEL_SCALE = 0.2F;
+	static LivingEntity holder;
 
 	LegacyBlasterRenderer(Minecraft client)
 	{
@@ -58,7 +55,11 @@ final class LegacyBlasterRenderer extends BlockEntityWithoutLevelRenderer
 		var client = Minecraft.getInstance();
 		var legacy = definition == null ? null : definition.legacy().orElse(null);
 		float partial = client.getTimer().getGameTimeDeltaPartialTick(false);
-		float shotTime = BlasterSight.shotAge(stack, partial);
+		boolean firstPerson = display.firstPerson();
+		boolean held = firstPerson || display == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || display == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+		var arm = display == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || display == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+				? HumanoidArm.LEFT : HumanoidArm.RIGHT;
+		float shotTime = held && holder != null ? BlasterMuzzle.shotAge(holder, arm, stack, partial) : 100;
 
 		pose.pushPose();
 		pose.translate(0.5, 0.5, 0.5);
@@ -75,9 +76,6 @@ final class LegacyBlasterRenderer extends BlockEntityWithoutLevelRenderer
 		{
 			float size = display == ItemDisplayContext.GROUND ? 0.12F : 0.2F;
 			pose.scale(size, size, size);
-			var grip = model.transform("main_hand");
-			if (grip != null)
-				pose.translate(-grip.m30(), -grip.m31(), -grip.m32());
 		}
 
 		var optionalParts = new HashMap<String, BlasterDefinition.Attachment>();
@@ -96,24 +94,14 @@ final class LegacyBlasterRenderer extends BlockEntityWithoutLevelRenderer
 			return option == null ? texture : option.texture().orElse(texture);
 		}, name -> optionalParts.containsKey(name) && optionalParts.get(name) == null ? null : IDENTITY, light, overlay);
 
-		if (shotTime >= 0 && shotTime < 4 && display != ItemDisplayContext.GUI && display != ItemDisplayContext.FIXED)
+		if (held && holder != null)
 		{
-			var muzzle = model.transform("muzzle_flash");
-			if (definition != null)
-				for (var selected : BlasterItem.attachments(stack, definition).applied().values())
-				{
-					String path = selected.getPath();
-					var socket = model.transform("muzzle_flash." + path.substring(path.lastIndexOf('/') + 1));
-					if (socket != null) muzzle = socket;
-				}
+			var muzzle = BlasterMuzzle.legacySocket(model, stack, definition);
 			if (muzzle != null)
 			{
 				pose.mulPose(muzzle);
 				int color = legacy == null ? 0xFF2244 : legacy.beam().color();
-				var mode = definition == null ? FiringMode.SEMI_AUTOMATIC : BlasterItem.firingMode(stack, definition);
-				if (mode == FiringMode.STUN || mode == FiringMode.ION)
-					color = 0x3377FF;
-				muzzleFlash(pose, buffers, overlay, shotTime, color, display.firstPerson());
+				BlasterMuzzle.render(holder, arm, stack, pose, buffers, overlay, color, firstPerson, partial);
 			}
 		}
 		pose.popPose();
@@ -203,32 +191,4 @@ final class LegacyBlasterRenderer extends BlockEntityWithoutLevelRenderer
 		}
 	}
 
-	private static void muzzleFlash(PoseStack pose, MultiBufferSource buffers, int overlay, float age, int color, boolean firstPerson)
-	{
-		int frame = Math.min(4, (int) (age * 1.2F));
-		int alpha = (int) (255 * Mth.clamp(1 - age * age / 16, 0, 1));
-		int tint = alpha << 24 | color;
-		var flash = Galaxies.id("textures/item/model/blaster/effect/muzzleflash_" + FLASH_FRAMES[frame] + ".png");
-		drawFlash(pose, buffers, flash, overlay, tint, 0.45F, 0.45F, 15 / 16F, 15 / 16F);
-		if (!firstPerson)
-		{
-			var side = Galaxies.id("textures/item/model/blaster/effect/muzzleflash_forward_" + (frame + 4) % 5 + ".png");
-			pose.pushPose();
-			pose.mulPose(Axis.YP.rotationDegrees(90));
-			drawFlash(pose, buffers, side, overlay, tint, 1.05F, 0.45F, 30 / 32F, 15 / 32F);
-			pose.mulPose(Axis.XP.rotationDegrees(90));
-			drawFlash(pose, buffers, side, overlay, tint, 1.05F, 0.45F, 30 / 32F, 15 / 32F);
-			pose.popPose();
-		}
-	}
-
-	private static void drawFlash(PoseStack pose, MultiBufferSource buffers, ResourceLocation texture, int overlay,
-	                              int color, float x, float y, float u, float v)
-	{
-		var out = buffers.getBuffer(RenderType.entityTranslucentEmissive(texture));
-		for (int i = 0; i < 4; i++)
-			out.addVertex(pose.last().pose(), (i == 0 || i == 3) ? -x : x, i < 2 ? -y : y, 0)
-					.setColor(color).setUv((i == 0 || i == 3) ? 0 : u, i < 2 ? 0 : v)
-					.setOverlay(overlay).setLight(LightTexture.FULL_BRIGHT).setNormal(pose.last(), 0, 0, 1);
-	}
 }

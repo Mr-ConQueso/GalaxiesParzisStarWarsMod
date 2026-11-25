@@ -254,7 +254,7 @@ public final class BlasterSight
 		var arm = event.getHand() == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
 		int side = arm == HumanoidArm.RIGHT ? 1 : -1;
 		float ads = amount(stack, partial);
-		float kick = shotKick(shotAge(stack, partial));
+		float kick = shotKick(BlasterMuzzle.shotAge(player, arm, stack, partial));
 		var pose = event.getPoseStack();
 		pose.pushPose();
 		// The G3D barrel is centered around x = 0.5. Align it in the fixed hand projection.
@@ -267,14 +267,9 @@ public final class BlasterSight
 		var model = renderer.getModel(stack, player.level(), player, player.getId());
 		renderer.render(stack, ItemDisplayContext.NONE, false, pose, event.getMultiBufferSource(),
 				event.getPackedLight(), OverlayTexture.NO_OVERLAY, model);
+		pose.translate(-0.5F, -0.5F, -0.5F);
+		BlasterMuzzle.current(player, arm, stack, pose, event.getMultiBufferSource(), true, partial);
 		pose.popPose();
-	}
-
-	static float shotAge(ItemStack stack, float partial)
-	{
-		var level = Minecraft.getInstance().level;
-		long fired = BlasterItem.state(stack).lastFired();
-		return level == null || fired <= 0 ? 100F : level.getGameTime() - fired + partial;
 	}
 
 	static float shotKick(float age)

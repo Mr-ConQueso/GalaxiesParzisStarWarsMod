@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.HumanoidArm;
+import dev.pswg.blasters.LegacyBlaster.FiringMode;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.ChunkPos;
@@ -31,7 +33,7 @@ public final class BlasterNetwork
 {
 	static void register(RegisterPayloadHandlersEvent event)
 	{
-		var registrar = event.registrar("1");
+		var registrar = event.registrar("2");
 		registrar.playToServer(Action.TYPE, Action.STREAM, (payload, context) -> {
 			if (context.player() instanceof ServerPlayer player)
 				handleAction(player, payload);
@@ -51,6 +53,8 @@ public final class BlasterNetwork
 		});
 		registrar.playToClient(BoltImpact.TYPE, BoltImpact.STREAM, (payload, context) ->
 				BlasterEffects.impact(context.player().level(), payload.position(), payload.incident(), payload.block(), payload.face()));
+		registrar.playToClient(MuzzleShot.TYPE, MuzzleShot.STREAM, (payload, context) ->
+				dev.pswg.blasters.client.BlasterMuzzle.onShot(context.player().level(), payload));
 		registrar.playToClient(Patrol.TYPE, Patrol.STREAM, (payload, context) -> {
 			if (context.player().level().getEntity(payload.entity()) instanceof Player player)
 				player.setData(Blasters.PATROL, payload.active());
@@ -125,6 +129,28 @@ public final class BlasterNetwork
 	{
 		if (player.connection != null)
 			PacketDistributor.sendToPlayer(player, new Recoil(vertical, horizontal));
+	}
+
+	static void sendMuzzle(ServerPlayer player, HumanoidArm arm, ResourceLocation model, FiringMode mode, boolean pyrotechnics)
+	{
+		PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new MuzzleShot(player.getId(), arm, model, mode, pyrotechnics));
+	}
+
+	public record MuzzleShot(int entity, HumanoidArm arm, ResourceLocation model, FiringMode mode, boolean pyrotechnics)
+			implements CustomPacketPayload
+	{
+		private static final Type<MuzzleShot> TYPE = new Type<>(Blasters.id("muzzle_shot"));
+		private static final StreamCodec<FriendlyByteBuf, MuzzleShot> STREAM = StreamCodec.of(
+				(buffer, shot) -> {
+					buffer.writeVarInt(shot.entity());
+					buffer.writeEnum(shot.arm());
+					buffer.writeResourceLocation(shot.model());
+					buffer.writeEnum(shot.mode());
+					buffer.writeBoolean(shot.pyrotechnics());
+				}, buffer -> new MuzzleShot(buffer.readVarInt(), buffer.readEnum(HumanoidArm.class), buffer.readResourceLocation(),
+						buffer.readEnum(FiringMode.class), buffer.readBoolean()));
+
+		@Override public Type<MuzzleShot> type() { return TYPE; }
 	}
 
 	static void sendBoltMotion(BlasterBolt bolt, Vec3 position, Vec3 velocity)
